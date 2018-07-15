@@ -1,0 +1,1 @@
+sequelize-auto -h 116.62.156.102 -d GREAT_FUN -u greatfun -x lixingyu666 -p 3306 -e mysql -a sequelize_config.json -o "./app/models"
