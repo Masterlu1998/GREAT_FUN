@@ -11,8 +11,8 @@ class IndexController extends Controller {
     //提取入参args
     const args = this.ctx.request.body.args;
     //打印入参详情
-    console.log("apicode: " + apicode);
-    console.log("args: " + JSON.stringify(args));
+    console.log("\x1b[32mapicode: " + apicode);
+    console.log("\x1b[32margs: " + JSON.stringify(args));
     let result;
     //分配逻辑层处理函数
     switch(apicode) {
