@@ -6,16 +6,11 @@
 module.exports = app => {
   const { router, controller } = app;
   //前端渲染路由
-  require('./router/front/test')(app);
+  require('./router/front/web/test')(app);
 
 
-
-
-  
-  //后台api
-  router.post('/back/api', controller.back.api.index.back);
   //前台api
-  router.post('/front/api', controller.front.api.index.front);
+  require('./router/front/api/index')(app);
 
 
 };
