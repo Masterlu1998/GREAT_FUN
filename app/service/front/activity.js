@@ -13,27 +13,85 @@ class ActivityService extends Service {
    * @apiGroup Activity
    * @apiVersion 0.1.0
    * 
-   * @apiParam {string} province_id 省份id
-   * @apiParam {string} city_id 城市id
-   * @apiParam {string} area_id 区域id 
+   * @apiParam {string} province_code 省份code
+   * @apiParam {string} city_code 城市code
+   * @apiParam {string} area_code 区域code 
    * @apiParam {datetime} start_time 开始时间
    * @apiParam {datetime} end_time 结束时间
-   * @apiParam {int} cost_num 活动花费金额[1:100以下, 2:100-1000, 3:1000-5000, 4:5000-30000(暂定)]
+   * @apiParam {int} cost_num_type 活动花费金额[1:100以下, 2:100-1000, 3:1000-5000, 4:5000-30000(暂定)]
    * @apiParam {string} keywords = "" 活动名称关键字(*)
+   * @apiParam {int} page_index = 1 当前页码(*)
+   * @apiParam {int} page_size = 0 一页记录数目(*)
    * 
+   * @apiSuccess {int} total 记录总数
    * @apiSuccess {list} activity_list 活动列表
    * @apiSuccess {string} activity_id 活动id
    * @apiSuccess {string} activity_title 活动标题
    * @apiSuccess {string} activity_intro 活动简介
    */
-  async getActivityList() {
-    const json_res = JSON.parse(JSON.stringify(constant.API_RESULT_MODEL));
-    json_res.msg.prompt = '查询成功';
-    json_res.obj.activity_list = [
-      { activity_id: "111", activity_title: "这是活动标题", activity_intro :"这是一个长达200字的活动简介，这是一个长达200字的活动简介，这是一个长达200字的活动简介这是一个长达200字的活动简介，这是一个长达200字的活动简介，这是一个长达200字的活动简介这是一个长达200字的活动简介，这是一个长达200字的活动简介，这是一个长达200字的活动简介" },
-      { activity_id: "222", activity_title: "这是活动标题", activity_intro :"这是一个长达200字的活动简介，这是一个长达200字的活动简介，这是一个长达200字的活动简介这是一个长达200字的活动简介，这是一个长达200字的活动简介，这是一个长达200字的活动简介这是一个长达200字的活动简介，这是一个长达200字的活动简介，这是一个长达200字的活动简介" }
-    ];
-    return json_res;
+  async getActivityList(params) {
+    let result_obj;
+    const { ctx } = this;
+    const { province_code , city_code, area_code, start_time, end_time, cost_num_type, keywords = "", page_index = 1, page_size = 0  } = params;
+    const search_activity_obj = {
+      delete_status: 0
+    };
+    if(keywords && keywords !== "") {
+      search_activity_obj.activity_title = { $like: '%' + keywords + '%' };
+    }
+    if(province_code) {
+      search_activity_obj.province_code = province_code;
+    }
+    if(city_code) {
+      search_activity_obj.city_code = city_code;
+    }
+    if(area_code) {
+      search_activity_obj.area_code = area_code;
+    }
+    if(start_time) {
+      search_activity_obj.start_time = { $gte: start_time };
+    }
+    if(end_time) {
+      search_activity_obj.end_time = { $lte: end_time };
+    }
+    if(cost_num_type) {
+      let condition;
+      switch(cost_num_type) {
+        case 1:
+          condition = { $lte: 100 };
+          break;
+        case 2: 
+          condition = { $gt: 100, $lte: 1000 };
+          break;
+        case 3:
+          condition = { $gt: 1000, $lte: 5000 };
+          break;
+        case 4:
+          condition = { $gt: 5000, $lte: 30000 };
+          break;
+        case 5:
+          condition = { $gt: 30000 };
+          break;
+        default: condition = {};
+      }
+      search_activity_obj.cost_num = condition;
+    }
+    const sql_option = {
+      where: search_activity_obj,
+      attributes: ['activity_id', 'activity_title', 'activity_intro'],
+      order: [['add_time', 'DESC']]
+    };
+    if(page_size !== 0) {
+      sql_option.limit = page_size;
+      sql_option.offset = (page_index - 1) * page_size;
+    }
+    const activity_list_sequelize = await ctx.model.JhwActivity.findAndCountAll(sql_option);
+    result_obj = {
+      total: activity_list_sequelize.count,
+      activity_list: activity_list_sequelize.rows,
+    };
+    const send_json = ctx.helper.getApiResult(0, "查询成功", result_obj);
+    return send_json;
   }
 
   /**
