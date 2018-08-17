@@ -1,14 +1,12 @@
 /* indent size: 2 */
-const sequelize = require('sequelize');
 
 module.exports = app => {
   const DataTypes = app.Sequelize;
 
-  const Model = app.model.define('jhw_activity', {
+  const Model = app.model.define('vi_activity_info', {
     activity_id: {
       type: DataTypes.STRING(200),
-      allowNull: false,
-      primaryKey: true
+      allowNull: false
     },
     activity_title: {
       type: DataTypes.STRING(255),
@@ -37,7 +35,7 @@ module.exports = app => {
     add_time: {
       type: DataTypes.DATE,
       allowNull: false,
-      defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
+      defaultValue: '0000-00-00 00:00:00'
     },
     start_time: {
       type: DataTypes.DATE,
@@ -74,9 +72,29 @@ module.exports = app => {
     activity_status: {
       type: DataTypes.INTEGER(100),
       allowNull: false
+    },
+    real_name: {
+      type: DataTypes.STRING(60),
+      allowNull: true
+    },
+    user_name: {
+      type: DataTypes.STRING(60),
+      allowNull: true
+    },
+    user_intro: {
+      type: DataTypes.STRING(200),
+      allowNull: true
+    },
+    avatar_url: {
+      type: DataTypes.STRING(200),
+      allowNull: true
+    },
+    experience: {
+      type: DataTypes.STRING(100),
+      allowNull: true
     }
   }, {
-    tableName: 'jhw_activity',
+    tableName: 'vi_activity_info',
     freezeTableName: true,
     timestamps: false,
     underscored: true
