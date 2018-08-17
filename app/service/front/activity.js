@@ -215,6 +215,35 @@ class ActivityService extends Service {
     return send_json;
   }
 
+  /**
+   * @api {post} /front/api/activity/postComment postComment——发表评论
+   * @apiName postComment
+   * @apiGroup Activity
+   * @apiVersion 0.1.0
+   * 
+   * @apiParam {string} user_id 用户id
+   * @apiParam {string} activity_id 活动id
+   * @apiParam {string} comment_content 评论内容（应设置字数上限未定）
+   */
+  async postComment(params) {
+    let send_json = {};
+    const { ctx } = this;
+    const { user_id, activity_id, comment_content } = params;
+    const post_obj ={
+      comment_content: comment_content,
+      comment_time: new Date(),
+      user_id: user_id,
+      activity_id: activity_id
+    };
+    const insert_result = await ctx.model.JhwActivityComment.create(post_obj);
+    if(!insert_result) {
+      send_json = ctx.helper.getApiResult(-1, "服务器内部错误");
+      return send_json;
+    }
+    send_json = ctx.helper.getApiResult(0, "评论成功");
+    return send_json;
+  }
+
 
   /**
    * @api {post} /front/api/activity/postActivityBaseInfo postActivityBaseInfo——填写活动基本信息
