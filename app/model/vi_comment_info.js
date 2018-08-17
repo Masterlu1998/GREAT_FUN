@@ -3,12 +3,11 @@
 module.exports = app => {
   const DataTypes = app.Sequelize;
 
-  const Model = app.model.define('jhw_activity_comment', {
+  const Model = app.model.define('vi_comment_info', {
     comment_id: {
       type: DataTypes.INTEGER(11),
       allowNull: false,
-      primaryKey: true,
-      autoIncrement: true
+      defaultValue: '0'
     },
     comment_content: {
       type: DataTypes.STRING(100),
@@ -30,9 +29,25 @@ module.exports = app => {
     activity_id: {
       type: DataTypes.STRING(200),
       allowNull: false
+    },
+    real_name: {
+      type: DataTypes.STRING(60),
+      allowNull: true
+    },
+    user_name: {
+      type: DataTypes.STRING(60),
+      allowNull: true
+    },
+    experience: {
+      type: DataTypes.STRING(100),
+      allowNull: true
+    },
+    avatar_url: {
+      type: DataTypes.STRING(200),
+      allowNull: true
     }
   }, {
-    tableName: 'jhw_activity_comment',
+    tableName: 'vi_comment_info',
     freezeTableName: true,
     timestamps: false,
     underscored: true

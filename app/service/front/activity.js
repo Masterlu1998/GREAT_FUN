@@ -176,7 +176,10 @@ class ActivityService extends Service {
    * @apiVersion 0.1.0
    * 
    * @apiParam {string} activity_id 活动id
+   * @apiParam {int} page_index = 1 页码(*)
+   * @apiParam {int} page_size = 0 一页记录数(*)，传0表示显示全部
    * 
+   * @apiSuccess {int} total 总记录数 
    * @apiSuccess {list} comment_list 活动评论列表
    * @apiSuccess {string} comment_content 评论内容
    * @apiSuccess {string} comment_time 评论时间
@@ -185,14 +188,30 @@ class ActivityService extends Service {
    * @apiSuccess {int} experience 发起者用户等级
    */
   async getActivityComment(params) {
-    const json_res = JSON.parse(JSON.stringify(constant.API_RESULT_MODEL));
-    json_res.msg.prompt = '查询成功';
-    json_res.obj.comment_list = [
-      { comment_content: "这是第一条评论", comment_time: "2018-08-22 12:00:00", user_name: "Robin", experience: 12000 },
-      { comment_content: "这是第二条评论", comment_time: "2018-08-22 12:20:00", user_name: "Robin", experience: 12000 },
-      { comment_content: "这是第三条评论", comment_time: "2018-08-22 12:30:00", user_name: "Robin", experience: 12000 }
-    ];
-    return json_res;
+    let result_obj = {};
+    let send_json = {};
+    const { ctx } = this;
+    const { activity_id, page_size, page_index } = params;
+    const search_obj = {
+      activity_id: activity_id,
+      delete_status: 0
+    };
+    const sql_option = {
+      where: search_obj,
+      attributes: ['comment_content', 'comment_time', 'user_name', 'avatar_url', 'experience'],
+      order: [['comment_time', 'DESC']]
+    };
+    if(page_size !== 0) {
+      sql_option.limit = page_size;
+      sql_option.offset = (page_index - 1) * page_size;
+    }
+    const comment_search_list = await ctx.model.ViCommentInfo.findAll(sql_option);
+    
+    result_obj = {
+      comment_list: comment_search_list
+    };
+    send_json = ctx.helper.getApiResult(0, '查询成功', result_obj);
+    return send_json;
   }
 
 
