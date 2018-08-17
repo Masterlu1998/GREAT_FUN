@@ -205,10 +205,11 @@ class ActivityService extends Service {
       sql_option.limit = page_size;
       sql_option.offset = (page_index - 1) * page_size;
     }
-    const comment_search_list = await ctx.model.ViCommentInfo.findAll(sql_option);
+    const comment_search_list = await ctx.model.ViCommentInfo.findAndCountAll(sql_option);
     
     result_obj = {
-      comment_list: comment_search_list
+      total: comment_search_list.count,
+      comment_list: comment_search_list.rows
     };
     send_json = ctx.helper.getApiResult(0, '查询成功', result_obj);
     return send_json;
