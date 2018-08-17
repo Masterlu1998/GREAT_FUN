@@ -258,16 +258,51 @@ class ActivityService extends Service {
    * @apiParam {int} limit_num 人数上限
    * @apiParam {int} cost_type 费用形式(1.自费2.AA 3.AAB)
    * @apiParam {int} cost_num 费用金额
-   * @apiParam {string} add_time 活动创建时间
    * @apiParam {string} start_time 活动开始时间
    * @apiParam {string} end_time 活动结束时间
    * @apiParam {string} meeting_place 集合地点
    * @apiParam {string} province_code 省份code
+   * @apiParam {string} city_code 城市code
+   * @apiParam {string} area_code 区域code   
    * @apiParam {int} activity_type_id 活动类型
    * 
    * 
    * @apiSuccess {string} activity_id 活动id
    */
+  async postActivityBaseInfo(params) {
+    let result_obj = {};
+    let send_json = {};
+    const { ctx } = this;
+    const { user_id, activity_id = "", activity_title, activity_intro, limit_num, cost_type, cost_num, start_time, end_time, meeting_place, province_code, city_code, area_code, activity_type_id  } = params;
+    const post_obj = {
+      activity_title: activity_title,
+      activity_intro: activity_intro,
+      limit_num: limit_num,
+      user_id: user_id,
+      cost_type: cost_type,
+      delete_status: 0,
+      start_time: start_time,
+      end_time: end_time,
+      meeting_place: meeting_place,
+      province_code: province_code,
+      city_code: city_code,
+      area_code: area_code,
+      cost_num: cost_num,
+      activity_type_id: activity_type_id,
+      activity_status: 1
+    };
+    if(activity_id) {
+      post_obj.activity_id = activity_id;
+    } else {
+      post_obj.activity_id = ctx.helper.getUUID();
+    }
+    const post_result = await ctx.model.JhwActivity.upsert(post_obj);
+    result_obj = {
+      activity_id: post_obj.activity_id
+    };
+    send_json = ctx.helper.getApiResult(0, "填写成功", result_obj);
+    return send_json;
+  }
 
 
 
@@ -277,7 +312,6 @@ class ActivityService extends Service {
    * @apiGroup Activity
    * @apiVersion 0.1.0
    * 
-   * @apiParam {string} user_id 用户id
    * @apiParam {string} step_id 步骤id(*)
    * @apiParam {int} step_order 步骤顺序（用来排序和显示）
    * @apiParam {string} start_time 步骤开始时间
@@ -288,6 +322,29 @@ class ActivityService extends Service {
    * @apiParam {string} activity_id 活动id
    * 
    */
+  async postActivityStep(params) {
+    let result_obj = {};
+    let send_obj = {};
+    const { ctx } = this;
+    const { step_id = "", step_order, start_time, end_time, step_name, step_detail, step_address, activity_id } = params;
+    const post_obj = {
+      step_order: step_order,
+      step_name: step_name,
+      start_time: start_time,
+      end_time: end_time,
+      delete_status: 0,
+      step_detail: step_detail,
+      step_address: step_address,
+      activity_id: activity_id
+    };
+    if(step_id) {
+      post_obj.step_id = step_id;
+    }
+    const post_result = await ctx.model.JhwActivityStep.upsert(post_obj);
+
+    send_obj = ctx.helper.getApiResult(0, "填写成功");
+    return send_obj;
+  }
 }
 
 module.exports = ActivityService;
