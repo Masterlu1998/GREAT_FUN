@@ -30,7 +30,7 @@ class ActivityService extends Service {
    * @apiSuccess {string} activity_intro 活动简介
    */
   async getActivityList(params) {
-    let result_obj;
+    let result_obj = {};
     const { ctx } = this;
     const { province_code , city_code, area_code, start_time, end_time, cost_num_type, keywords = "", page_index = 1, page_size = 0  } = params;
     const search_activity_obj = {
@@ -121,25 +121,52 @@ class ActivityService extends Service {
    * @apiSuccess {string} step_address 步骤详细地址
    */
   async getActivityDetail(params) {
-    const json_res = JSON.parse(JSON.stringify(constant.API_RESULT_MODEL));
-    json_res.msg.prompt = '查询成功';
-    json_res.obj.activity_id = "1111";
-    json_res.obj.activity_title = "这是一次活动";
-    json_res.obj.activity_intro = "这是一次活动的简介";
-    json_res.obj.start_time = "2018-08-22 12:00:00";
-    json_res.obj.end_time = "2018-08-24 12:00:00";
-    json_res.obj.user_id = "123123";
-    json_res.obj.real_name = "鲁冰";
-    json_res.obj.user_name = "Robin";
-    json_res.obj.user_intro = "这是Robin的用户简介";
-    json_res.obj.avatar_url = "https://source.unsplash.com/";
-    json_res.obj.experience = 12000;
-    json_res.obj.activity_step_list = [
-      { step_name: "第一步", start_time: "2018-08-22 12:00:00", end_time: "2018-08-23 12:00:00", step_detail: "这是具体的步骤简介", step_address: "这是步骤的详细地址" },
-      { step_name: "第二步", start_time: "2018-08-22 12:00:00", end_time: "2018-08-23 12:00:00", step_detail: "这是具体的步骤简介", step_address: "这是步骤的详细地址" },
-      { step_name: "第三步", start_time: "2018-08-22 12:00:00", end_time: "2018-08-23 12:00:00", step_detail: "这是具体的步骤简介", step_address: "这是步骤的详细地址" }
-    ];
-    return json_res;
+    let result_obj = {};
+    let send_json = {};
+    const { ctx } = this;
+    const { activity_id } = params;
+    const search_activity_obj = {
+      activity_id: activity_id,
+      delete_status: 0
+    };
+    const sql_asctivity_option = {
+      where: search_activity_obj,
+      attributes: ['activity_id', 'activity_title', 'activity_intro', 'start_time', 'end_time', 'user_id', 'real_name', 'user_name', 'user_intro', 'avatar_url', 'experience']
+    };
+    const search_step_obj = {
+      activity_id: activity_id,
+      delete_status: 0
+    };
+    const sql_step_option = {
+      where: search_step_obj,
+      attributes: ['step_name', 'start_time', 'end_time', 'step_detail', 'step_address'],
+      order: [['step_order']]
+    };
+    const search_activity_detail = ctx.model.ViActivityInfo.findOne(sql_asctivity_option);
+    const search_step_list = ctx.model.JhwActivityStep.findAll(sql_step_option);
+    const promise_result = await Promise.all([search_activity_detail, search_step_list]);
+
+    if(!search_activity_detail) {
+      send_json = ctx.helper.getApiResult(-1, "无此活动");
+      return send_json;
+    }
+    result_obj = {
+      activity_id: promise_result[0].activity_id,
+      activity_title: promise_result[0].activity_title,
+      activity_intro: promise_result[0].activity_intro,
+      start_time: promise_result[0].start_time,
+      end_time: promise_result[0].end_time,
+      user_id: promise_result[0].user_id,
+      real_name: promise_result[0].real_name,
+      user_name: promise_result[0].user_name,
+      user_intro: promise_result[0].user_intro,
+      avatar_url: promise_result[0].avatar_url,
+      experience: promise_result[0].experience,
+      activity_step_list: promise_result[1]
+    };
+    send_json = ctx.helper.getApiResult(0, "查询成功", result_obj);
+    return send_json;
+    
   }
 
   /**

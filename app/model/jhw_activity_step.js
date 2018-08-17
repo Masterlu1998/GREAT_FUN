@@ -7,11 +7,12 @@ module.exports = app => {
     step_id: {
       type: DataTypes.INTEGER(100),
       allowNull: false,
-      primaryKey: true
+      primaryKey: true,
+      autoIncrement: true
     },
     step_order: {
-      type: DataTypes.STRING(100),
-      allowNull: true
+      type: DataTypes.INTEGER(100),
+      allowNull: false
     },
     step_name: {
       type: DataTypes.STRING(200),
@@ -51,7 +52,7 @@ module.exports = app => {
 
   Model.associate = function() {
 
-  }
+  };
 
   return Model;
 };
