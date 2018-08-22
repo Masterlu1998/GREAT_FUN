@@ -10,6 +10,7 @@
     "egg-view-ejs": "^2.0.0",
     "moment": "^2.22.2",
     "mysql2": "^1.5.3",
+    "node-uuid": "^1.4.8",
     "underscore": "^1.9.1"
   },
   "devDependencies": {
