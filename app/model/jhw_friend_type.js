@@ -21,6 +21,10 @@ module.exports = app => {
     delete_status: {
       type: DataTypes.INTEGER(100),
       allowNull: false
+    },
+    type_status: {
+      type: DataTypes.INTEGER(100),
+      allowNull: false
     }
   }, {
     tableName: 'jhw_friend_type',
