@@ -55,20 +55,20 @@ class CommonService extends Service {
 
 
    /**
-    * @api {post} /front/api/common/userLogin userLogin-用户登录
+    * @api {post} /front/api/common/userLogin userLogin——用户登录
     * @apiName userLogin
     * @apiGroup Common
     * @apiVersion 0.1.0
     * 
     * 
-    * @apiParam {string} email_address(*)
-    * @apiParam {string} user_name(*)
-    * @apiParam {string} telephone(*)(仍选其一用于登录)
-    * @apiParam {string} user_pwd
+    * @apiParam {string} email_address 邮箱地址(*) 
+    * @apiParam {string} user_name 用户名(*) 
+    * @apiParam {string} telephone 手机号(*)(仍选其一用于登录)
+    * @apiParam {string} user_pwd 用户密码
     * 
     * 
-    * @apiSuccess {string} user_id
-    * @apiSuccess {string} user_name
+    * @apiSuccess {string} user_id 用户id
+    * @apiSuccess {string} user_name 用户名
     */
   async userLogin(params) {
     let result_obj = {};
