@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>聚·好玩o(≧ω≦)o</title>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="https://cdn.bootcss.com/Swiper/4.3.0/css/swiper.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+
+    <link rel="stylesheet" href="/public/assets/css/project.css">
+    <style>
+
+        .gft-banner {
+            display: block;
+            width: 70%;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 10px;
+        }
+        .gft-banner-bac{
+            display: block;
+            position: absolute;
+            z-index: -99;
+            height: 70%;
+            width: 100%;
+            background: -webkit-linear-gradient(180deg, #718FE3, #A8A1FF); /* Safari 5.1 - 6.0 */
+            background: -o-linear-gradient(180deg, #718FE3, #A8A1FF); /* Opera 11.1 - 12.0 */
+            background: -moz-linear-gradient(180deg, #718FE3, #A8A1FF); /* Firefox 3.6 - 15 */
+            background: linear-gradient(180deg, #718FE3, #A8A1FF); /* 标准的语法 */
+            transform:skewY(4deg);
+        }
+        .gft-banner-container{
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 20px 0;
+        }
+
+    </style>
+</head>
+<body>
+
+
+<div id="vue-list">
+    <!--导航条-->
+    <nav class="navbar navbar-fixed-top gf-nav-navbar-custom gf-back-white gf-shadow-theme-color">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand gf-nav-logo-container" href="#">
+                    <img alt="logo" src="/public/assets/img/logo/logo_small.png" class="gf-nav-logo">
+                </a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">主页<span class="sr-only">(current)</span></a></li>
+                    <li><a href="#">发现</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">地区<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Action</a></li>
+                            <li><a href="#">Another action</a></li>
+                            <li><a href="#">Something else here</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">Separated link</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">One more separated link</a></li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#">发起活动</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">用户<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">个人中心</a></li>
+                            <li role="separator" class="divider" style="margin: 8px 4px;"></li>
+                            <li><a href="#">切换账户</a></li>
+                            <li><a href="#">注销</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+
+
+    <div style="padding-bottom: 50px"></div>
+
+    <div class="gft-banner-bac">
+    </div>
+    <!--<div class="gft-banner-container">-->
+        <!--<img src="../assets/img/banner_default.jpeg" style="width: 33%; display: inline-block">-->
+        <!--<img src="../assets/img/banner_default.jpeg" style="width: 33%; display: inline-block">-->
+        <!--<img src="../assets/img/banner_default.jpeg" style="width: 33%; display: inline-block">-->
+    <!--</div>-->
+
+
+    <div class="gft-banner-container">
+        <div class="swiper-container">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide"><img src="/public/assets/img/banner_default.jpeg" class="gft-banner gf-shadow-theme-color"></div>
+                <div class="swiper-slide"><img src="/public/assets/img/banner_default.jpeg" class="gft-banner gf-shadow-theme-color"></div>
+                <div class="swiper-slide"><img src="/public/assets/img/banner_default.jpeg" class="gft-banner gf-shadow-theme-color"></div>
+            </div>
+    </div>
+    </div>
+
+    <el-row>
+        <el-button>默认按钮</el-button>
+        <el-button type="primary">主要按钮</el-button>
+        <el-button type="success">成功按钮</el-button>
+        <el-button type="info">信息按钮</el-button>
+        <el-button type="warning">警告按钮</el-button>
+        <el-button type="danger">危险按钮</el-button>
+    </el-row>
+</div>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.bootcss.com/Swiper/4.3.0/js/swiper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script type="text/javascript">
+
+    var mySwiper = new Swiper('.swiper-container', {
+        direction: 'horizontal',
+        loop: true,
+        setWrapperSize: true,
+
+        // 如果需要分页器
+        pagination: {
+            el: '.swiper-pagination',
+        },
+
+        // 如果需要前进后退按钮
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+
+        // 如果需要滚动条
+        scrollbar: {
+            el: '.swiper-scrollbar',
+        },
+        effect : 'coverflow',
+        slidesPerView: 1,
+        centeredSlides: true,
+        coverflowEffect: {
+            rotate: 0,
+            stretch: 120,
+            depth: 60,
+            modifier: 2,
+            slideShadows : false
+        },
+
+    });
+        var vm=new Vue({
+            el: '#vue-list',
+            delimiters: ['${', '}'],
+            data: {
+
+            },
+            method:{
+
+            },
+            created:function () {
+
+            },
+        });
+</script>
+</body>
+</html>

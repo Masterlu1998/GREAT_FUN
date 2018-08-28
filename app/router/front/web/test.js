@@ -3,5 +3,5 @@ module.exports = app => {
 
   //前端渲染测试路由
   router.get('/front', controller.front.web.frontTest.test);
-
+  router.get('/main', controller.front.web.frontTest.main);
 };

@@ -1,0 +1,88 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+
+/*项目通用*/
+
+body {
+    background-color: rgba(232, 237, 244, .60);
+}
+
+
+input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
+    color: #dcdfe6;
+}
+input:-moz-placeholder, textarea:-moz-placeholder {
+    color:#dcdfe6;
+}
+input::-moz-placeholder, textarea::-moz-placeholder {
+    color:#dcdfe6;
+}
+input:-ms-input-placeholder, textarea:-ms-input-placeholder {
+    color:#dcdfe6;
+}
+
+.gt-font-white {
+    color: #FFF;
+}
+
+.gf-font-theme-color {
+    color: #718FE3;
+}
+
+.gf-back-theme-color {
+    background-color: #718FE3;
+}
+
+.gf-back-white {
+    background-color: #FFF;
+}
+
+.gf-shadow-theme-color {
+    box-shadow: 0 2px 12px 0 rgba(129, 107, 226, .20);
+}
+
+.gf-font-standard, .gf-nav-navbar-custom li a {
+    font-size: 14px;
+    color: #606266;
+    /*color: red;*/
+}
+
+
+/*导航栏样式*/
+
+.nav > li > a:focus, .nav > li > a:hover, .dropdown-menu > li > a:focus, .dropdown-menu > li > a:hover {
+    background-color: rgb(241, 244, 252);
+}
+
+.navbar-nav > li > .dropdown-menu {
+    margin-top: 2px;
+    border-radius: 5px;
+    border: none;
+}
+
+.dropdown-menu {
+    box-shadow: 0 2px 12px 0 rgba(129, 107, 226, .20);
+}
+
+.navbar-toggle {
+    border-color: #E5E5E5;
+}
+
+.icon-bar {
+    background-color: #E5E5E5;
+}
+
+.gf-nav-navbar-custom {
+    border-radius: 0;
+    border-width: 0 0 1px 0;
+}
+
+.gf-nav-logo-container {
+    padding: 8px;
+}
+
+.gf-nav-logo {
+    width: 34px;
+}
