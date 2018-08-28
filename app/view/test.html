@@ -19,6 +19,7 @@
             action="/back/page/file/upload"
             list-type="picture-card"
             :on-preview="handlePictureCardPreview"
+            :data="upLoadData"
             :on-remove="handleRemove">
         <i class="el-icon-plus"></i>
     </el-upload>
@@ -38,7 +39,10 @@
         delimiters: ['${', '}'],
         data: {
             dialogImageUrl: '',
-            dialogVisible: false
+            dialogVisible: false,
+            upLoadData: {
+                relativePath: "/app/public/upload/activity/acitivityimg"
+            },
         },
         methods: {
             handleRemove(file, fileList) {

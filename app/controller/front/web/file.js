@@ -8,14 +8,16 @@ var mkdirp = require('mkdirp');
 
 class FileController extends Controller {
     async upload() {
-        console.log("this = " + JSON.stringify(this));
+        // console.log("this = " + JSON.stringify(this));
         const root = this.config.appBaseDir;
         const {
             ctx
         } = this;
         const stream = await ctx.getFileStream();
+        console.log(stream);
         const relativePath = stream.fields.relativePath; //获取前端上传的路径
         const fileName = new Date().getTime() + '.' + stream.filename.split('.')[1];
+        console.log(root, relativePath);
         const detailPath = path.join(root, relativePath); //只到文件夹
         //创建文件夹
         mkdirp.sync(detailPath, function (err) {
