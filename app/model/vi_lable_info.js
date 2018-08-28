@@ -3,31 +3,30 @@
 module.exports = app => {
   const DataTypes = app.Sequelize;
 
-  const Model = app.model.define('jhw_friend_type', {
-    friend_type_id: {
+  const Model = app.model.define('vi_lable_info', {
+    lable_bind_id: {
       type: DataTypes.INTEGER(100),
       allowNull: false,
-      primaryKey: true,
-      autoIncrement: true
+      defaultValue: '0'
     },
-    friend_type_name: {
-      type: DataTypes.STRING(100),
+    bind_id: {
+      type: DataTypes.STRING(200),
       allowNull: false
     },
-    user_id: {
-      type: DataTypes.INTEGER(11),
-      allowNull: false
-    },
-    delete_status: {
+    bind_type: {
       type: DataTypes.INTEGER(100),
       allowNull: false
     },
-    type_status: {
+    lable_id: {
       type: DataTypes.INTEGER(100),
+      allowNull: true
+    },
+    lable_name: {
+      type: DataTypes.STRING(200),
       allowNull: false
     }
   }, {
-    tableName: 'jhw_friend_type',
+    tableName: 'vi_lable_info',
     freezeTableName: true,
     timestamps: false,
     underscored: true
@@ -35,7 +34,7 @@ module.exports = app => {
 
   Model.associate = function() {
 
-  };
+  }
 
   return Model;
 };
