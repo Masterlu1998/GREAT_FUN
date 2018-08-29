@@ -62,3 +62,18 @@ exports.getUUID = () => {
     const id = uuid.v1().split('-').join('');
     return id;
 };
+
+
+exports.parseMsg = function(action, payload = {}, metadata = {}) {
+  const meta = Object.assign({}, {
+    timestamp: Date.now(),
+  }, metadata);
+
+  return {
+    meta,
+    data: {
+      action,
+      payload,
+    },
+  };
+};

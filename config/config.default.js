@@ -1,5 +1,7 @@
 'use strict';
 
+const uuid = require('node-uuid');
+
 module.exports = appInfo => {
   const config = exports = {};
   const path = require('path');
@@ -66,6 +68,23 @@ module.exports = appInfo => {
   };
 
   config.appBaseDir= path.join(appInfo.baseDir, 'app');
+
+  exports.io = {
+    init: { }, // passed to engine.io
+    namespace: {
+      '/': {
+        connectionMiddleware: [ 'auth' ]
+      },
+    },
+    redis: {
+      host: '127.0.0.1',
+      port: 6379
+    },
+    generateId: (request) => {
+      // Something like UUID.
+      return uuid.v1().split('-').join('');
+    },
+  };
 
   return config;
 };
