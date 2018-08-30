@@ -3,7 +3,8 @@ module.exports = app => {
     async ping() {
       const message = this.ctx.args[0];
       console.log(this.ctx.args[0]);
-      await this.ctx.server.sockets.emit('chat', message);
+      const {targetId, msg} = message;
+      await this.ctx.server.sockets.emit(targetId, msg);
     }
   }
   return Controller;

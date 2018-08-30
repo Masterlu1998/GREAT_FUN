@@ -71,7 +71,7 @@
         var socket = io();
         $('form').submit(function () {
             var message = {
-                targetId: '456456',
+                targetId: '123123',
                 room: '123456',
                 msg: $('#m').val()
             }
@@ -79,7 +79,7 @@
             $('#m').val('');
             return false;
         });
-        socket.on('123123', function (msg) {
+        socket.on('456456', function (msg) {
             $('#messages').append($('<li>').text(msg));
         });
     });

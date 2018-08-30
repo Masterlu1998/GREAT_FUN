@@ -14,7 +14,9 @@ module.exports = app => {
   require('./router/front/api/index')(app);
 
 
-  router.get('/', controller.front.web.home.chat);
+  router.get('/chat', controller.front.web.home.chat);
+  router.get('/chat2', controller.front.web.home.chat2);
+
 
   // socket.io
   io.route('chat', io.controller.chat.ping);
