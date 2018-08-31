@@ -3,18 +3,18 @@
 module.exports = app => {
   const DataTypes = app.Sequelize;
 
-  const Model = app.model.define('jhw_lable', {
-    lable_id: {
+  const Model = app.model.define('jhw_label', {
+    label_id: {
       type: DataTypes.INTEGER(100),
       allowNull: false,
       primaryKey: true,
       autoIncrement: true
     },
-    lable_name: {
+    label_name: {
       type: DataTypes.STRING(200),
       allowNull: false
     },
-    lable_type: {
+    label_type: {
       type: DataTypes.INTEGER(100),
       allowNull: false
     },
@@ -23,7 +23,7 @@ module.exports = app => {
       allowNull: false
     }
   }, {
-    tableName: 'jhw_lable',
+    tableName: 'jhw_label',
     freezeTableName: true,
     timestamps: false,
     underscored: true

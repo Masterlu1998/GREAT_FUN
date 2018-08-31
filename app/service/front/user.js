@@ -36,17 +36,17 @@ class UserService extends Service {
       where: search_user_obj,
       attributes: ['user_name', 'sex', 'address', 'telephone', 'email_address']
     };
-    const search_lable_obj = {
+    const search_label_obj = {
       bind_id: user_id,
       bind_type: 2
     };
-    const sql_lable_option = {
-      where: search_lable_obj,
-      attributes: ['lable_id', 'lable_name']
+    const sql_label_option = {
+      where: search_label_obj,
+      attributes: ['label_id', 'label_name']
     };
 
     const user_detail_sequelize = await ctx.model.JhwUser.findOne(sql_user_option);
-    const label_list_sequelize = await ctx.model.ViLableInfo.findAll(sql_lable_option);
+    const label_list_sequelize = await ctx.model.VilabelInfo.findAll(sql_label_option);
     const promise_result = await Promise.all([user_detail_sequelize, label_list_sequelize]);
     if(user_detail_sequelize.length===0) {
       const send_json = ctx.helper.getApiResult(-1, "用户不存在！");

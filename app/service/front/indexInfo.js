@@ -46,6 +46,7 @@ class IndexInfoService extends Service {
    * @apiGroup IndexInfo
    * @apiVersion 0.1.0
    * 
+   * @apiParam {string} user_id 用户id
    * 
    * @apiSuccess {list} activity_list 首页活动列表 
    * @apiSuccess {string} activity_id 活动id 
@@ -54,14 +55,46 @@ class IndexInfoService extends Service {
    * @apiSuccess {datetime} start_time 活动开始时间
    * @apiSuccess {datetime} end_time 活动结束时间
    */
-  async getIndexActivityInfo() {
-    const json_res = JSON.parse(JSON.stringify(constant.API_RESULT_MODEL));
-    json_res.msg.prompt = '查询成功';
-    json_res.obj.activity_list = [
-      { activity_id: 1, activity_title: "越国朝圣", "activity_intro": "这是一次越国吃饭之旅！", start_time: "2018-08-12", end_time: "2018-08-20" },
-      { activity_id: 2, activity_title: "越国朝圣", "activity_intro": "这是一次越国吃饭之旅！", start_time: "2018-08-12", end_time: "2018-08-20" }
-    ];
-    return json_res;
+  async getIndexActivityInfo(params) {
+    let result_obj = {};
+    let send_json = {};
+    const { ctx } = this;
+    const { user_id } = params;
+    const user_label_search_obj = {
+      bind_id: user_id,
+      bind_type: 2
+    };
+    const user_label_sql_option = {
+      where: user_label_search_obj,
+      attributes: ['label_id']
+    };
+    const user_label_list_result = await ctx.model.ViLabelInfo.findAll(user_label_sql_option);
+    const user_label_list = underscore.pluck(user_label_list_result, 'label_id');
+    const activity_label_search_obj = {
+      label_id: user_label_list,
+      bind_type: 1
+    };
+    const activity_label_sql_option = {
+      where: activity_label_search_obj,
+      attributes: ['bind_id'],
+    };
+    const match_activity_id_list_result = await ctx.model.ViLabelInfo.findAll(activity_label_sql_option);
+    const match_activity_id_list = underscore.pluck(match_activity_id_list_result, 'bind_id');
+    const activity_search_obj = {
+      activity_id: match_activity_id_list,
+      activity_status: 1,
+    };
+    const activity_sql_option = {
+      where: activity_search_obj,
+      attributes: ['activity_id', 'activity_title', 'activity_intro', [sequelize.fn("DATE_FORMAT", sequelize.col('start_time'), '%Y-%m-%d %T') ,'start_time'], [sequelize.fn("DATE_FORMAT", sequelize.col('end_time'), '%Y-%m-%d %T') ,'end_time']],
+      limit: 5
+    };
+    const activity_list = await ctx.model.JhwActivity.findAll(activity_sql_option);
+    result_obj = {
+      activity_list: activity_list
+    };
+    send_json = ctx.helper.getApiResult(0, '查询成功', result_obj);
+    return send_json;
   }
 
   /**
@@ -70,6 +103,7 @@ class IndexInfoService extends Service {
    * @apiGroup IndexInfo
    * @apiVersion 0.1.0
    * 
+   * @apiParam {string} user_id 用户id   
    * 
    * @apiSuccess {list} user_list 首页知名博主列表 
    * @apiSuccess {string} user_id 博主id 
@@ -78,14 +112,47 @@ class IndexInfoService extends Service {
    * @apiSuccess {string} avatar_url 发起者用户头像
    * 
    */
-  async getIndexUserInfo() {
-    const json_res = JSON.parse(JSON.stringify(constant.API_RESULT_MODEL));
-    json_res.msg.prompt = '查询成功';
-    json_res.obj.user_list = [
-      { user_id: 1, user_name: "王泽天", user_intro: "技术大佬，喜欢旅行", avatar_url: "https://source.unsplash.com/"},
-      { user_id: 1, user_name: "李星煜", user_intro: "深度二次元玩家，B站守护者", avatar_url: "https://source.unsplash.com/" }
-    ];
-    return json_res;
+  async getIndexUserInfo(params) {
+    let result_obj = {};
+    let send_json = {};
+    const { ctx } = this;
+    const { user_id } = params;
+    const user_label_search_obj = {
+      bind_id: user_id,
+      bind_type: 2
+    };
+    const user_label_sql_option = {
+      where: user_label_search_obj,
+      attributes: ['label_id']
+    };
+    const user_label_list_result = await ctx.model.ViLabelInfo.findAll(user_label_sql_option);
+    const user_label_list = underscore.pluck(user_label_list_result, 'label_id');
+    const famous_label_search_obj = {
+      label_id: user_label_list,
+      bind_id: { $ne: user_id },
+      bind_type: 2,
+    };
+    const famous_label_sql_option = {
+      where: famous_label_search_obj,
+      attributes: ['bind_id'],
+    };
+    const match_famous_id_list_result = await ctx.model.ViLabelInfo.findAll(famous_label_sql_option);
+    const match_famous_id_list = underscore.pluck(match_famous_id_list_result, 'bind_id');
+    const famous_search_obj = {
+      user_id: match_famous_id_list,
+      delete_status: 0,
+    };
+    const famous_sql_option = {
+      where: famous_search_obj,
+      attributes: ['user_id', 'user_name', 'user_intro', 'avatar_url'],
+      limit: 5
+    };
+    const famous_list = await ctx.model.JhwUser.findAll(famous_sql_option);
+    result_obj = {
+      user_list: famous_list
+    };
+    send_json = ctx.helper.getApiResult(0, '查询成功', result_obj);
+    return send_json;
   }
 }
 

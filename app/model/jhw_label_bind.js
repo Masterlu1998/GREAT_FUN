@@ -3,11 +3,12 @@
 module.exports = app => {
   const DataTypes = app.Sequelize;
 
-  const Model = app.model.define('vi_lable_info', {
-    lable_bind_id: {
+  const Model = app.model.define('jhw_label_bind', {
+    label_bind_id: {
       type: DataTypes.INTEGER(100),
       allowNull: false,
-      defaultValue: '0'
+      primaryKey: true,
+      autoIncrement: true
     },
     bind_id: {
       type: DataTypes.STRING(200),
@@ -17,16 +18,16 @@ module.exports = app => {
       type: DataTypes.INTEGER(100),
       allowNull: false
     },
-    lable_id: {
+    label_id: {
       type: DataTypes.INTEGER(100),
       allowNull: true
     },
-    lable_name: {
-      type: DataTypes.STRING(200),
+    delete_status: {
+      type: DataTypes.INTEGER(100),
       allowNull: false
     }
   }, {
-    tableName: 'vi_lable_info',
+    tableName: 'jhw_label_bind',
     freezeTableName: true,
     timestamps: false,
     underscored: true
@@ -34,7 +35,7 @@ module.exports = app => {
 
   Model.associate = function() {
 
-  }
+  };
 
   return Model;
 };
