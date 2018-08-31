@@ -44,6 +44,10 @@ module.exports = app => {
     images_url: {
       type: DataTypes.STRING(200),
       allowNull: false
+    },
+    order_by: {
+      type: DataTypes.INTEGER(100),
+      allowNull: false      
     }
   }, {
     tableName: 'jhw_images',

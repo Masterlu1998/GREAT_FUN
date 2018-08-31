@@ -20,13 +20,24 @@ class IndexInfoService extends Service {
    * @apiSuccess {string} images_url 图片跳转路由
    */
   async getIndexBannerInfo() {
-    const json_res = JSON.parse(JSON.stringify(constant.API_RESULT_MODEL));
-    json_res.msg.prompt = '查询成功';
-    json_res.obj.banner_list = [
-      { images_path: "https://source.unsplash.com/", images_url: "www.google.com" },
-      { images_path: "https://source.unsplash.com/", images_url: "www.bing.com" }
-    ];
-    return json_res;
+    let result_obj = {};
+    let send_json = {};
+    const { ctx } = this;
+    const search_obj = {
+      delete_status: 0,
+      bind_type: 1,
+    };
+    const sql_option = {
+      where: search_obj,
+      order: [['order_by']],
+      attributes: ['images_path', 'images_url']
+    };
+    const img_list = await ctx.model.JhwImages.findAll(sql_option);
+    result_obj = {
+      banner_list: img_list
+    };
+    send_json = ctx.helper.getApiResult(0, "查询成功", result_obj);
+    return send_json;
   }
 
   /**
