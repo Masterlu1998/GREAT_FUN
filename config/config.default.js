@@ -76,10 +76,10 @@ module.exports = appInfo => {
         connectionMiddleware: [ 'auth' ]
       },
     },
-    redis: {
-      host: '127.0.0.1',
-      port: 6379
-    },
+    // redis: {
+    //   host: '127.0.0.1',
+    //   port: 6379
+    // },
     generateId: (request) => {
       // Something like UUID.
       return uuid.v1().split('-').join('');
