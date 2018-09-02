@@ -21,7 +21,7 @@ class UserService extends Service {
    * @apiSuccess {string} address 所在地
    * @apiSuccess {string} telephone 手机号 
    * @apiSuccess {string} email_address 邮箱
-   * @apiSuccess {array} label_list 标签名列表
+   * @apiSuccess {array} lable_list 标签名列表
    */
 
   async getUserDeatail(params){
@@ -36,18 +36,18 @@ class UserService extends Service {
       where: search_user_obj,
       attributes: ['user_name', 'sex', 'address', 'telephone', 'email_address']
     };
-    const search_label_obj = {
+    const search_lable_obj = {
       bind_id: user_id,
       bind_type: 2
     };
-    const sql_label_option = {
-      where: search_label_obj,
-      attributes: ['label_id', 'label_name']
+    const sql_lable_option = {
+      where: search_lable_obj,
+      attributes: ['lable_id', 'lable_name']
     };
 
     const user_detail_sequelize = await ctx.model.JhwUser.findOne(sql_user_option);
-    const label_list_sequelize = await ctx.model.VilabelInfo.findAll(sql_label_option);
-    const promise_result = await Promise.all([user_detail_sequelize, label_list_sequelize]);
+    const lable_list_sequelize = await ctx.model.VilableInfo.findAll(sql_lable_option);
+    const promise_result = await Promise.all([user_detail_sequelize, lable_list_sequelize]);
     if(user_detail_sequelize.length===0) {
       const send_json = ctx.helper.getApiResult(-1, "用户不存在！");
       return send_json;
@@ -59,7 +59,7 @@ class UserService extends Service {
       address: promise_result[0].address,
       telephone: promise_result[0].telephone,
       email_address: promise_result[0].email_address,
-      label_list: promise_result[1]
+      lable_list: promise_result[1]
     };
     const send_json = ctx.helper.getApiResult(0, "查询成功", result_obj);
     return send_json;
