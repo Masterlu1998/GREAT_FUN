@@ -17,6 +17,8 @@ module.exports = app => {
   router.get('/chat', controller.front.web.home.chat);
   router.get('/chat2', controller.front.web.home.chat2);
 
+  //发现页面
+  router.get('/discovery', controller.front.web.home.discovery);
 
   // socket.io
   io.route('chat', io.controller.chat.ping);

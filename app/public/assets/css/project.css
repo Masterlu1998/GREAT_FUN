@@ -1,4 +1,4 @@
-*{
+* {
     padding: 0;
     margin: 0;
 }
@@ -9,28 +9,110 @@ body {
     background-color: rgba(232, 237, 244, .60);
 }
 
-
 input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
     color: #dcdfe6;
 }
+
 input:-moz-placeholder, textarea:-moz-placeholder {
-    color:#dcdfe6;
+    color: #dcdfe6;
 }
+
 input::-moz-placeholder, textarea::-moz-placeholder {
-    color:#dcdfe6;
+    color: #dcdfe6;
 }
+
 input:-ms-input-placeholder, textarea:-ms-input-placeholder {
-    color:#dcdfe6;
+    color: #dcdfe6;
 }
 
 .gt-font-white {
     color: #FFF;
 }
 
+/*覆盖bootstrap部分样式*/
+label {
+    margin-bottom: 0;
+    font-weight: normal;
+}
+
+/*容器样式*/
+/*最外层父容器*/
+.gf-grandfather-container {
+    padding: 20px 40px;
+}
+
+/*圆角矩形样式(带阴影)*/
+.gf-standard-container {
+    padding: 30px 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 12px 0 rgba(129, 107, 226, .20);
+    border-radius: 8px;
+}
+/*单行文本省略*/
+.gf-content-limited-single {
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/*多行文本省略*/
+.gf-content-limited {
+    width: 100%;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+/*字体*/
+/*主题字体颜色*/
 .gf-font-theme-color {
     color: #718FE3;
 }
+.gf-font-light{
+    color: #666666;
+}
 
+/*标题字体*/
+.gf-font-title {
+    font-size: 18px;
+    color: #333333;
+}
+
+/*副标题字体*/
+.gf-font-subtitle {
+    font-size: 16px;
+    color: #333333;
+}
+
+/*次要字体*/
+.gf-font-minor{
+    font-size: 14px;
+    color: #666666;
+}
+/*20px的字体*/
+.gf-font-xl{
+    font-size: 20px;
+}
+/*18px字体*/
+.gf-font-l{
+    font-size: 18px;
+}
+/*16px字体*/
+.gf-font-m{
+    font-size: 16px;
+}
+/*14px字体*/
+.gf-font-s{
+    font-size: 14px;
+}
+/*12px字体*/
+.gf-font-xs{
+    font-size: 12px;
+}
+
+/*主题背景颜色*/
 .gf-back-theme-color {
     background-color: #718FE3;
 }
@@ -39,16 +121,16 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
     background-color: #FFF;
 }
 
+/*主题阴影样式*/
 .gf-shadow-theme-color {
     box-shadow: 0 2px 12px 0 rgba(129, 107, 226, .20);
 }
 
 .gf-font-standard, .gf-nav-navbar-custom li a {
     font-size: 14px;
-    color: #606266;
+    color: #666666;
     /*color: red;*/
 }
-
 
 /*导航栏样式*/
 
@@ -85,4 +167,54 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
 
 .gf-nav-logo {
     width: 34px;
+}
+
+/*列表样式*/
+.gft-activity-list-item{
+    padding:15px 0;
+    cursor:pointer;
+}
+.gft-activity-list-item:hover{
+    background: #F5F7FA;
+    border-radius: 4px;
+}
+
+.gf-img-cover {
+    height: 112px;
+    margin-left: 20px;
+}
+
+.gf-list-subtitle {
+    margin-bottom: 30px;
+    height: 42px;
+}
+.gf-number-container {
+    width: 90px;
+    padding-top: 15px;
+    margin-right: 20px;
+    background: #82B1F3;
+    color: #fff;
+    border-radius: 8px;
+    text-align: center
+}
+
+/*带头像的用户信息*/
+.gf-user-container{
+    margin-top: 30px;
+}
+.gf-user-right-container{
+    margin-left: 30px;
+}
+.gf-user-head-name{
+    font-size: 18px;
+    color: #333;
+}
+.gf-img-user-head-photo{
+    width: 80px;
+    height: 80px;
+}
+
+/*步骤列表*/
+.gf-step-list-container{
+    margin-top: 30px;
 }

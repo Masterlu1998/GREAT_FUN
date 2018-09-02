@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>聚·好玩o(≧ω≦)o</title>
+    <link rel="shortcut icon" href="/public/assets/img/logo/greatfun_favicon.ico" type="image/x-icon"/>
+    <link rel="icon" type="image/png" href="/public/assets/img/logo/logo_small.png" sizes="16x16">
+    <link rel="icon" type="image/png" href="/public/assets/img/logo/logo_small.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/public/assets/img/logo/logo_small.png" sizes="96x96">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="https://cdn.bootcss.com/Swiper/4.3.0/css/swiper.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+
+    <link rel="stylesheet" href="/public/assets/css/project.css">
+    <style>
+        .gft-banner-bac{
+            display: block;
+            position: absolute;
+            z-index: -99;
+            height: 70%;
+            width: 100%;
+            background: -webkit-linear-gradient(180deg, #718FE3, #A8A1FF); /* Safari 5.1 - 6.0 */
+            background: -o-linear-gradient(180deg, #718FE3, #A8A1FF); /* Opera 11.1 - 12.0 */
+            background: -moz-linear-gradient(180deg, #718FE3, #A8A1FF); /* Firefox 3.6 - 15 */
+            background: linear-gradient(180deg, #718FE3, #A8A1FF); /* 标准的语法 */
+            transform:skewY(4deg);
+        }
+
+        .gtf-discovery-list-container{
+            margin: 40px 0;
+        }
+
+        .gft-activity-list{
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+<div id="vue-list">
+    <!--导航条-->
+    <nav class="navbar navbar-fixed-top gf-nav-navbar-custom gf-back-white gf-shadow-theme-color">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand gf-nav-logo-container" href="#">
+                    <img alt="logo" src="/public/assets/img/logo/logo_small.png" class="gf-nav-logo">
+                </a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">主页<span class="sr-only">(current)</span></a></li>
+                    <li><a href="#">发现</a></li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#">发起活动</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">用户<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">个人中心</a></li>
+                            <li role="separator" class="divider" style="margin: 8px 4px;"></li>
+                            <li><a href="#">切换账户</a></li>
+                            <li><a href="#">注销</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+    <div style="padding-top: 50px"></div>
+    <!--背景带-->
+    <div class="gft-banner-bac"></div>
+    <!--主体部分-->
+    <div class="gf-grandfather-container">
+        <div class="gf-standard-container">
+            <div style="margin-bottom: -22px">
+                <el-form  :model="region">
+                    <el-form-item label="地区">
+                        <el-row :gutter="20">
+                            <el-col :span="4">
+                                <el-select v-model="region.province" placeholder="省">
+                                    <el-option label="区域一" value="shanghai"></el-option>
+                                    <el-option label="区域二" value="beijing"></el-option>
+                                </el-select>
+                            </el-col>
+                            <el-col :span="4">
+                                <el-select v-model="region.city" placeholder="市">
+                                    <el-option label="区域一" value="shanghai"></el-option>
+                                    <el-option label="区域二" value="beijing"></el-option>
+                                </el-select>
+                            </el-col>
+                            <el-col :span="4">
+                                <el-select v-model="region.county" placeholder="区/县">
+                                    <el-option label="区域一" value="shanghai"></el-option>
+                                    <el-option label="区域二" value="beijing"></el-option>
+                                </el-select>
+                            </el-col>
+                            <el-col :span="4">
+                                <el-select v-model="region.block" placeholder="街道/乡镇">
+                                    <el-option label="区域一" value="shanghai"></el-option>
+                                    <el-option label="区域二" value="beijing"></el-option>
+                                </el-select>
+                            </el-col>
+                        </el-row>
+                    </el-form-item>
+                    <el-form-item label="时间">
+                        <el-row :gutter="20">
+                            <el-col :span="20">
+                                <el-date-picker
+                                        v-model="date"
+                                        type="datetimerange"
+                                        start-placeholder="开始日期"
+                                        end-placeholder="结束日期"
+                                        :default-time="['12:00:00']">
+                                </el-date-picker>
+                            </el-col>
+                        </el-row>
+                    </el-form-item>
+                    <el-form-item label="类别">
+                        <el-row :gutter="20">
+                            <el-col :span="20">
+                                <el-checkbox-group v-model="activityType">
+                                    <el-checkbox label="漫展" name="type"></el-checkbox>
+                                    <el-checkbox label="演唱会" name="type"></el-checkbox>
+                                    <el-checkbox label="观赏" name="type"></el-checkbox>
+                                    <el-checkbox label="交友" name="type"></el-checkbox>
+                                </el-checkbox-group>
+                            </el-col>
+                        </el-row>
+                    </el-form-item>
+                    <el-form-item label="价格">
+                        <el-row :gutter="20">
+                            <el-col :span="20">
+                                <el-checkbox-group v-model="activityPrice">
+                                    <el-checkbox label="100以下" name="type"></el-checkbox>
+                                    <el-checkbox label="100~1k" name="type"></el-checkbox>
+                                    <el-checkbox label="1k~5k" name="type"></el-checkbox>
+                                    <el-checkbox label="5k~3w" name="type"></el-checkbox>
+                                    <el-checkbox label="3w~10w" name="type"></el-checkbox>
+                                    <el-checkbox label="10w以上" name="type"></el-checkbox>
+                                </el-checkbox-group>
+                            </el-col>
+                        </el-row>
+                    </el-form-item>
+                </el-form>
+            </div>
+        </div>
+        <div class="gtf-discovery-list-container">
+            <el-row :gutter="20">
+                <el-col :span="16">
+                    <div class="gf-standard-container">
+                        <div class="gf-font-title">活动列表</div>
+                        <div class="gft-activity-list">
+                            <div v-for="activityItem in activityList" class="gft-activity-list-item">
+                                <el-row :gutter="30" type="flex" justify="space-around">
+                                    <img src="/public/assets/img/default.png" class="gf-img-cover">
+                                    <el-col :span="12">
+                                        <div class="gf-list-subtitle gf-content-limited gf-font-subtitle">
+                                            【上海】四月是你的谎言——“公生”与“薰”的钢琴小提琴唯美经典音乐集【上海】四月是你的谎言——“公生”与“薰”的钢琴小提琴唯美经典音乐集
+                                        </div>
+                                        <div class="gf-font-minor">
+                                            2018.08.31 19:30 - 2018.08.31 22:30
+                                        </div>
+                                        <div class="gf-font-minor">
+                                            凯迪拉克·上海音乐厅大厅 - 上海
+                                        </div>
+                                    </el-col>
+                                    <div class="gf-number-container ">
+                                        <div class="gf-font-l">20</div>
+                                        <div class="gf-font-s">加入</div>
+                                        <div class="gf-font-xs" style="padding-top: 10px">
+                                            <span>收藏：</span>
+                                            <span>120</span>
+                                        </div>
+                                    </div>
+                                </el-row>
+                            </div>
+                        </div>
+                    </div>
+                </el-col>
+                <el-col :span="8">
+                    <div class="gf-standard-container">
+                        <div class="gf-font-title gf-content-limited-single">
+                            【上海】四月是你的谎言——“公生”与“薰”的钢琴小提琴唯美经典音乐集【上海】四月是你的谎言
+                        </div>
+                        <div class="gf-user-container">
+                            <el-row type="flex" align="middle">
+                                <img src="/public/assets/img/head_default.png" class="gf-img-user-head-photo">
+                                <div class="gf-user-right-container gf-font-l">
+                                    <div>阿冰</div>
+                                    <div class="gf-font-light">lv.03</div>
+                                </div>
+                            </el-row>
+                        </div>
+                        <div class="gf-step-list-container">
+                            <el-collapse v-model="activeNames" @change="handleChange">
+                                <el-collapse-item title="" name="1">
+                                    <div>与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；</div>
+                                    <div>在界面中一致：所有的元素和结构需保持一致，比如：设计样式、图标和文本、元素的位置等。</div>
+                                </el-collapse-item>
+                            </el-collapse>
+                        </div>
+                    </div>
+                </el-col>
+            </el-row>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.bootcss.com/Swiper/4.3.0/js/swiper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script type="text/javascript">
+    var vm=new Vue({
+        el: '#vue-list',
+        delimiters: ['${', '}'],
+        data: {
+            region: {
+                province: '',
+                city: '',
+                county:'',
+                block:'',
+            },
+            date:'',
+            activityType:[],
+            activityPrice:[],
+            activityList:[0,1,2,3,4,5,6,7]
+        },
+        methods:{
+            onSubmit() {
+                console.log('submit!');
+            }
+        },
+        created:function () {
+
+        },
+    });
+</script>
+</body>
+</html>
