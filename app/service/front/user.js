@@ -46,7 +46,7 @@ class UserService extends Service {
     };
 
     const user_detail_sequelize = await ctx.model.JhwUser.findOne(sql_user_option);
-    const label_list_sequelize = await ctx.model.VilabelInfo.findAll(sql_label_option);
+    const label_list_sequelize = await ctx.model.ViLabelInfo.findAll(sql_label_option);
     const promise_result = await Promise.all([user_detail_sequelize, label_list_sequelize]);
     if(user_detail_sequelize.length===0) {
       const send_json = ctx.helper.getApiResult(-1, "用户不存在！");
@@ -110,7 +110,7 @@ class UserService extends Service {
     };
     const sql_activity_option = {
       where: search_activity_obj,
-      attributes: ['activity_id','activity_title','start_time','end_time','meeting_place'],
+      attributes: ['activity_id','activity_title',[sequelize.fn("DATE_FORMAT", sequelize.col('start_time'), '%Y-%m-%d %T') ,'start_time'],[sequelize.fn("DATE_FORMAT", sequelize.col('end_time'), '%Y-%m-%d %T') ,'end_time'],'meeting_place'],
     };
     if(page_size !== 0) {
       sql_activity_option.limit = page_size;
@@ -233,7 +233,7 @@ class UserService extends Service {
     };
     const sql_activity_option = {
       where: search_activity_obj,
-      attributes: ['activity_id','activity_title','start_time','end_time','meeting_place']
+      attributes: ['activity_id','activity_title',[sequelize.fn("DATE_FORMAT", sequelize.col('start_time'), '%Y-%m-%d %T') ,'start_time'],[sequelize.fn("DATE_FORMAT", sequelize.col('end_time'), '%Y-%m-%d %T') ,'end_time'],'meeting_place']
     };
     if(page_size !== 0) {
       sql_activity_option.limit = page_size;
