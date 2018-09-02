@@ -207,9 +207,9 @@
                         </div>
                         <div class="gf-step-list-container">
                             <el-collapse v-model="activeNames" @change="handleChange">
-                                <el-collapse-item title="" name="1">
-                                    <div>与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；</div>
-                                    <div>在界面中一致：所有的元素和结构需保持一致，比如：设计样式、图标和文本、元素的位置等。</div>
+                                <el-collapse-item title="步骤名字" v-for="(stepItem,index) in stepList" :name="index" :key="index">
+                                    <div class="gf-font-minor">2018.08.31 19:30 - 2018.08.31 22:30</div>
+                                    <div class="gf-font-default">从XXX到虹桥火车站，从XXX到虹桥火车站从XXX到虹桥火车站从XXX到虹桥火车站</div>
                                 </el-collapse-item>
                             </el-collapse>
                         </div>
@@ -240,11 +240,16 @@
             date:'',
             activityType:[],
             activityPrice:[],
-            activityList:[0,1,2,3,4,5,6,7]
+            activityList:[0,1,2,3,4,5,6,7],
+            stepList:[0,1,2,3,4,5,6,7],
+            activeNames:[]
         },
         methods:{
             onSubmit() {
                 console.log('submit!');
+            },
+            handleChange(val) {
+                console.log(val);
             }
         },
         created:function () {
