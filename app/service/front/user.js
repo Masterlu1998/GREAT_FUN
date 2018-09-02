@@ -352,6 +352,8 @@ class UserService extends Service {
    * @apiParam {string} user_id 用户id
    * @apiParam {string} friend_type_id 好友类别id(* 存在表示编辑，不存在表示新增)
    * @apiParam {string} friend_type_name 好友类别名称
+   * @apiParam {string} friend_list
+   * @apiParam {string} friend_id
    */
 
   async postFriendType(params){
