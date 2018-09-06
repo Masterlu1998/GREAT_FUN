@@ -117,6 +117,22 @@ label {
     font-size: 12px;
 }
 
+/*圆角按钮*/
+.gf-btn-standard{
+    width: 200px;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    font-size: 18px;
+    color: #FFF;
+    background: #82B1F3;
+    border-radius: 20px;
+    cursor:pointer;
+}
+.gf-btn-standard:hover{
+    background-color: #72A4EA;
+}
+
 /*主题背景颜色*/
 .gf-back-theme-color {
     background-color: #718FE3;

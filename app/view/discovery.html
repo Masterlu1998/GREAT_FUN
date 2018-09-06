@@ -16,25 +16,22 @@
 
     <link rel="stylesheet" href="/public/assets/css/project.css">
     <style>
-        .gft-banner-bac{
-            display: block;
-            position: absolute;
-            z-index: -99;
-            height: 70%;
-            width: 100%;
-            background: -webkit-linear-gradient(180deg, #718FE3, #A8A1FF); /* Safari 5.1 - 6.0 */
-            background: -o-linear-gradient(180deg, #718FE3, #A8A1FF); /* Opera 11.1 - 12.0 */
-            background: -moz-linear-gradient(180deg, #718FE3, #A8A1FF); /* Firefox 3.6 - 15 */
-            background: linear-gradient(180deg, #718FE3, #A8A1FF); /* 标准的语法 */
-            transform:skewY(4deg);
-        }
-
-        .gtf-discovery-list-container{
+        .gtf-discovery-list-container {
             margin: 40px 0;
         }
 
-        .gft-activity-list{
+        .gft-activity-list {
             margin: 15px 0;
+        }
+
+        .gtf-page-container {
+            display: block;
+            margin: 10px auto;
+            text-align: center;
+        }
+
+        .gft-btn-position {
+            margin: 20px auto;
         }
     </style>
 </head>
@@ -73,7 +70,7 @@
                             <li><a href="#">个人中心</a></li>
                             <li role="separator" class="divider" style="margin: 8px 4px;"></li>
                             <li><a href="#">切换账户</a></li>
-                            <li><a href="#">注销</a></li>
+                            <li><a @click="logOut()">注销</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -87,31 +84,46 @@
     <div class="gf-grandfather-container">
         <div class="gf-standard-container">
             <div style="margin-bottom: -22px">
-                <el-form  :model="region">
+                <el-form :model="region">
                     <el-form-item label="地区">
                         <el-row :gutter="20">
-                            <el-col :span="4">
-                                <el-select v-model="region.province" placeholder="省">
-                                    <el-option label="区域一" value="shanghai"></el-option>
-                                    <el-option label="区域二" value="beijing"></el-option>
+                            <el-col :span="5">
+                                <el-select v-model="region.provinceObj"
+                                           value-key="name"
+                                           :disabled="false"
+                                           placeholder="省"
+                                           @change="afterSelectProvince()">
+                                    <el-option :value="item"
+                                               :label="item.name"
+                                               v-for="(item,index) in default_native_places_list"
+                                               :key="index">
+                                    </el-option>
                                 </el-select>
                             </el-col>
-                            <el-col :span="4">
-                                <el-select v-model="region.city" placeholder="市">
-                                    <el-option label="区域一" value="shanghai"></el-option>
-                                    <el-option label="区域二" value="beijing"></el-option>
+                            <el-col :span="5">
+                                <el-select v-model="region.cityObj"
+                                           value-key="name"
+                                           :disabled="!region.isSelectProvince"
+                                           @change="afterSelectCity()"
+                                           placeholder="城市">
+                                    <el-option v-for="(item,index) in region.provinceObj.children"
+                                               :value="item"
+                                               :label="item.name"
+                                               :key="index">
+                                    </el-option>
                                 </el-select>
                             </el-col>
-                            <el-col :span="4">
-                                <el-select v-model="region.county" placeholder="区/县">
-                                    <el-option label="区域一" value="shanghai"></el-option>
-                                    <el-option label="区域二" value="beijing"></el-option>
-                                </el-select>
-                            </el-col>
-                            <el-col :span="4">
-                                <el-select v-model="region.block" placeholder="街道/乡镇">
-                                    <el-option label="区域一" value="shanghai"></el-option>
-                                    <el-option label="区域二" value="beijing"></el-option>
+                            <el-col :span="5">
+                                <el-select v-model="region.countyObj"
+                                           value-key="name"
+                                           :disabled="!region.isSelectCity"
+                                           @change="afterSelectCounty()"
+                                           placeholder="区/县">
+                                    <el-option v-for="(item,index) in region.cityObj.children"
+                                               :value="item"
+                                               :label="item.name"
+                                               :key="index">
+                                    </el-option>
                                 </el-select>
                             </el-col>
                         </el-row>
@@ -120,7 +132,7 @@
                         <el-row :gutter="20">
                             <el-col :span="20">
                                 <el-date-picker
-                                        v-model="date"
+                                        v-model="activityDate"
                                         type="datetimerange"
                                         start-placeholder="开始日期"
                                         end-placeholder="结束日期"
@@ -155,6 +167,9 @@
                             </el-col>
                         </el-row>
                     </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="onSubmit">筛选</el-button>
+                    </el-form-item>
                 </el-form>
             </div>
         </div>
@@ -164,12 +179,15 @@
                     <div class="gf-standard-container">
                         <div class="gf-font-title">活动列表</div>
                         <div class="gft-activity-list">
-                            <div v-for="activityItem in activityList" class="gft-activity-list-item">
+                            <div v-for="(activityItem,index) in activityList"
+                                 class="gft-activity-list-item"
+                                 @click="showActivityPreview(index)"
+                                 :key="index">
                                 <el-row :gutter="30" type="flex" justify="space-around">
                                     <img src="/public/assets/img/default.png" class="gf-img-cover">
                                     <el-col :span="12">
                                         <div class="gf-list-subtitle gf-content-limited gf-font-subtitle">
-                                            【上海】四月是你的谎言——“公生”与“薰”的钢琴小提琴唯美经典音乐集【上海】四月是你的谎言——“公生”与“薰”的钢琴小提琴唯美经典音乐集
+                                            ${activityItem.activity_title}
                                         </div>
                                         <div class="gf-font-minor">
                                             2018.08.31 19:30 - 2018.08.31 22:30
@@ -189,30 +207,39 @@
                                 </el-row>
                             </div>
                         </div>
+                        <div class="gtf-page-container">
+                            <el-pagination
+                                    layout="prev, pager, next"
+                                    :total="50">
+                            </el-pagination>
+                        </div>
                     </div>
                 </el-col>
                 <el-col :span="8">
                     <div class="gf-standard-container">
                         <div class="gf-font-title gf-content-limited-single">
-                            【上海】四月是你的谎言——“公生”与“薰”的钢琴小提琴唯美经典音乐集【上海】四月是你的谎言
+                            ${activityDetail.activity_title}
                         </div>
                         <div class="gf-user-container">
                             <el-row type="flex" align="middle">
                                 <img src="/public/assets/img/head_default.png" class="gf-img-user-head-photo">
                                 <div class="gf-user-right-container gf-font-l">
-                                    <div>阿冰</div>
+                                    <div>${activityDetail.user_name}</div>
                                     <div class="gf-font-light">lv.03</div>
                                 </div>
                             </el-row>
                         </div>
                         <div class="gf-step-list-container">
                             <el-collapse v-model="activeNames" @change="handleChange">
-                                <el-collapse-item title="步骤名字" v-for="(stepItem,index) in stepList" :name="index" :key="index">
-                                    <div class="gf-font-minor">2018.08.31 19:30 - 2018.08.31 22:30</div>
-                                    <div class="gf-font-default">从XXX到虹桥火车站，从XXX到虹桥火车站从XXX到虹桥火车站从XXX到虹桥火车站</div>
+                                <el-collapse-item :title="stepItem.step_name" v-for="(stepItem,index) in activityDetail.activity_step_list" :name="index"
+                                                  :key="index">
+                                    <div class="gf-font-minor">${stepItem.start_time} - ${stepItem.end_time}</div>
+                                    <div class="gf-font-default">${stepItem.step_detail}</div>
                                 </el-collapse-item>
                             </el-collapse>
                         </div>
+                        <div class="gf-btn-standard gft-btn-position">立即参加</div>
+                        <div class="gf-btn-standard gft-btn-position">收藏</div>
                     </div>
                 </el-col>
             </el-row>
@@ -222,38 +249,189 @@
 
 
 <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
 <script src="https://cdn.bootcss.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
 <script src="https://cdn.bootcss.com/Swiper/4.3.0/js/swiper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script src="/public/common/helper/gf-helper.js"></script>
 <script type="text/javascript">
-    var vm=new Vue({
+    var vm = new Vue({
         el: '#vue-list',
         delimiters: ['${', '}'],
         data: {
+            default_native_places_list:defaultNativePlacesList,//地点列表
             region: {
                 province: '',
                 city: '',
-                county:'',
-                block:'',
+                county: '',
+                provinceObj:{},
+                cityObj:{},
+                countyObj:{},
+                isSelectProvince:false,
+                isSelectCity:false,
+                isSelectCounty:false,
             },
-            date:'',
-            activityType:[],
-            activityPrice:[],
-            activityList:[0,1,2,3,4,5,6,7],
-            stepList:[0,1,2,3,4,5,6,7],
-            activeNames:[]
+            activityDate: '',//活动日期
+            activityType: [],//活动类型
+            activityPrice: [],//活动价格
+            activityList: [],//活动列表
+            activityDetail:{},//活动详情
+            chooseActivityId:'',//选中的活动的ID
+            activeNames: [],//活动名称
         },
-        methods:{
+        methods: {
             onSubmit() {
-                console.log('submit!');
+                var that = this;
+                var obj={
+                    'region':{
+                        'province':that.region.province,
+                        'city':that.region.city,
+                        'county':that.region.county,
+                    },
+                    'activityDate':that.activityDate,
+                    'activityType':that.activityType,
+                    'activityPrice':that.activityPrice,
+
+                };
+                console.log(obj);
             },
             handleChange(val) {
                 console.log(val);
-            }
-        },
-        created:function () {
+            },
+            //获取数据部分
+            getActivityList(obj,callback){
+                var that = this;
+                var url = API_SERVER_URL.GREAT_FUN + '/activity/getActivityList';
+                var args = {
+                    "args": {
+                        "page_size": 0,
+                        "page_index": 1,
+                        "start_time": "",
+                        "end_time": "",
+                        "cost_num_type": 0,
+                        "keywords": "",
+                        "province_code": "",
+                        "city_code": ""
+                    }
+                };
 
+                axios.post(url,args)
+                    .then(function (response) {
+//                        console.log(response);
+                        var res = response.data;
+                        if(res.retcode===0){
+                            callback(res,obj);
+                        }else{
+                            console.log(res.message.prompt);
+                        }
+                    })
+                    .catch(function (error) {
+                        console.error(error);
+                    });
+            },
+
+            getActivityDetail(obj,callback){
+                var that = this;
+                var url = API_SERVER_URL.GREAT_FUN + '/activity/getActivityDetail';
+                var args = {
+                    "args": {
+                        "activity_id": "b0584c3518064ff7b4c9410d7008faee"
+                    }
+
+                };
+                axios.post(url,args)
+                    .then(function (response) {
+                        var res = response.data;
+                        if(res.retcode===0){
+                            callback(res,obj);
+                        }else{
+                            console.log(res.message.prompt);
+                        }
+                    })
+                    .catch(function (error) {
+                        console.error(error);
+                    });
+            },
+
+            getLogInfo(obj,callback){
+                var that=this;
+                var url=API_SERVER_URL.GREAT_FUN +'/common/userLogin';
+                var args = {
+                    "args": {
+                        "email_address": "email_address"
+                    }
+
+                };
+                axios.post(url,args)
+                    .then(function (response) {
+                        var res = response.data;
+                        if(res.retcode===0){
+                            callback(res,obj);
+                        }else{
+                            console.log(res.message.prompt);
+                        }
+                    })
+                    .catch(function (error) {
+                        console.error(error);
+                    });
+            },
+
+            //业务部分
+            logOut(){
+                sessionStorage.setItem('isLogin',false);
+                sessionStorage.removeItem('userObj');
+            },
+
+            logIn(){
+                var that=this;
+                var callback=function (res,obj) {
+                    if(res.retcode=0){
+                        that.$message({
+                            message: '登录成功',
+                            type: 'success'
+                        });
+                    }else{
+                        that.$message.error('登录失败');
+                    }
+                };
+                that.getLogInfo(that,callback);
+            },
+
+            showActivityPreview(index){
+                var that=this;
+                that.chooseActivityId=that.activityList[index].activity_id;
+                that.getActivityDetail(that,function (res,obj) {
+                    obj.activityDetail=res.obj;
+                })
+            },
+
+            //地点选择器
+            afterSelectProvince(){
+                var that =this;
+                var item=that.region;
+                item.isSelectProvince=true;
+                item.province=item.provinceObj.name;
+            },
+            afterSelectCity(){
+                var that =this;
+                var item=that.region;
+                item.isSelectCity=true;
+                item.city=item.cityObj.name;
+            },
+            afterSelectCounty(){
+                var that =this;
+                var item=that.region;
+                item.isSelectCounty=true;
+                item.county=item.countyObj.name;
+                console.log(item);
+            },
+        },
+        created: function () {
+            var that = this;
+            that.getActivityList(that,function (res,obj) {
+                obj.activityList=res.obj.activity_list;
+            });
         },
     });
 </script>
