@@ -73,6 +73,21 @@ module.exports = app => {
       type: DataTypes.INTEGER(100),
       allowNull: false
     },
+    join_user_num: {
+      type: DataTypes.BIGINT,
+      allowNull: false,
+      defaultValue: '0'
+    },
+    user_attention_num: {
+      type: DataTypes.BIGINT,
+      allowNull: false,
+      defaultValue: '0'
+    },
+    images_path: {
+      type: DataTypes.STRING(200),
+      allowNull: false,
+      defaultValue: ''
+    },
     real_name: {
       type: DataTypes.STRING(60),
       allowNull: true

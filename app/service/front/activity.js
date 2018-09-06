@@ -28,6 +28,11 @@ class ActivityService extends Service {
    * @apiSuccess {string} activity_id 活动id
    * @apiSuccess {string} activity_title 活动标题
    * @apiSuccess {string} activity_intro 活动简介
+   * @apiSuccess {datetime} start_time 开始时间
+   * @apiSuccess {datetime} end_time 结束时间
+   * @apiSuccess {string} join_user_num 参加人数
+   * @apiSuccess {string} user_attention_num 关注人数
+   * @apiSuccess {string} images_path 图片路径
    */
   async getActivityList(params) {
     let result_obj = {};
@@ -78,14 +83,14 @@ class ActivityService extends Service {
     }
     const sql_option = {
       where: search_activity_obj,
-      attributes: ['activity_id', 'activity_title', 'activity_intro'],
+      attributes: ['activity_id', 'activity_title', 'activity_intro', [sequelize.fn("DATE_FORMAT", sequelize.col('start_time'), '%Y-%m-%d %T') ,'start_time'], [sequelize.fn("DATE_FORMAT", sequelize.col('end_time'), '%Y-%m-%d %T') ,'end_time'], 'join_user_num', 'user_attention_num', 'images_path'],
       order: [['add_time', 'DESC']]
     };
     if(page_size !== 0) {
       sql_option.limit = page_size;
       sql_option.offset = (page_index - 1) * page_size;
     }
-    const activity_list_sequelize = await ctx.model.JhwActivity.findAndCountAll(sql_option);
+    const activity_list_sequelize = await ctx.model.ViActivityInfo.findAndCountAll(sql_option);
     result_obj = {
       total: activity_list_sequelize.count,
       activity_list: activity_list_sequelize.rows,
