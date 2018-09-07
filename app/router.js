@@ -17,9 +17,8 @@ module.exports = app => {
   router.get('/chat', controller.front.web.home.chat);
   router.get('/chat2', controller.front.web.home.chat2);
 
-  //发现页面
-  router.get('/discovery', controller.front.web.home.discovery);
-
+  //活动页面，与活动相关的路由全放这里，web专门用来初步渲染，api用来接口使用，
+  require('./router/front/web/activity')(app);
   // socket.io
   io.route('chat', io.controller.chat.ping);
 };
