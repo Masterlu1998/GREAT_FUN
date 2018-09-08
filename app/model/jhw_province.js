@@ -1,4 +1,5 @@
 /* indent size: 2 */
+const sequelize = require('sequelize');
 
 module.exports = app => {
   const DataTypes = app.Sequelize;
@@ -32,7 +33,7 @@ module.exports = app => {
 
   Model.associate = function() {
 
-  }
+  };
 
   return Model;
 };
