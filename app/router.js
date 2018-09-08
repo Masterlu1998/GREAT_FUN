@@ -19,6 +19,7 @@ module.exports = app => {
 
   //活动页面，与活动相关的路由全放这里，web专门用来初步渲染，api用来接口使用，
   require('./router/front/web/activity')(app);
+  require('./router/front/web/userInfo')(app);
   // socket.io
   io.route('chat', io.controller.chat.ping);
 };
