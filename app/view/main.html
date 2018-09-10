@@ -13,32 +13,6 @@
     <link rel="stylesheet" href="/public/assets/css/project.css">
     <style>
 
-        .gft-banner {
-            display: block;
-            width: 70%;
-            margin-left: auto;
-            margin-right: auto;
-            border-radius: 10px;
-        }
-        .gft-banner-bac{
-            display: block;
-            position: absolute;
-            z-index: -99;
-            height: 70%;
-            width: 100%;
-            background: -webkit-linear-gradient(180deg, #718FE3, #A8A1FF); /* Safari 5.1 - 6.0 */
-            background: -o-linear-gradient(180deg, #718FE3, #A8A1FF); /* Opera 11.1 - 12.0 */
-            background: -moz-linear-gradient(180deg, #718FE3, #A8A1FF); /* Firefox 3.6 - 15 */
-            background: linear-gradient(180deg, #718FE3, #A8A1FF); /* 标准的语法 */
-            transform:skewY(4deg);
-        }
-        .gft-banner-container{
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-            padding: 20px 0;
-        }
-
     </style>
 </head>
 <body>
@@ -171,19 +145,15 @@
         },
 
     });
-        var vm=new Vue({
-            el: '#vue-list',
-            delimiters: ['${', '}'],
-            data: {
+    var vm = new Vue({
+        el: '#vue-list',
+        delimiters: ['${', '}'],
+        data: {},
+        method: {},
+        created: function () {
 
-            },
-            method:{
-
-            },
-            created:function () {
-
-            },
-        });
+        },
+    });
 </script>
 </body>
 </html>
