@@ -1,306 +1,232 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>聚·好玩o(≧ω≦)o</title>
-    <link rel="shortcut icon" href="/public/assets/img/logo/greatfun_favicon.ico" type="image/x-icon"/>
-    <link rel="icon" type="image/png" href="/public/assets/img/logo/logo_small.png" sizes="16x16">
-    <link rel="icon" type="image/png" href="/public/assets/img/logo/logo_small.png" sizes="32x32">
-    <link rel="icon" type="image/png" href="/public/assets/img/logo/logo_small.png" sizes="96x96">
-    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css"
-          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link href="https://cdn.bootcss.com/Swiper/4.3.0/css/swiper.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
-
-    <link rel="stylesheet" href="/public/assets/css/project.css">
-    <style>
-        .gtf-discovery-list-container {
-            margin: 40px 0;
-        }
-
-        .gft-activity-list {
-            margin: 15px 0;
-        }
-
-        .gtf-page-container {
-            display: block;
-            margin: 10px auto;
-            text-align: center;
-        }
-
-        .gft-btn-position {
-            margin: 20px auto;
-        }
-    </style>
-</head>
-<body>
-<div id="vue-list">
-    <!--导航条-->
-    <nav class="navbar navbar-fixed-top gf-nav-navbar-custom gf-back-white gf-shadow-theme-color">
-        <div class="container-fluid">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand gf-nav-logo-container" href="#">
-                    <img alt="logo" src="/public/assets/img/logo/logo_small.png" class="gf-nav-logo">
-                </a>
-            </div>
-
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">主页<span class="sr-only">(current)</span></a></li>
-                    <li><a href="#">发现</a></li>
-                </ul>
-
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#">发起活动</a></li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                           aria-expanded="false">用户<span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#">个人中心</a></li>
-                            <li role="separator" class="divider" style="margin: 8px 4px;"></li>
-                            <li><a href="#">切换账户</a></li>
-                            <li><a @click="logOut()">注销</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div><!-- /.navbar-collapse -->
-        </div><!-- /.container-fluid -->
-    </nav>
-    <div style="padding-top: 50px"></div>
-    <!--背景带-->
-    <div class="gft-banner-bac"></div>
-    <!--主体部分-->
-    <div class="gf-grandfather-container">
-        <div class="gf-standard-container">
-            <div style="margin-bottom: -22px">
-                <el-form :model="region">
-                    <el-form-item label="地区">
-                        <el-row :gutter="20">
-                            <el-col :span="5">
-                                <el-select v-model="region.provinceObj"
-                                           value-key="name"
-                                           :disabled="false"
-                                           placeholder="省"
-                                           @change="afterSelectProvince()">
-                                    <el-option :value="item"
-                                               :label="item.name"
-                                               v-for="(item,index) in default_native_places_list"
-                                               :key="index">
-                                    </el-option>
-                                </el-select>
-                            </el-col>
-                            <el-col :span="5">
-                                <el-select v-model="region.cityObj"
-                                           value-key="name"
-                                           :disabled="!region.isSelectProvince"
-                                           @change="afterSelectCity()"
-                                           placeholder="城市">
-                                    <el-option v-for="(item,index) in region.provinceObj.children"
-                                               :value="item"
-                                               :label="item.name"
-                                               :key="index">
-                                    </el-option>
-                                </el-select>
-                            </el-col>
-                            <el-col :span="5">
-                                <el-select v-model="region.countyObj"
-                                           value-key="name"
-                                           :disabled="!region.isSelectCity"
-                                           @change="afterSelectCounty()"
-                                           placeholder="区/县">
-                                    <el-option v-for="(item,index) in region.cityObj.children"
-                                               :value="item"
-                                               :label="item.name"
-                                               :key="index">
-                                    </el-option>
-                                </el-select>
-                            </el-col>
-                        </el-row>
-                    </el-form-item>
-                    <el-form-item label="时间">
-                        <el-row :gutter="20">
-                            <el-col :span="20">
-                                <el-date-picker
-                                        v-model="activityDate"
-                                        type="datetimerange"
-                                        start-placeholder="开始日期"
-                                        end-placeholder="结束日期"
-                                        :default-time="['12:00:00']">
-                                </el-date-picker>
-                            </el-col>
-                        </el-row>
-                    </el-form-item>
-                    <el-form-item label="类别">
-                        <el-row :gutter="20">
-                            <el-col :span="20">
-                                <el-checkbox-group v-model="activityType">
-                                    <el-checkbox label="漫展" name="type"></el-checkbox>
-                                    <el-checkbox label="演唱会" name="type"></el-checkbox>
-                                    <el-checkbox label="观赏" name="type"></el-checkbox>
-                                    <el-checkbox label="交友" name="type"></el-checkbox>
-                                </el-checkbox-group>
-                            </el-col>
-                        </el-row>
-                    </el-form-item>
-                    <el-form-item label="价格">
-                        <el-row :gutter="20">
-                            <el-col :span="20">
-                                <el-checkbox-group v-model="activityPrice">
-                                    <el-checkbox label="100以下" name="type"></el-checkbox>
-                                    <el-checkbox label="100~1k" name="type"></el-checkbox>
-                                    <el-checkbox label="1k~5k" name="type"></el-checkbox>
-                                    <el-checkbox label="5k~3w" name="type"></el-checkbox>
-                                    <el-checkbox label="3w~10w" name="type"></el-checkbox>
-                                    <el-checkbox label="10w以上" name="type"></el-checkbox>
-                                </el-checkbox-group>
-                            </el-col>
-                        </el-row>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-button type="primary" @click="onSubmit">筛选</el-button>
-                    </el-form-item>
-                </el-form>
-            </div>
+<!--主体部分-->
+<div id="vue-list" class="gf-grandfather-container">
+    <div class="gf-standard-container">
+        <div style="margin-bottom: -22px">
+            <el-form :model="region">
+                <el-form-item label="地区">
+                    <el-row :gutter="20">
+                        <el-col :span="5">
+                            <el-select v-model="region.provinceObj"
+                                       value-key="province_code"
+                                       :disabled="false"
+                                       placeholder="省"
+                                       @change="afterSelectProvince()"
+                                       @focus="focusSelectProvince()">
+                                <el-option :value="item"
+                                           :label="item.province_name"
+                                           v-for="(item,index) in provinceList"
+                                           :key="index">
+                                </el-option>
+                            </el-select>
+                        </el-col>
+                        <el-col :span="5">
+                            <el-select v-model="region.cityObj"
+                                       value-key="city_code"
+                                       :disabled="!region.isSelectProvince"
+                                       @change="afterSelectCity()"
+                                       @focus="focusSelectCity()"
+                                       placeholder="城市">
+                                <el-option v-for="(item,index) in cityList"
+                                           :value="item"
+                                           :label="item.city_name"
+                                           :key="index">
+                                </el-option>
+                            </el-select>
+                        </el-col>
+                        <el-col :span="5">
+                            <el-select v-model="region.areaObj"
+                                       value-key="area_code"
+                                       :disabled="!region.isSelectCity"
+                                       @change="afterSelectCounty()"
+                                       @focus="focusSelectArea()"
+                                       placeholder="区/县">
+                                <el-option v-for="(item,index) in areaList"
+                                           :value="item"
+                                           :label="item.area_name"
+                                           :key="index">
+                                </el-option>
+                            </el-select>
+                        </el-col>
+                    </el-row>
+                </el-form-item>
+                <el-form-item label="时间">
+                    <el-row :gutter="20">
+                        <el-col :span="20">
+                            <el-date-picker
+                                    v-model="activityDate"
+                                    type="datetimerange"
+                                    start-placeholder="开始日期"
+                                    end-placeholder="结束日期"
+                                    :default-time="['12:00:00']">
+                            </el-date-picker>
+                        </el-col>
+                    </el-row>
+                </el-form-item>
+                <el-form-item label="类别">
+                    <el-row :gutter="20">
+                        <el-col :span="20">
+                            <el-checkbox-group v-model="activityType">
+                                <el-checkbox label="漫展" name="type"></el-checkbox>
+                                <el-checkbox label="演唱会" name="type"></el-checkbox>
+                                <el-checkbox label="观赏" name="type"></el-checkbox>
+                                <el-checkbox label="交友" name="type"></el-checkbox>
+                            </el-checkbox-group>
+                        </el-col>
+                    </el-row>
+                </el-form-item>
+                <el-form-item label="价格">
+                    <el-row :gutter="20">
+                        <el-col :span="20">
+                            <el-checkbox-group v-model="activityPrice">
+                                <el-checkbox label="100以下" name="type"></el-checkbox>
+                                <el-checkbox label="100~1k" name="type"></el-checkbox>
+                                <el-checkbox label="1k~5k" name="type"></el-checkbox>
+                                <el-checkbox label="5k~3w" name="type"></el-checkbox>
+                                <el-checkbox label="3w~10w" name="type"></el-checkbox>
+                                <el-checkbox label="10w以上" name="type"></el-checkbox>
+                            </el-checkbox-group>
+                        </el-col>
+                    </el-row>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="onSubmitActivityForm">筛选</el-button>
+                </el-form-item>
+            </el-form>
         </div>
-        <div class="gtf-discovery-list-container">
-            <el-row :gutter="20">
-                <el-col :span="16">
-                    <div class="gf-standard-container">
-                        <div class="gf-font-title">活动列表</div>
-                        <div class="gft-activity-list">
-                            <div v-for="(activityItem,index) in activityList"
-                                 class="gft-activity-list-item"
-                                 @click="showActivityPreview(index)"
-                                 :key="index">
-                                <el-row :gutter="30" type="flex" justify="space-around">
-                                    <img src="/public/assets/img/default.png" class="gf-img-cover">
-                                    <el-col :span="12">
-                                        <div class="gf-list-subtitle gf-content-limited gf-font-subtitle">
-                                            ${activityItem.activity_title}
-                                        </div>
-                                        <div class="gf-font-minor">
-                                            2018.08.31 19:30 - 2018.08.31 22:30
-                                        </div>
-                                        <div class="gf-font-minor">
-                                            凯迪拉克·上海音乐厅大厅 - 上海
-                                        </div>
-                                    </el-col>
-                                    <div class="gf-number-container ">
-                                        <div class="gf-font-l">20</div>
-                                        <div class="gf-font-s">加入</div>
-                                        <div class="gf-font-xs" style="padding-top: 10px">
-                                            <span>收藏：</span>
-                                            <span>120</span>
-                                        </div>
+    </div>
+    <div class="gtf-discovery-list-container">
+        <el-row :gutter="20">
+            <el-col :span="16">
+                <div class="gf-standard-container">
+                    <div class="gf-font-title">活动列表</div>
+                    <div class="gft-activity-list">
+                        <div v-for="(activityItem,index) in activityList"
+                             class="gft-activity-list-item"
+                             @click="showActivityPreview(index)"
+                             :key="index">
+                            <el-row :gutter="30" type="flex" justify="space-around">
+                                <img src="/public/assets/img/default.png" class="gf-img-cover">
+                                <el-col :span="12">
+                                    <div class="gf-list-subtitle gf-content-limited gf-font-subtitle">
+                                        ${activityItem.activity_title}
                                     </div>
-                                </el-row>
-                            </div>
-                        </div>
-                        <div class="gtf-page-container">
-                            <el-pagination
-                                    layout="prev, pager, next"
-                                    :total="50">
-                            </el-pagination>
-                        </div>
-                    </div>
-                </el-col>
-                <el-col :span="8">
-                    <div class="gf-standard-container">
-                        <div class="gf-font-title gf-content-limited-single">
-                            ${activityDetail.activity_title}
-                        </div>
-                        <div class="gf-user-container">
-                            <el-row type="flex" align="middle">
-                                <img src="/public/assets/img/head_default.png" class="gf-img-user-head-photo">
-                                <div class="gf-user-right-container gf-font-l">
-                                    <div>${activityDetail.user_name}</div>
-                                    <div class="gf-font-light">lv.03</div>
+                                    <div class="gf-font-minor">
+                                        2018.08.31 19:30 - 2018.08.31 22:30
+                                    </div>
+                                    <div class="gf-font-minor">
+                                        凯迪拉克·上海音乐厅大厅 - 上海
+                                    </div>
+                                </el-col>
+                                <div class="gf-number-container ">
+                                    <div class="gf-font-l">20</div>
+                                    <div class="gf-font-s">加入</div>
+                                    <div class="gf-font-xs" style="padding-top: 10px">
+                                        <span>收藏：</span>
+                                        <span>120</span>
+                                    </div>
                                 </div>
                             </el-row>
                         </div>
-                        <div class="gf-step-list-container">
-                            <el-collapse v-model="activeNames" @change="handleChange">
-                                <el-collapse-item :title="stepItem.step_name" v-for="(stepItem,index) in activityDetail.activity_step_list" :name="index"
-                                                  :key="index">
-                                    <div class="gf-font-minor">${stepItem.start_time} - ${stepItem.end_time}</div>
-                                    <div class="gf-font-default">${stepItem.step_detail}</div>
-                                </el-collapse-item>
-                            </el-collapse>
-                        </div>
-                        <div class="gf-btn-standard gft-btn-position">立即参加</div>
-                        <div class="gf-btn-standard gft-btn-position">收藏</div>
                     </div>
-                </el-col>
-            </el-row>
-        </div>
+                    <div class="gtf-page-container">
+                        <el-pagination
+                                layout="prev, pager, next"
+                                :total="50">
+                        </el-pagination>
+                    </div>
+                </div>
+            </el-col>
+            <el-col :span="8">
+                <div class="gf-standard-container">
+                    <a @click="goToActivityDetail(index)">
+                        <div class="gf-font-title gf-content-limited-single gf-cursor-pointer">
+                            ${activityDetail.activity_title}
+                        </div>
+                    </a>
+                    <div class="gf-user-container">
+                        <el-row type="flex" align="middle">
+                            <img src="/public/assets/img/head_default.png" class="gf-img-user-head-photo">
+                            <div class="gf-user-right-container gf-font-l">
+                                <div>${activityDetail.user_name}</div>
+                                <div class="gf-font-light">lv.03</div>
+                            </div>
+                        </el-row>
+                    </div>
+                    <div class="gf-step-list-container">
+                        <el-collapse v-model="activeNames" @change="handleChange">
+                            <el-collapse-item :title="stepItem.step_name"
+                                              v-for="(stepItem,index) in activityDetail.activity_step_list"
+                                              :name="index"
+                                              :key="index">
+                                <div class="gf-font-minor">${stepItem.start_time} - ${stepItem.end_time}</div>
+                                <div class="gf-font-default">${stepItem.step_detail}</div>
+                            </el-collapse-item>
+                        </el-collapse>
+                    </div>
+                    <div class="gf-btn-standard gft-btn-position">立即参加</div>
+                    <div class="gf-btn-standard gft-btn-position">收藏</div>
+                </div>
+            </el-col>
+        </el-row>
     </div>
 </div>
 
 
-<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
-<script src="https://cdn.bootcss.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-<script src="https://cdn.bootcss.com/Swiper/4.3.0/js/swiper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-<script src="https://unpkg.com/element-ui/lib/index.js"></script>
-<script src="/public/common/helper/gf-helper.js"></script>
 <script type="text/javascript">
     var vm = new Vue({
         el: '#vue-list',
         delimiters: ['${', '}'],
         data: {
-            default_native_places_list:defaultNativePlacesList,//地点列表
+            default_native_places_list: defaultNativePlacesList,//地点列表
+            provinceList: [],
+            cityList: [],
+            areaList: [],
             region: {
                 province: '',
                 city: '',
-                county: '',
-                provinceObj:{},
-                cityObj:{},
-                countyObj:{},
-                isSelectProvince:false,
-                isSelectCity:false,
-                isSelectCounty:false,
+                area: '',
+                provinceObj: {},
+                cityObj: {},
+                areaObj: {},
+                isSelectProvince: false,
+                isSelectCity: false,
+                isSelectCounty: false,
             },
             activityDate: '',//活动日期
             activityType: [],//活动类型
             activityPrice: [],//活动价格
             activityList: [],//活动列表
-            activityDetail:{},//活动详情
-            chooseActivityId:'',//选中的活动的ID
+            activityDetail: {},//活动详情
+            chooseActivityId: '',//选中的活动的ID
             activeNames: [],//活动名称
         },
         methods: {
-            onSubmit() {
+            onSubmitActivityForm() {
                 var that = this;
-                var obj={
-                    'region':{
-                        'province':that.region.province,
-                        'city':that.region.city,
-                        'county':that.region.county,
+                var obj = {
+                    'region': {
+                        'province': that.region.provinceObj.province_code,
+                        'city': that.region.cityObj.province_code,
+                        'area': that.region.area_code,
                     },
-                    'activityDate':that.activityDate,
-                    'activityType':that.activityType,
-                    'activityPrice':that.activityPrice,
+                    'activityDate': that.activityDate,
+                    'activityType': that.activityType,
+                    'activityPrice': that.activityPrice,
 
                 };
-                console.log(obj);
+//                console.log(obj);
+
+                that.getActivityList(that, function (res, callbcakObj) {
+                    callbcakObj.activityList = res.obj.activity_list;
+                });
+
             },
+
             handleChange(val) {
                 console.log(val);
             },
             //获取数据部分
-            getActivityList(obj,callback){
+            getActivityList(obj, callback){
                 var that = this;
                 var url = API_SERVER_URL.GREAT_FUN + '/activity/getActivityList';
                 var args = {
@@ -316,13 +242,13 @@
                     }
                 };
 
-                axios.post(url,args)
+                axios.post(url, args)
                     .then(function (response) {
 //                        console.log(response);
                         var res = response.data;
-                        if(res.retcode===0){
-                            callback(res,obj);
-                        }else{
+                        if (res.retcode === 0) {
+                            callback(res, obj);
+                        } else {
                             console.log(res.message.prompt);
                         }
                     })
@@ -331,7 +257,7 @@
                     });
             },
 
-            getActivityDetail(obj,callback){
+            getActivityDetail(obj, callback){
                 var that = this;
                 var url = API_SERVER_URL.GREAT_FUN + '/activity/getActivityDetail';
                 var args = {
@@ -340,12 +266,12 @@
                     }
 
                 };
-                axios.post(url,args)
+                axios.post(url, args)
                     .then(function (response) {
                         var res = response.data;
-                        if(res.retcode===0){
-                            callback(res,obj);
-                        }else{
+                        if (res.retcode === 0) {
+                            callback(res, obj);
+                        } else {
                             console.log(res.message.prompt);
                         }
                     })
@@ -354,21 +280,21 @@
                     });
             },
 
-            getLogInfo(obj,callback){
-                var that=this;
-                var url=API_SERVER_URL.GREAT_FUN +'/common/userLogin';
+            getLogInfo(obj, callback){
+                var that = this;
+                var url = API_SERVER_URL.GREAT_FUN + '/common/userLogin';
                 var args = {
                     "args": {
                         "email_address": "email_address"
                     }
 
                 };
-                axios.post(url,args)
+                axios.post(url, args)
                     .then(function (response) {
                         var res = response.data;
-                        if(res.retcode===0){
-                            callback(res,obj);
-                        }else{
+                        if (res.retcode === 0) {
+                            callback(res, obj);
+                        } else {
                             console.log(res.message.prompt);
                         }
                     })
@@ -379,61 +305,101 @@
 
             //业务部分
             logOut(){
-                sessionStorage.setItem('isLogin',false);
+                sessionStorage.setItem('isLogin', false);
                 sessionStorage.removeItem('userObj');
             },
 
             logIn(){
-                var that=this;
-                var callback=function (res,obj) {
-                    if(res.retcode=0){
+                var that = this;
+                var callback = function (res, obj) {
+                    if (res.retcode = 0) {
                         that.$message({
                             message: '登录成功',
                             type: 'success'
                         });
-                    }else{
+                    } else {
                         that.$message.error('登录失败');
                     }
                 };
-                that.getLogInfo(that,callback);
+                that.getLogInfo(that, callback);
             },
 
             showActivityPreview(index){
-                var that=this;
-                that.chooseActivityId=that.activityList[index].activity_id;
-                that.getActivityDetail(that,function (res,obj) {
-                    obj.activityDetail=res.obj;
+                var that = this;
+                that.chooseActivityId = that.activityList[index].activity_id;
+                that.getActivityDetail(that, function (res, obj) {
+                    obj.activityDetail = res.obj;
                 })
+            },
+
+            goToActivityDetail(index){
+                var that = this;
+                sessionStorage.setItem('GF_ACTIVITY_DETAIL', JSON.stringify(that.activityDetail));
+                location.href = "/front/web/activity/activityDetail";
             },
 
             //地点选择器
             afterSelectProvince(){
-                var that =this;
-                var item=that.region;
-                item.isSelectProvince=true;
-                item.province=item.provinceObj.name;
+                var that = this;
+                var item = that.region;
+                item.isSelectProvince = true;
+                item.province = item.province_name;
+
+                that.getCityList(that, function (res, callbackObj) {
+                    callbackObj.cityList = res.obj.province_list;
+                });
+
             },
+
+            focusSelectProvince(){
+                var that = this;
+                var item = that.region;
+                item.isSelectProvince = false;
+                item.isSelectCity = false;
+                item.cityObj = {};
+                item.city = '';
+            },
+
             afterSelectCity(){
-                var that =this;
-                var item=that.region;
-                item.isSelectCity=true;
-                item.city=item.cityObj.name;
+                var that = this;
+                var item = that.region;
+                item.isSelectCity = true;
+                item.city = item.cityObj.name;
+
+                that.getAreaList(that, function (res, callbackObj) {
+                    callbackObj.areaList = res.obj.area_list;
+                });
+
             },
+
+            focusSelectCity(){
+                var that = this;
+                var item = that.region;
+                item.isSelectCity = false;
+                item.areaObj = {};
+                item.area = '';
+            },
+
             afterSelectCounty(){
-                var that =this;
-                var item=that.region;
-                item.isSelectCounty=true;
-                item.county=item.countyObj.name;
+                var that = this;
+                var item = that.region;
+                item.isSelectCounty = true;
+                item.area = item.areaObj.name;
                 console.log(item);
+            },
+
+            focusSelectArea(){
+
             },
         },
         created: function () {
             var that = this;
-            that.getActivityList(that,function (res,obj) {
-                obj.activityList=res.obj.activity_list;
+            that.getProvinceList(that, function (res, callbackObj) {
+                callbackObj.provinceList = res.obj.province_list;
+            });
+            that.getActivityList(that, function (res, callbcakObj) {
+                callbcakObj.activityList = res.obj.activity_list;
             });
         },
     });
 </script>
-</body>
-</html>

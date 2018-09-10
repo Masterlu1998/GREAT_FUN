@@ -1164,3 +1164,98 @@ var defaultNativePlacesList=[
         }]
     }];
 
+//公共methods
+Vue.prototype.getProvinceList=function (obj,callback) {
+    var that=this;
+    var url=API_SERVER_URL.GREAT_FUN + '/common/getProvinceList';
+    var args={
+        "args": {
+
+        }
+    };
+
+    axios.post(url,args)
+        .then(function (response) {
+            var res = response.data;
+            if(res.retcode===0){
+                callback(res,obj);
+            }else{
+                console.log(res.message.prompt);
+            }
+        })
+        .catch(function (error) {
+            console.error(error);
+        });
+};
+
+Vue.prototype.getCityList=function (obj,callback) {
+    var that=this;
+    var url=API_SERVER_URL.GREAT_FUN + '/common/getCityList';
+
+    var args={
+        "args": {
+            "province_code":obj.region.provinceObj.province_code
+        }
+    };
+
+
+    axios.post(url,args)
+        .then(function (response) {
+            var res = response.data;
+            if(res.retcode===0){
+                callback(res,obj);
+            }else{
+                console.log(res.message.prompt);
+            }
+        })
+        .catch(function (error) {
+            console.error(error);
+        });
+};
+
+Vue.prototype.getAreaList=function (obj,callback) {
+    var that=this;
+    var url=API_SERVER_URL.GREAT_FUN + '/common/getAreaList';
+    var args={
+        "args": {
+            "city_code":obj.region.cityObj.city_code
+        }
+    };
+
+
+    axios.post(url,args)
+        .then(function (response) {
+            var res = response.data;
+            if(res.retcode===0){
+                callback(res,obj);
+            }else{
+                console.log(res.message.prompt);
+            }
+        })
+        .catch(function (error) {
+            console.error(error);
+        });
+};
+
+Vue.prototype.getActivityDetail=function(obj,callback){
+    var that = this;
+    var url = API_SERVER_URL.GREAT_FUN + '/activity/getActivityDetail';
+    var args = {
+        "args": {
+            "activity_id": obj.activityDetail.activity_id,
+        }
+
+    };
+    axios.post(url,args)
+        .then(function (response) {
+            var res = response.data;
+            if(res.retcode===0){
+                callback(res,obj);
+            }else{
+                console.log(res.message.prompt);
+            }
+        })
+        .catch(function (error) {
+            console.error(error);
+        });
+};
