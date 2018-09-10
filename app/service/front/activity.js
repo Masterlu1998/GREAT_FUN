@@ -270,7 +270,7 @@ class ActivityService extends Service {
    * @apiParam {string} city_code 城市code
    * @apiParam {string} area_code 区域code   
    * @apiParam {int} activity_type_id 活动类型
-   * 
+   * @apiParam {array} img_path_array 活动图片路由数组
    * 
    * @apiSuccess {string} activity_id 活动id
    */
@@ -278,7 +278,7 @@ class ActivityService extends Service {
     let result_obj = {};
     let send_json = {};
     const { ctx } = this;
-    const { user_id, activity_id = "", activity_title, activity_intro, limit_num, cost_type, cost_num, start_time, end_time, meeting_place, province_code, city_code, area_code, activity_type_id  } = params;
+    const { user_id, activity_id = "", activity_title, activity_intro, limit_num, cost_type, cost_num, start_time, end_time, meeting_place, province_code, city_code, area_code, activity_type_id, img_path_array } = params;
     const post_obj = {
       activity_title: activity_title,
       activity_intro: activity_intro,
@@ -301,7 +301,43 @@ class ActivityService extends Service {
     } else {
       post_obj.activity_id = ctx.helper.getUUID();
     }
-    const post_result = await ctx.model.JhwActivity.upsert(post_obj);
+    const t = await ctx.model.transaction();
+    try {
+      const post_result = await ctx.model.JhwActivity.upsert(post_obj, {
+        transaction: t
+      });
+      const img_create_array = [];
+      for(let i = 0; i < img_path_array.length; i++) {
+        const create_obj = {
+          images_path: img_path_array[i],
+          is_first: 0,
+          bind_id: post_obj.activity_id,
+          bind_type: 2,
+          delete_status: 0,
+          add_time: new Date(),
+          update_time: new Date(),
+          order_by: 0,
+          images_url: ""
+        };
+        img_create_array.push(create_obj);
+      }
+      img_create_array[0].is_first = 1;
+      const update_img_result = await ctx.model.JhwImages.update({
+        delete_status: 1
+      }, {
+        where: { bind_id: post_obj.activity_id },
+        transaction: t
+      });
+      const post_img_result = await ctx.model.JhwImages.bulkCreate(img_create_array, {
+        transaction: t
+      });
+      await t.commit();
+    } catch(error) {
+      console.log(error);
+      await t.rollback();
+      send_json = ctx.helper.getApiResult(-500, "服务器内部错误");
+      return send_json;
+    }
     result_obj = {
       activity_id: post_obj.activity_id
     };
