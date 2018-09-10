@@ -83,14 +83,14 @@ class ActivityService extends Service {
     }
     const sql_option = {
       where: search_activity_obj,
-      attributes: ['activity_id', 'activity_title', 'activity_intro', [sequelize.fn("DATE_FORMAT", sequelize.col('start_time'), '%Y-%m-%d %T') ,'start_time'], [sequelize.fn("DATE_FORMAT", sequelize.col('end_time'), '%Y-%m-%d %T') ,'end_time'], 'join_user_num', 'user_attention_num', 'images_path'],
+      attributes: ['activity_id', 'activity_title', 'activity_intro', [sequelize.fn("DATE_FORMAT", sequelize.col('start_time'), '%Y-%m-%d %H:%i') ,'start_time'], [sequelize.fn("DATE_FORMAT", sequelize.col('end_time'), '%Y-%m-%d %H:%i') ,'end_time'], 'join_user_num', 'user_attention_num', 'images_path'],
       order: [['add_time', 'DESC']]
     };
     if(page_size !== 0) {
       sql_option.limit = page_size;
       sql_option.offset = (page_index - 1) * page_size;
     }
-    const activity_list_sequelize = await ctx.model.ViActivityInfo.findAndCountAll(sql_option);
+    var activity_list_sequelize = await ctx.model.ViActivityInfo.findAndCountAll(sql_option);
     result_obj = {
       total: activity_list_sequelize.count,
       activity_list: activity_list_sequelize.rows,
@@ -136,7 +136,7 @@ class ActivityService extends Service {
     };
     const sql_asctivity_option = {
       where: search_activity_obj,
-      attributes: ['activity_id', 'activity_title', 'activity_intro', 'start_time', 'end_time', 'user_id', 'real_name', 'user_name', 'user_intro', 'avatar_url', 'experience']
+      attributes: ['activity_id', 'activity_title', 'activity_intro', [sequelize.fn("DATE_FORMAT", sequelize.col('start_time'), '%Y-%m-%d %H:%i') ,'start_time'], [sequelize.fn("DATE_FORMAT", sequelize.col('end_time'), '%Y-%m-%d %H:%i') ,'end_time'], 'user_id', 'real_name', 'user_name', 'user_intro', 'avatar_url', 'experience']
     };
     const search_step_obj = {
       activity_id: activity_id,
@@ -144,7 +144,7 @@ class ActivityService extends Service {
     };
     const sql_step_option = {
       where: search_step_obj,
-      attributes: ['step_name', 'start_time', 'end_time', 'step_detail', 'step_address'],
+      attributes: ['step_name', [sequelize.fn("DATE_FORMAT", sequelize.col('start_time'), '%Y-%m-%d %H:%i') ,'start_time'], [sequelize.fn("DATE_FORMAT", sequelize.col('end_time'), '%Y-%m-%d %H:%i') ,'end_time'], 'step_detail', 'step_address'],
       order: [['step_order']]
     };
     const search_activity_detail = ctx.model.ViActivityInfo.findOne(sql_asctivity_option);
@@ -203,7 +203,7 @@ class ActivityService extends Service {
     };
     const sql_option = {
       where: search_obj,
-      attributes: ['comment_content', 'comment_time', 'user_name', 'avatar_url', 'experience'],
+      attributes: ['comment_content', [sequelize.fn("DATE_FORMAT", sequelize.col('comment_time'), '%Y-%m-%d %T') ,'comment_time'], 'user_name', 'avatar_url', 'experience'],
       order: [['comment_time', 'DESC']]
     };
     if(page_size !== 0) {
