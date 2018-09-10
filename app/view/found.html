@@ -1,0 +1,757 @@
+<style>
+    .gtf-activity-step {
+        background-color: #FFFFFF;
+        padding-left: 200px;
+        padding-right: 200px;
+        height: 50px;
+    }
+
+    .gtf-activity-title {
+        font-size: 20px;
+        color: #FFFFFF;
+        margin-top: 30px;
+        margin-bottom: 30px;
+    }
+
+    .gtf-show-step-btn {
+        /*width: 54px;*/
+        /*height: 32px;*/
+        background: #82B1F3;
+        border-radius: 3px;
+        /*font-size: 12px;*/
+        color: #FFFFFF;
+        /*line-height: 14px;*/
+        margin-top: 20px;
+    }
+
+    .gtf-show-step-line {
+        font-size: 14px;
+        color: #333333;
+        line-height: 32px;
+        /*margin-left: 30px;*/
+    }
+
+    .el-collapse-item__header {
+        font-weight: bold;
+    }
+
+    .gtf-friend-class-img {
+        width: 24px;
+        height: 24px;
+        vertical-align: middle;
+        border-radius: 100px;
+    }
+
+    .gtf-friend-class-title {
+        font-size: 14px;
+        color: #333333;
+        margin-left: 10px;
+        margin-right: 30px;
+    }
+
+    .gtf-friend-class-model {
+        line-height: 36px;
+    }
+
+    .gtf-friend-words {
+        font-size: 14px;
+        color: #333333;
+        margin: 20px 0;
+        line-height: 26px;
+    }
+
+</style>
+<div id="vue-list" v-cloak>
+    <!--导航条-->
+    <nav class="navbar navbar-fixed-top gf-nav-navbar-custom gf-back-white gf-shadow-theme-color">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand gf-nav-logo-container" href="#">
+                    <img alt="logo" src="/public/assets/img/logo/logo_small.png" class="gf-nav-logo">
+                </a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">主页<span class="sr-only">(current)</span></a></li>
+                    <li><a href="#">发现</a></li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#">发起活动</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">用户<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">个人中心</a></li>
+                            <li role="separator" class="divider" style="margin: 8px 4px;"></li>
+                            <li><a href="#">切换账户</a></li>
+                            <li><a @click="logOut()">注销</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+    <div style="padding-top: 50px"></div>
+    <!--背景带-->
+    <div class="gft-banner-bac"></div>
+    <div class="gf-grandfather-container">
+        <el-row>
+            <el-col>
+                <el-steps :active="activeStep"
+                          class="gtf-activity-step"
+                          finish-status="success"
+                          simple>
+                    <el-step title="活动基本信息"></el-step>
+                    <el-step title="活动步骤"></el-step>
+                    <el-step title="邀请好友"></el-step>
+                    <el-step title="完成"></el-step>
+                </el-steps>
+            </el-col>
+        </el-row>
+        <div v-show="activeStep===0">
+            <el-row>
+                <el-col class="gtf-activity-title">
+                    活动基本信息
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col style="background-color: #FFFFFF;padding: 35px 20px;border-radius: 8px;box-shadow: 0 2px 12px 0 rgba(129, 107, 226, .20);">
+                    <el-form ref="oneForm" :model="oneForm" label-width="80px">
+                        <el-form-item label="活动标题" placeholder="请输入活动标题">
+                            <el-input v-model="oneForm.title"></el-input>
+                        </el-form-item>
+                        <el-form-item label="活动地区">
+                            <el-select v-model="oneForm.province" placeholder="省">
+                                <el-option :label="item.province_name"
+                                           v-for="item,index in provinceList"
+                                           @change="city"
+                                           :value="item.province_code"></el-option>
+                            </el-select>
+                            <el-select v-model="oneForm.city" placeholder="城市" style="margin-left: 10px;">
+                                <el-option :label="item.city_name"
+                                           v-for="item,index in cityList"
+                                           @change="area"
+                                           :value="item.city_code"></el-option>
+                            </el-select>
+                            <el-select v-model="oneForm.area" placeholder="区" style="margin-left: 10px;">
+                                <el-option :label="item.area_name"
+                                           v-for="item,index in areaList"
+                                           :value="item.area_code"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="个人邮箱" style="display: inline-block">
+                            <el-input placeholder="Email" v-model="oneForm.email"></el-input>
+                        </el-form-item>
+                        <el-form-item label="手机" style="display: inline-block">
+                            <el-input placeholder="Phone" v-model="oneForm.phone"></el-input>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button type="primary"
+                                       @click="addOneFormTop"
+                                       style="background: #82B1F3;">快速添加
+                            </el-button>
+                        </el-form-item>
+                        <el-form-item label="活动人数" style="display: inline-block">
+                            <el-input placeholder="请输入人数上限"></el-input>
+                        </el-form-item>
+                        <el-form-item label="费用" style="display: inline-block">
+                            <el-select placeholder="选择平摊方式" v-model="oneForm.money">
+                                <el-option label="自费" value="1"></el-option>
+                                <el-option label="AA" value="2"></el-option>
+                                <el-option label="AAB" value="3"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button type="primary"
+                                       @click="addOneFormDown"
+                                       style="background: #82B1F3;">快速添加
+                            </el-button>
+                        </el-form-item>
+                        <el-form-item label="活动形式">
+                            <el-input type="textarea"
+                                      :rows="5"
+                                      placeholder="请输入活动简介..."
+                                      v-model="oneForm.detail">
+                            </el-input>
+                            <el-button plain
+                                       @click="addOneFormImg"
+                                       style="margin-top: 20px;">添加图片
+                            </el-button>
+                        </el-form-item>
+                    </el-form>
+                    <div style="text-align: center">
+                        <el-button type="primary"
+                                   @click="oneGoNext"
+                                   style="width: 200px;height: 40px;background: #82B1F3;border-radius: 20px;">下一步
+                        </el-button>
+                    </div>
+                </el-col>
+            </el-row>
+        </div>
+        <div v-show="activeStep===1">
+            <el-row>
+                <el-col class="gtf-activity-title">
+                    步骤详情编辑
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col style="background-color: #FFFFFF;padding: 35px 20px;border-radius: 8px;box-shadow: 0 2px 12px 0 rgba(129, 107, 226, .20);">
+                    <el-tabs v-model="TwoActiveStep"
+                             style="margin-left:12px;margin-bottom: 15px;"
+                             disabled="disabled">
+                        <el-tab-pane :label="item.title"
+                                     v-for="item in stepTitleList"
+                                     :name="item.id"></el-tab-pane>
+                    </el-tabs>
+                    <div style="margin: 20px 0 20px 12px;">
+                        <el-button type="primary"
+                                   @click="backToDetail"
+                                   style="background: #82B1F3;">查看概览
+                        </el-button>
+                        <el-button plain
+                                   @click="addStep"
+                                   style="border:1px solid #82B1F3;color:#82B1F3">添加一步
+                        </el-button>
+                    </div>
+                    <el-form ref="twoForm" :model="twoForm" label-width="80px">
+                        <el-form-item label="活动标题" placeholder="请输入活动标题">
+                            <el-input v-model="twoForm.title"></el-input>
+                        </el-form-item>
+                        <el-form-item label="活动地区">
+                            <el-select v-model="twoForm.province" placeholder="省">
+                                <el-option :label="item.province_name"
+                                           v-for="item,index in provinceList"
+                                           :value="item.province_code"></el-option>
+                            </el-select>
+                            <el-select v-model="twoForm.city" placeholder="城市" style="margin-left: 10px;">
+                                <el-option :label="item.city_name"
+                                           v-for="item,index in cityList"
+                                           :value="item.city_code"></el-option>
+                            </el-select>
+                            <el-select v-model="twoForm.area" placeholder="区" style="margin-left: 10px;">
+                                <el-option :label="item.area_name"
+                                           v-for="item,index in areaList"
+                                           :value="item.area_code"></el-option>
+                            </el-select>
+                        </el-form-item>
+
+                        <el-form-item label="开始时间">
+                            <el-col :span="4" style="width: 222px;">
+                                <el-date-picker type="date" placeholder="选择开始日期" v-model="twoForm.startTime"
+                                                style="width: 100%;"></el-date-picker>
+                            </el-col>
+                            <el-col :span="4" style="width: 222px;margin-left: 10px;">
+                                <el-time-picker type="fixed-time" placeholder="选择开始时间" v-model="twoForm.startClock"
+                                                style="width: 100%;"></el-time-picker>
+                            </el-col>
+                        </el-form-item>
+                        <el-form-item label="结束时间">
+                            <el-col :span="4" style="width: 222px;">
+                                <el-date-picker type="date" placeholder="选择结束日期" v-model="twoForm.endTime"
+                                                style="width: 100%;"></el-date-picker>
+                            </el-col>
+                            <el-col :span="4" style="width: 222px;margin-left: 10px;">
+                                <el-time-picker type="fixed-time" placeholder="选择结束时间" v-model="twoForm.endClock"
+                                                style="width: 100%;"></el-time-picker>
+                            </el-col>
+                        </el-form-item>
+                        <el-form-item label="具体步骤">
+                            <el-input type="textarea"
+                                      :rows="5"
+                                      placeholder="请输入活动步骤..."
+                                      v-model="twoForm.detail">
+                            </el-input>
+                        </el-form-item>
+                    </el-form>
+                    <div style="text-align: center">
+                        <el-button type="primary"
+                                   @click="editDown"
+                                   style="width: 200px;height: 40px;background: #82B1F3;border-radius: 20px;">编辑完成
+                        </el-button>
+                    </div>
+                </el-col>
+            </el-row>
+        </div>
+        <div v-show="isShowDetail===1">
+            <el-row>
+                <el-col class="gtf-activity-title">
+                    步骤详情概览
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col style="background-color: #FFFFFF;padding: 35px 20px;border-radius: 8px;box-shadow: 0 2px 12px 0 rgba(129, 107, 226, .20);">
+
+                    <el-collapse v-model="activeCollapse">
+                        <el-collapse-item :title="item.title"
+                                          v-for="item,index in stepArr"
+                                          name="index">
+                            <div class="gtf-show-step-line">${item.startTime} ${item.startClock} - ${item.endTime}
+                                ${item.endClock}
+                            </div>
+                            <div class="gtf-show-step-line">${item.title}</div>
+                            <div class="gtf-show-step-line">${item.detail}</div>
+                        </el-collapse-item>
+                    </el-collapse>
+                    <div style="text-align: center;margin-top: 30px;">
+                        <el-button type="primary"
+                                   @click="backToStep"
+                                   style="width: 200px;height: 40px;background: #82B1F3;border-radius: 20px;">返回编辑
+                        </el-button>
+                    </div>
+                </el-col>
+            </el-row>
+        </div>
+        <div v-show="activeStep===2">
+            <el-row>
+                <el-col class="gtf-activity-title">
+                    步骤概览
+                </el-col>
+            </el-row>
+            <el-main>
+                <el-row :gutter="40">
+                    <el-col style="background-color: #FFFFFF;padding: 35px 20px;border-radius: 8px;box-shadow: 0 2px 12px 0 rgba(129, 107, 226, .20);"
+                            :span="7">
+                        <div style="padding-bottom:20px; border-bottom: 1px solid #f7f7f7">
+                            <el-row>
+                                <el-col :span="6">
+                                    <div style="font-size: 14px;color: #333333;line-height: 40px;">搜索好友</div>
+                                </el-col>
+                                <el-col :span="18">
+                                    <el-input v-model="input"
+                                              placeholder="好友昵称/id/账号"></el-input>
+                                </el-col>
+                            </el-row>
+                        </div>
+                        <el-collapse v-model="activeFriendClass">
+                            <el-collapse-item :title="item1.friend_type_name"
+                                              v-for="item1,index1 in friendTypeList"
+                                              :name="item1.friend_type_id">
+                                <div class="gtf-friend-class-model"
+                                     :key="item2.user_id"
+                                     @click="addToInvited(item2)"
+                                     v-for="item2,index2 in friendAllList[index1]">
+                                    <img :src="item2.avatar_url" class="gtf-friend-class-img">
+                                    <span class="gtf-friend-class-title">${item2.user_name}</span>
+                                </div>
+                            </el-collapse-item>
+                        </el-collapse>
+                    </el-col>
+                    <el-col :span="1">
+                        &nbsp;
+                    </el-col>
+                    <el-col :span="16"
+                            style="background-color: #FFFFFF;padding: 35px 20px 35px 40px;border-radius: 8px;box-shadow: 0 2px 12px 0 rgba(129, 107, 226, .20);">
+                        <div>
+                            <el-row>
+                                <el-col :span="7">
+                                    <img src="/public/assets/img/default.png" style="width: 200px; height: 125px;">
+                                </el-col>
+                                <el-col :span="17">
+                                    <div style="font-size: 16px;color: #333333;line-height: 32px;">
+                                        ${oneForm.title}
+                                    </div>
+                                    <br><br>
+                                    <div style="font-size: 14px;color: #666666;line-height: 28px;">
+                                        <div>
+                                            <!--${stepArr[0].startTime} ${stepArr[0].startClock} - ${twoForm.endTime} ${twoForm.endClock}-->
+                                        </div>
+                                        <div>
+                                            ${oneForm.province} ${oneForm.city} ${oneForm.area}
+                                        </div>
+                                    </div>
+                                </el-col>
+                            </el-row>
+                        </div>
+                        <div class="gtf-friend-words">
+                            ${oneForm.detail}
+                        </div>
+                        <div>
+                            <span style="font-weight: bold;">已邀请</span>
+                            <div class="gtf-friend-class-model" style="margin-top: 20px;">
+                                <div style="display: inline-block"
+                                     :key="item.user_id"
+                                     v-for="item,index in friendInvited">
+                                    <img :src="item.avatar_url" class="gtf-friend-class-img">
+                                    <span class="gtf-friend-class-title">${item.user_name}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="text-align: center;margin-top: 40px;">
+                            <el-button type="primary"
+                                       @click="submitFriend"
+                                       style="width: 200px;height: 40px;background: #82B1F3;border-radius: 20px;">下一步
+                            </el-button>
+                        </div>
+                    </el-col>
+                </el-row>
+            </el-main>
+        </div>
+        <div v-show="activeStep===3">
+            <el-row>
+                <el-col class="gtf-activity-title">
+                    步骤详情编辑
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col style="background-color: #FFFFFF;padding: 35px 40px;border-radius: 8px;box-shadow: 0 2px 12px 0 rgba(129, 107, 226, .20);">
+                    <div style="text-align: center">
+                        <div class="">
+                            <el-button type="success" icon="el-icon-check" circle disabled
+                                       style="width: 100px;height: 100px;"></el-button>
+                        </div>
+                        <div style="font-size: 36px;color: #333333;margin: 30px 0;">发布完成</div>
+                        <div style="font-size: 24px;color: #666666;margin: 30px 0;">
+                            您已成功地发起了一个活动，您可以在主页看到您发布的活动。您也可以继续浏览您的活动详情
+                        </div>
+                        <div>
+                            <el-button type="primary"
+                                       @click="goIndex">
+                                回到主页
+                            </el-button>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="font-size: 20px;color: #333333;margin-bottom: 25px;">活动信息</div>
+                        <el-row>
+                            <el-col :span="5">
+                                <img src="/public/assets/img/default.png" style="width: 220px; height: 125px;">
+                            </el-col>
+                            <el-col :span="19">
+                                <div style="font-size: 16px;color: #333333;line-height: 32px;">
+                                    ${oneForm.title}
+                                </div>
+                                <br><br>
+                                <div style="font-size: 14px;color: #666666;line-height: 28px;">
+                                    <div>
+                                        <!--${stepArr[0].startTime} ${stepArr[0].startClock} - ${twoForm.endTime}-->
+                                        ${twoForm.endClock}
+                                    </div>
+                                    <div>
+                                        ${oneForm.province} ${oneForm.city} ${oneForm.area}
+                                    </div>
+                                </div>
+                            </el-col>
+                        </el-row>
+                        <div style="font-size: 20px;color: #333333;margin: 25px 0;">活动标签</div>
+                        <el-tag style="background-color: transparent;margin-right: 15px">超级浪漫</el-tag>
+                        <el-tag style="background-color: transparent;margin-right: 20px">超级浪漫</el-tag>
+                        <el-tag style="background-color: transparent;margin-right: 20px">超级浪漫</el-tag>
+                        <div style="font-size: 20px;color: #333333;margin: 25px 0;">活动详情</div>
+                        <el-collapse v-model="activeCollapseFour">
+                            <el-collapse-item :title="item.title"
+                                              v-for="item,index in stepArr"
+                                              name="index">
+                                <!--<div class="gtf-show-step-line">${item.startTime} ${item.startClock} - ${item.endTime} ${item.endClock}-->
+                                <!--</div>-->
+                                <div class="gtf-show-step-line">${item.title}</div>
+                                <div class="gtf-show-step-line">${item.detail}</div>
+                            </el-collapse-item>
+                        </el-collapse>
+                    </div>
+                </el-col>
+            </el-row>
+        </div>
+    </div>
+</div>
+<script>
+    //省份
+    var getProvinceList = function (obj) {
+        axios.post(API_SERVER_URL.GREAT_FUN + '/common/getProvinceList', {
+            "args": {}
+        }).then(function (response) {
+            if (response.data.retcode === 0) {
+                obj.provinceList = response.data.obj.province_list;
+            } else {
+                console.log("接口调用失败");
+            }
+        }).catch(function (error) {
+            console.log(error);
+        });
+    };
+    //市
+    var getCityList = function (obj) {
+        axios.post(API_SERVER_URL.GREAT_FUN + '/common/getCityList', {
+            "args": {
+                "province_code": obj.oneForm.province
+            }
+        }).then(function (response) {
+            if (response.data.retcode === 0) {
+                obj.cityList = response.data.obj.province_list;
+            } else {
+                console.log("接口调用失败");
+            }
+        }).catch(function (error) {
+            console.log(error);
+        });
+    };
+    //区
+    var getAreaList = function (obj) {
+        axios.post(API_SERVER_URL.GREAT_FUN + '/common/getAreaList', {
+            "args": {
+                "city_code": obj.oneForm.city
+            }
+        }).then(function (response) {
+            if (response.data.retcode === 0) {
+                obj.areaList = response.data.obj.area_list;
+            } else {
+                console.log("接口调用失败");
+            }
+        }).catch(function (error) {
+            console.log(error);
+        });
+    };
+    //好友类别
+    var getFriendTypeList = function (obj) {
+        axios.post(API_SERVER_URL.GREAT_FUN + '/user/getFriendTypeList', {
+            "args": {
+                "user_id": "1d6f5edd381f4e4c9e43d61d63b0bc37"
+            }
+        }).then(function (response) {
+            if (response.data.retcode === 0) {
+                obj.friendTypeList = response.data.obj.friend_type_list;
+                for (var i = 0; i < obj.friendTypeList.length; i++) {
+                    var typeId = obj.friendTypeList[i].friend_type_id;
+                    getFriendListByType(obj, typeId);
+                }
+            } else {
+                console.log("接口调用失败");
+            }
+        }).catch(function (error) {
+            console.log(error);
+        });
+    };
+    //好友列表
+    var getFriendListByType = function (obj, typeId) {
+        axios.post(API_SERVER_URL.GREAT_FUN + '/user/getFriendListByType', {
+            "args": {
+                "friend_type_id": typeId
+            }
+        }).then(function (response) {
+            if (response.data.retcode === 0) {
+                obj.friendList = response.data.obj.friend_list;
+                obj.friendAllList.push(obj.friendList);
+            } else {
+                console.log("接口调用失败");
+            }
+        }).catch(function (error) {
+            console.log(error);
+        });
+    };
+    //提交活动基本信息
+    var postActivityBaseInfo = function (obj) {
+        axios.post(API_SERVER_URL.GREAT_FUN + '/activity/postActivityBaseInfo', {
+            "args": {
+                "activity_id": "",
+                "activity_title": obj.oneForm.title,
+                "activity_intro": obj.oneForm.detail,
+                "limit_num": obj.oneForm.number,
+                "user_id": "1d6f5edd381f4e4c9e43d61d63b0bc37",
+                "cost_type": obj.oneForm.money,
+                "start_time": "2018-08-12 12:00:00",
+                "end_time": "2018-08-15 12:00:00",
+                "meeting_place": "余姚北站",
+                "province_code": obj.oneForm.province,
+                "city_code": obj.oneForm.city,
+                "area_code": obj.oneForm.area,
+                "cost_num": 121.22,
+                "activity_type_id": 1,
+                "img_path_array": []
+            }
+        }).then(function (response) {
+            if (response.data.retcode === 0) {
+                obj.activityId = response.data.obj.activity_id;
+            } else {
+                console.log("接口调用失败");
+            }
+        }).catch(function (error) {
+            console.log(error);
+        });
+    };
+    //提交步骤
+    var postActivityStep = function (obj) {
+        axios.post(API_SERVER_URL.GREAT_FUN + '/user/postActivityStep', {
+            "args": {
+                "step_id": obj.stepArr.length,
+                "activity_id": obj.activityId,
+                "step_order": obj.stepArr.length,
+                "step_name": obj.twoForm.title,
+                "start_time": obj.twoForm.startTime + " " + obj.twoForm.startClock,
+                "end_time": obj.twoForm.endTime + " " + obj.twoForm.endClock,
+                "step_detail": obj.twoForm.detail,
+                "step_address": obj.twoForm.province + obj.twoForm.city + obj.twoForm.area
+            }
+        }).then(function (response) {
+            if (response.data.retcode === 0) {
+            } else {
+                console.log("接口调用失败");
+            }
+        }).catch(function (error) {
+            console.log(error);
+        });
+    };
+    var vm = new Vue({
+            el: '#vue-list',
+            delimiters: ['${', '}'],
+            data: {
+                //活动ID
+                activityId: '',
+                //步骤
+                activeStep: 0,
+                //第二部步骤展示
+                TwoActiveStep: 1,
+                //是否展示概览
+                isShowDetail: 0,
+                //展开的步骤折叠面板
+                activeCollapse: [1],
+                //展开的第四步折叠面板
+                activeCollapseFour: ['1'],
+                //展开的好友类别
+                activeFriendClass: ['1'],
+                //省份
+                provinceList: [],
+                //市
+                cityList: [],
+                //区
+                areaList: [],
+                //步骤list
+                stepTitleList: [{
+                    "id": 1,
+                    "title": '第1步',
+                }],
+                //活动详情表单
+                oneForm: {
+                    title: '',
+                    province: '',
+                    city: '',
+                    area: '',
+                    email: '',
+                    phone: '',
+                    number: '',
+                    money: '',
+                    detail: '',
+                },
+                //活动步骤表单
+                stepArr: [],
+                twoForm: {
+                    title: '',
+                    province: '',
+                    city: '',
+                    area: '',
+                    startTime: '',
+                    startClock: '',
+                    endTime: '',
+                    endClock: '',
+                    detail: '',
+                },
+                //好友类别
+                friendTypeList: [],
+                //存放好友列表
+                friendList: [],
+                //存放所有好友列表
+                friendAllList: [],
+                //邀请的好友列表
+                friendInvited: [],
+            },
+            created: function () {
+                getProvinceList(this);
+                getFriendTypeList(this);
+            },
+            methods: {
+                //调用市
+                city: function () {
+                    getCityList(vm);
+                },
+                //调用市
+                area: function () {
+                    getAreaList(vm);
+                },
+                //1快速添加1
+                addOneFormTop: function () {
+                    //TODO
+                },
+                //1快速添加2
+                addOneFormDown: function () {
+                    //TODO
+                },
+                //1添加图片
+                addOneFormImg: function () {
+                    //TODO
+                },
+                //1下一步
+                oneGoNext: function () {
+                    vm.activeStep = 1;
+                    postActivityBaseInfo(vm);
+                },
+                //查看概览
+                backToDetail: function () {
+                    vm.stepArr.push(vm.twoForm);
+                    vm.isShowDetail = 1;
+                    vm.activeStep = '';
+                },
+                //返回编辑
+                backToStep: function () {
+                    vm.stepArr.pop();
+                    vm.isShowDetail = 0;
+                    vm.activeStep = 1;
+                },
+                //添加一步
+                addStep: function () {
+                    var length = vm.stepTitleList.length;
+                    var newId = length + 1;
+                    var newTitle = '第' + newId + '步';
+                    var arr = {
+                        "id": newId,
+                        "title": newTitle,
+                    };
+                    vm.stepTitleList.push(arr);
+                    vm.TwoActiveStep = newId;
+                    vm.stepArr.push(vm.twoForm);
+                    postActivityStep(vm);
+                    vm.twoForm.title = '';
+                    vm.twoForm.province = '';
+                    vm.twoForm.city = '';
+                    vm.twoForm.area = '';
+                    vm.twoForm.startTime = '';
+                    vm.twoForm.startClock = '';
+                    vm.twoForm.endTime = '';
+                    vm.twoForm.endClock = '';
+                    vm.twoForm.detail = '';
+                },
+                //2编辑完成
+                editDown: function () {
+                    vm.stepArr.push(vm.twoForm);
+                    postActivityStep(vm);
+                    vm.activeStep = 2;
+                },
+                //添加好友到邀请列表
+                addToInvited: function (item2) {
+                    var arr = {
+                        "user_id": item2.user_id,
+                        "user_name": item2.user_name,
+                        "avatar_url": item2.avatar_url
+                    };
+                    vm.friendInvited.push(arr);
+                },
+                //3下一步
+                submitFriend: function () {
+                    vm.activeStep = 3;
+                },
+                //回到主页
+                goIndex: function () {
+                    //TODO 回到主页
+                }
+            }
+        },)
+    ;
+</script>

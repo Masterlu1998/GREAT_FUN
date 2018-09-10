@@ -16,10 +16,10 @@ class HomeController extends Controller {
         await this.ctx.render('discovery', {}, {layout:null});
     }
 
-    //活动第一二三四步
-    async activity() {
-        await this.ctx.render('activities', {}, {layout: null});
-    }
+    // //活动第一二三四步
+    // async activity() {
+    //     await this.ctx.render('activities', {}, {layout: null});
+    // }
 
 
 
