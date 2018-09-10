@@ -2,6 +2,9 @@
     padding: 0;
     margin: 0;
 }
+[v-cloak] {
+    display: none;
+}
 
 /*项目通用*/
 
@@ -29,10 +32,58 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
     color: #FFF;
 }
 
+/*布局居中*/
+
+.gf-align-item{
+    display: flex;
+    align-items: center;
+
+}
+.gf-justify-item{
+    display: flex;
+    justify-content: center;
+
+}
+.gf-center-item{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+/*pointer样式指针*/
+.gf-cursor-pointer{
+    cursor:pointer;
+}
+
+/*标签*/
+.gf-label{
+    padding: 5px 10px;
+    margin-right: 30px;
+    color: #718FE3;
+    font-size: 12px;
+    border: 1px solid #718FE3;
+    border-radius: 8px;
+}
+
 /*覆盖bootstrap部分样式*/
 label {
     margin-bottom: 0;
     font-weight: normal;
+}
+
+.gf-banner-bac{
+    display: block;
+    position: absolute;
+    z-index: -99;
+    height: 300px;
+    width: 100%;
+    background: -webkit-linear-gradient(180deg, #718FE3, #A8A1FF); /* Safari 5.1 - 6.0 */
+    background: -o-linear-gradient(180deg, #718FE3, #A8A1FF); /* Opera 11.1 - 12.0 */
+    background: -moz-linear-gradient(180deg, #718FE3, #A8A1FF); /* Firefox 3.6 - 15 */
+    background: linear-gradient(180deg, #718FE3, #A8A1FF); /* 标准的语法 */
+    transform:skewY(4deg);
 }
 
 /*容器样式*/
@@ -72,6 +123,9 @@ label {
 }
 .gf-font-light{
     color: #666666;
+}
+.gf-font-Xlight{
+    color: #999999;
 }
 
 /*标题字体*/
@@ -115,6 +169,9 @@ label {
 /*12px字体*/
 .gf-font-xs{
     font-size: 12px;
+}
+.gf-font-bold{
+    font-weight: bold;
 }
 
 /*圆角按钮*/
@@ -195,13 +252,14 @@ label {
     padding:15px 0;
     cursor:pointer;
 }
-.gft-activity-list-item:hover{
+.gft-activity-list-item:hover,.gft-activity-list-item-active{
     background: #F5F7FA;
     border-radius: 4px;
 }
 
 .gf-img-cover {
     height: 112px;
+    width: 199px;
     margin-left: 20px;
 }
 
@@ -233,9 +291,18 @@ label {
 .gf-img-user-head-photo{
     width: 80px;
     height: 80px;
+    border-radius: 200px;
 }
 
 /*步骤列表*/
 .gf-step-list-container{
     margin-top: 30px;
+}
+
+/*好友头像-小*/
+.gf-header-small{
+    height: 24px;
+    width: 24px;
+    margin-right: 10px;
+    border-radius:13px;
 }
