@@ -350,6 +350,48 @@ class ActivityService extends Service {
     send_obj = ctx.helper.getApiResult(0, "填写成功");
     return send_obj;
   }
+
+  /**
+   * @api {post} /front/api/activity/joinActivity joinActivity——参加活动
+   * @apiName joinActivity
+   * @apiGroup Activity
+   * @apiVersion 0.1.0
+   * 
+   * @apiParam {string} activity_id 活动id
+   * @apiParam {string} user_id 用户id
+   * 
+   */
+  async joinActivity(params) {
+    let result_obj = {};
+    let send_obj = {};
+    const { ctx } = this;
+    const { activity_id, user_id } = params;
+    const searchObj = {
+      activity_id: activity_id,
+      user_id: user_id,
+      delete_status: 0
+    };
+    const searchRepeat = await ctx.model.JhwActivityParticipant.count({
+      where: searchObj
+    });
+    if(searchRepeat) {
+      //已经参加过活动了不可重复参加
+      send_obj = ctx.helper.getApiResult(-1, "您已经成功报名了该活动，请不要重复报名");
+      return send_obj;
+    }
+    const createObj = {
+      activity_id: activity_id,
+      user_id: user_id,
+      delete_status: 0
+    };
+    const createResult = await ctx.model.JhwActivityParticipant.create(createObj);
+    if(!createResult) {
+      send_obj = ctx.helper.getApiResult(-1, "参加活动失败，服务器内部错误");
+      return send_obj;
+    }
+    send_obj = ctx.helper.getApiResult(0, "操作成功");
+    return send_obj;
+  }
 }
 
 module.exports = ActivityService;
