@@ -392,6 +392,110 @@ class ActivityService extends Service {
     send_obj = ctx.helper.getApiResult(0, "操作成功");
     return send_obj;
   }
+
+  /**
+   * @api {post} /front/api/activity/followActivity followActivity——关注活动
+   * @apiName followActivity
+   * @apiGroup Activity
+   * @apiVersion 0.1.0
+   * 
+   * @apiParam {string} activity_id 活动id
+   * @apiParam {string} user_id 用户id
+   */
+  async followActivity(params) {
+    let result_obj = {};
+    let send_obj = {};
+    const { ctx } = this;
+    const { activity_id, user_id } = params;
+    const searchObj = {
+      activity_id: activity_id,
+      user_id: user_id,
+      delete_status: 0
+    };
+    const repeatNum = await ctx.model.JhwActivityAttention.count({
+      where: searchObj
+    });
+    if(repeatNum) {
+      send_obj = ctx.helper.getApiResult(0, "您已经关注过该活动，请勿重复关注");
+      return send_obj;
+    }
+    const createObj = {
+      activity_id: activity_id,
+      user_id: user_id,
+      delete_status: 0
+    };
+    const searchResult = await ctx.model.JhwActivityAttention.create(createObj);
+    if(!searchResult) {
+      send_obj = ctx.helper.getApiResult(-1, "关注活动失败，服务器内部错误");
+      return send_obj;
+    }
+    send_obj = ctx.helper.getApiResult(0, "操作成功");
+    return send_obj;
+  }
+
+  /**
+   * @api {post} /front/api/activity/cancelFollowActivity cancelFollowActivity——取消关注活动
+   * @apiName cancelFollowActivity
+   * @apiGroup Activity
+   * @apiVersion 0.1.0
+   * 
+   * @apiParam {string} activity_id 活动id
+   * @apiParam {string} user_id 用户id
+   */
+  async cancelFollowActivity(params) {
+    let result_obj = {};
+    let send_obj = {};
+    const { ctx } = this;
+    const { activity_id, user_id } = params;
+    const search_obj = {
+      activity_id: activity_id,
+      user_id: user_id
+    };
+    const update_obj = {
+      delete_status: 1
+    };
+    const update_result = await ctx.model.JhwActivityAttention.update(update_obj, {
+      where: search_obj
+    });
+    if(!update_result) {
+      send_obj = ctx.helper.getApiResult(-1, "取消关注活动失败，服务器内部错误");
+      return (send_obj);
+    }
+    send_obj = ctx.helper.getApiResult(0, "操作成功");
+    return send_obj;
+  }
+
+  /**
+   * @api {post} /front/api/activity/cancelJoinActivity cancelJoinActivity——取消参加活动
+   * @apiName cancelJoinActivity
+   * @apiGroup Activity
+   * @apiVersion 0.1.0
+   * 
+   * @apiParam {string} activity_id 活动id
+   * @apiParam {string} user_id 用户id
+   */
+  async cancelJoinActivity(params) {
+    let result_obj = {};
+    let send_obj = {};
+    const { ctx } = this;
+    const { activity_id, user_id } = params;
+    const search_obj = {
+      activity_id: activity_id,
+      user_id: user_id
+    };
+    const update_obj = {
+      delete_status: 1
+    };
+    const update_result = await ctx.model.JhwActivityParticipant.update(update_obj, {
+      where: search_obj
+    });
+    if(!update_result) {
+      send_obj = ctx.helper.getApiResult(-1, "取消参加活动失败，服务器内部错误");
+      return (send_obj);
+    }
+    send_obj = ctx.helper.getApiResult(0, "操作成功");
+    return send_obj;
+  }
 }
 
 module.exports = ActivityService;
