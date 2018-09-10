@@ -7,6 +7,10 @@ class HomeController extends Controller {
   async discovery() {
         await this.ctx.render('discovery', {}, {layout: 'layout.html'});
   }
+
+   async activityDetail() {
+        await this.ctx.render('activityDetail', {}, {layout: 'layout.html'});
+    }
 }
 
 module.exports = HomeController;

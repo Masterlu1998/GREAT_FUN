@@ -1,0 +1,184 @@
+<style>
+    .gft-btn-activityDetail {
+        margin: 0 20px;
+    }
+
+    .gft-img-comment-header {
+        width: 36px;
+        height: 36px;
+    }
+</style>
+<div id="vue-list" class="gf-grandfather-container" v-cloak>
+    <div class="gft-user-center-main-container">
+        <el-row :gutter="20">
+            <el-col :span="18">
+                <div class="gf-standard-container">
+                    <div class="gf-font-title">基本信息</div>
+                    <div class="gft-activity-list">
+                        <div class="gft-activity-list-item">
+                            <el-row :gutter="30" type="flex" justify="space-around">
+                                <img src="/public/assets/img/default.png" class="gf-img-cover">
+                                <el-col :span="24">
+                                    <div class="gf-list-subtitle gf-content-limited-single gf-font-subtitle">
+                                        ${activityDetail.activity_title}
+                                    </div>
+                                    <div class="gf-font-minor">
+                                        ${activityDetail.start_time} - ${activityDetail.end_time}
+                                    </div>
+                                    <div class="gf-font-minor">
+                                        {activityDetail.meeting_place}
+                                    </div>
+                                </el-col>
+                            </el-row>
+                        </div>
+                    </div>
+                    <div class="gf-font-title">活动简介</div>
+                    <div style="margin:20px 0 30px 0;">
+                        <div class="gf-font-default">
+                            ${activityDetail.activity_intro}
+                        </div>
+                    </div>
+                    <div class="gf-font-title">活动详情</div>
+                    <div style="margin-bottom: 30px">
+                        <div class="gf-step-list-container">
+                            <el-collapse v-model="activeNames" @change="handleChange">
+                                <el-collapse-item :title="stepItem.step_name"
+                                                  v-for="(stepItem,index) in activityDetail.activity_step_list"
+                                                  :name="index"
+                                                  :key="index">
+                                    <div class="gf-font-minor">${stepItem.start_time} - ${stepItem.end_time}</div>
+                                    <div class="gf-font-default">${stepItem.step_detail}</div>
+                                </el-collapse-item>
+                            </el-collapse>
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 30px">
+                        <el-row type="flex" justify="center" align="middle">
+                            <div class="gf-btn-standard gft-btn-activityDetail">立即参加</div>
+                            <div class="gf-btn-standard gft-btn-activityDetail">收藏</div>
+                        </el-row>
+                    </div>
+                    <div class="gf-font-title">评论</div>
+                    <div style="margin: 20px 20px 30px 0">
+                        <div v-for="commentItem in commentList" style="margin-bottom: 20px">
+                            <el-row type="flex" align="middle">
+                                <el-row type="flex" align="middle">
+                                    <img :src="commentItem.avatar_url"
+                                         class="gf-img-user-head-photo gft-img-comment-header">
+                                    <div class="gf-font-default gf-font-xs" style="margin-left: 10px">
+                                        <div>${commentItem.user_name}</div>
+                                        <div class="gf-font-Xlight gf-font-xs">lv.03</div>
+                                    </div>
+                                </el-row>
+                                <div class="gf-align-item" style="margin-left: 20px">
+                                    <div class="gf-font-default">
+                                        <div>${commentItem.comment_content}</div>
+                                        <div class="gf-font-Xlight gf-font-xs" style="margin-top: 5px">${commentItem.comment_time}</div>
+                                    </div>
+                                </div>
+                            </el-row>
+                        </div>
+                    </div>
+                </div>
+            </el-col>
+            <el-col :span="6">
+                <div class="gf-standard-container">
+                    <div class="gf-font-title">同好推荐</div>
+                    <!--<div style="margin-bottom: 30px">-->
+                        <!--<div class="gf-user-container" style="margin-top: 10px">-->
+                            <!--<div style="padding: 10px 0;" v-for="userItem in AttentionUserList">-->
+                                <!--<el-row type="flex" align="middle">-->
+                                    <!--<img :src="userItem.avatar_url" class="gf-img-user-head-photo">-->
+                                    <!--<div class="gf-user-right-container gf-font-l">-->
+                                        <!--<div>${userItem.user_name}</div>-->
+                                        <!--<div class="gf-font-light">${userItem.user_intro}</div>-->
+                                    <!--</div>-->
+                                <!--</el-row>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                </div>
+            </el-col>
+        </el-row>
+    </div>
+</div>
+<script type="text/javascript">
+    var vm = new Vue({
+        el: '#vue-list',
+        delimiters: ['${', '}'],
+        data: {
+            activityDetail: {},
+            commentList: [],
+            commentNum: 0,
+            activeNames: [],
+        },
+        methods: {
+            getActivityComment: function (obj, callback) {
+                var that = this;
+                var url = API_SERVER_URL.GREAT_FUN + '/activity/getActivityComment';
+                var args = {
+                    "args": {
+                        "activity_id": obj.activityDetail.activity_id,
+                        "page_size": 0,
+                        "page_index": 1
+                    }
+
+                };
+
+                axios.post(url, args)
+                    .then(function (response) {
+                        var res = response.data;
+                        if (res.retcode === 0) {
+                            callback(res, obj);
+                        } else {
+                            console.log(res.message.prompt);
+                        }
+                    })
+                    .catch(function (error) {
+                        console.error(error);
+                    });
+            },
+
+            getIndexUserInfo:function (obj,callback) {
+                var that = this;
+                var url = API_SERVER_URL.GREAT_FUN + '/indexInfo/getIndexUserInfo';
+                var args = {
+                    "args": {
+                        "user_id": "1d6f5edd381f4e4c9e43d61d63b0bc37"
+                    }
+
+                };
+
+                axios.post(url, args)
+                    .then(function (response) {
+                        var res = response.data;
+                        if (res.retcode === 0) {
+                            callback(res, obj);
+                        } else {
+                            console.log(res.message.prompt);
+                        }
+                    })
+                    .catch(function (error) {
+                        console.error(error);
+                    });
+            }
+
+        },
+        created: function () {
+            var that = this;
+            that.activityDetail = JSON.parse(sessionStorage.getItem('GF_ACTIVITY_DETAIL'));
+            that.getActivityComment(that, function (res, callbackObj) {
+                callbackObj.commentList = res.obj.comment_list;
+                callbackObj.commentNum = res.obj.total;
+            });
+//            that.getIndexUserInfo(that,function (res, callbackObj) {
+//
+//            });
+
+            console.log(that);
+//            that.getActivityDetail(that,function (res,callbackObj) {
+//                callbackObj.activityDetail=res.obj;
+//            });
+        }
+    });
+</script>
