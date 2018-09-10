@@ -69,7 +69,7 @@ class CommonService extends Service {
     };
     const city_search_result = await ctx.model.JhwCity.findAll(search_sql);
     result_obj = {
-      province_list: city_search_result
+      city_list: city_search_result
     };
     send_json = ctx.helper.getApiResult(0, "查询成功", result_obj);
     return send_json;
@@ -159,10 +159,10 @@ class CommonService extends Service {
       if(search_user.user_pwd !== user_pwd) {
         send_json = ctx.helper.getApiResult(-2, "账户或密码错误");
       } else {
-        const token = app.jwt.sign({
-        }, app.config.jwt.secret);
+        // const token = app.jwt.sign({
+        // }, app.config.jwt.secret);
         result_obj = {
-          token: token,
+          // token: token,
           user_id: search_user.user_id,
           user_name: search_user.user_name
         };
@@ -170,6 +170,73 @@ class CommonService extends Service {
       }
     }
     return send_json;
+  }
+
+  /**
+    * @api {post} /front/api/common/userRegister userRegister——用户注册
+    * @apiName userRegister
+    * @apiGroup Common
+    * @apiVersion 0.1.0
+    * 
+    * 
+    * @apiParam {string} email_address 邮箱地址 
+    * @apiParam {string} user_name 用户名 
+    * @apiParam {string} telephone 手机号
+    * @apiParam {string} user_pwd 用户密码
+    * 
+    * 
+    * @apiSuccess {string} user_id 用户id
+    * @apiSuccess {string} user_name 用户名
+    */
+  async userRegister(params) {
+    let result_obj = {};
+    let send_json = {};
+    const { ctx } = this;
+    const { email_address, user_name, telephone, user_pwd, real_name, birthday, sex, age, certificate, certificate_type_id, avatar_url, user_intro, address } = params;
+    const searchObj = {
+      $or: [
+        { email_address: email_address },
+        { user_name: user_name },
+      ]
+    };
+    const userSearchNum = await ctx.model.JhwUser.count({
+      where: searchObj
+    });
+    if(userSearchNum > 0) {
+      send_json = ctx.helper.getApiResult(-1, "用户邮箱或用户名与其他人重复");
+      return send_json;
+    } else {
+      const user_id = ctx.helper.getUUID();
+      const create_obj = {
+        user_id: user_id,
+        real_name: real_name,
+        user_name: user_name,
+        email_address: email_address,
+        user_pwd: user_pwd,
+        birthday: birthday,
+        sex: sex,
+        age: age,
+        telephone: telephone,
+        certificate: certificate,
+        certificate_type_id: certificate_type_id,
+        delete_status: 0,
+        avatar_url: avatar_url,
+        experience: 0,
+        user_intro: user_intro,
+        address: address
+      };
+       const createResult = await ctx.model.JhwUser.create(create_obj);
+       if(!createResult) {
+        send_json = ctx.helper.getApiResult(-1, "服务器内部错误");
+        return send_json;
+       }
+       result_obj = {
+        user_id: user_id,
+        user_name: user_name
+       };
+       send_json = ctx.helper.getApiResult(0, "注册成功", result_obj);
+       return send_json;
+    }
   }
 }
 
