@@ -26,6 +26,10 @@ module.exports = app => {
       type: DataTypes.STRING(60),
       allowNull: false
     },
+    address: {
+      type: DataTypes.STRING(200),
+      allowNull: true
+    },
     birthday: {
       type: DataTypes.DATE,
       allowNull: true

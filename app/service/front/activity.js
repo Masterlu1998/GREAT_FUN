@@ -83,14 +83,14 @@ class ActivityService extends Service {
     }
     const sql_option = {
       where: search_activity_obj,
-      attributes: ['activity_id', 'activity_title', 'activity_intro', [sequelize.fn("DATE_FORMAT", sequelize.col('start_time'), '%Y-%m-%d %T') ,'start_time'], [sequelize.fn("DATE_FORMAT", sequelize.col('end_time'), '%Y-%m-%d %T') ,'end_time'], 'join_user_num', 'user_attention_num', 'images_path'],
+      attributes: ['activity_id', 'activity_title', 'activity_intro', [sequelize.fn("DATE_FORMAT", sequelize.col('start_time'), '%Y-%m-%d %H:%i') ,'start_time'], [sequelize.fn("DATE_FORMAT", sequelize.col('end_time'), '%Y-%m-%d %H:%i') ,'end_time'], 'join_user_num', 'user_attention_num', 'images_path'],
       order: [['add_time', 'DESC']]
     };
     if(page_size !== 0) {
       sql_option.limit = page_size;
       sql_option.offset = (page_index - 1) * page_size;
     }
-    const activity_list_sequelize = await ctx.model.ViActivityInfo.findAndCountAll(sql_option);
+    var activity_list_sequelize = await ctx.model.ViActivityInfo.findAndCountAll(sql_option);
     result_obj = {
       total: activity_list_sequelize.count,
       activity_list: activity_list_sequelize.rows,
@@ -136,7 +136,7 @@ class ActivityService extends Service {
     };
     const sql_asctivity_option = {
       where: search_activity_obj,
-      attributes: ['activity_id', 'activity_title', 'activity_intro', 'start_time', 'end_time', 'user_id', 'real_name', 'user_name', 'user_intro', 'avatar_url', 'experience']
+      attributes: ['activity_id', 'activity_title', 'activity_intro', [sequelize.fn("DATE_FORMAT", sequelize.col('start_time'), '%Y-%m-%d %H:%i') ,'start_time'], [sequelize.fn("DATE_FORMAT", sequelize.col('end_time'), '%Y-%m-%d %H:%i') ,'end_time'], 'user_id', 'real_name', 'user_name', 'user_intro', 'avatar_url', 'experience']
     };
     const search_step_obj = {
       activity_id: activity_id,
@@ -144,7 +144,7 @@ class ActivityService extends Service {
     };
     const sql_step_option = {
       where: search_step_obj,
-      attributes: ['step_name', 'start_time', 'end_time', 'step_detail', 'step_address'],
+      attributes: ['step_name', [sequelize.fn("DATE_FORMAT", sequelize.col('start_time'), '%Y-%m-%d %H:%i') ,'start_time'], [sequelize.fn("DATE_FORMAT", sequelize.col('end_time'), '%Y-%m-%d %H:%i') ,'end_time'], 'step_detail', 'step_address'],
       order: [['step_order']]
     };
     const search_activity_detail = ctx.model.ViActivityInfo.findOne(sql_asctivity_option);
@@ -203,7 +203,7 @@ class ActivityService extends Service {
     };
     const sql_option = {
       where: search_obj,
-      attributes: ['comment_content', 'comment_time', 'user_name', 'avatar_url', 'experience'],
+      attributes: ['comment_content', [sequelize.fn("DATE_FORMAT", sequelize.col('comment_time'), '%Y-%m-%d %T') ,'comment_time'], 'user_name', 'avatar_url', 'experience'],
       order: [['comment_time', 'DESC']]
     };
     if(page_size !== 0) {
@@ -270,7 +270,7 @@ class ActivityService extends Service {
    * @apiParam {string} city_code 城市code
    * @apiParam {string} area_code 区域code   
    * @apiParam {int} activity_type_id 活动类型
-   * 
+   * @apiParam {array} img_path_array 活动图片路由数组
    * 
    * @apiSuccess {string} activity_id 活动id
    */
@@ -278,7 +278,7 @@ class ActivityService extends Service {
     let result_obj = {};
     let send_json = {};
     const { ctx } = this;
-    const { user_id, activity_id = "", activity_title, activity_intro, limit_num, cost_type, cost_num, start_time, end_time, meeting_place, province_code, city_code, area_code, activity_type_id  } = params;
+    const { user_id, activity_id = "", activity_title, activity_intro, limit_num, cost_type, cost_num, start_time, end_time, meeting_place, province_code, city_code, area_code, activity_type_id, img_path_array } = params;
     const post_obj = {
       activity_title: activity_title,
       activity_intro: activity_intro,
@@ -301,7 +301,43 @@ class ActivityService extends Service {
     } else {
       post_obj.activity_id = ctx.helper.getUUID();
     }
-    const post_result = await ctx.model.JhwActivity.upsert(post_obj);
+    const t = await ctx.model.transaction();
+    try {
+      const post_result = await ctx.model.JhwActivity.upsert(post_obj, {
+        transaction: t
+      });
+      const img_create_array = [];
+      for(let i = 0; i < img_path_array.length; i++) {
+        const create_obj = {
+          images_path: img_path_array[i],
+          is_first: 0,
+          bind_id: post_obj.activity_id,
+          bind_type: 2,
+          delete_status: 0,
+          add_time: new Date(),
+          update_time: new Date(),
+          order_by: 0,
+          images_url: ""
+        };
+        img_create_array.push(create_obj);
+      }
+      img_create_array[0].is_first = 1;
+      const update_img_result = await ctx.model.JhwImages.update({
+        delete_status: 1
+      }, {
+        where: { bind_id: post_obj.activity_id },
+        transaction: t
+      });
+      const post_img_result = await ctx.model.JhwImages.bulkCreate(img_create_array, {
+        transaction: t
+      });
+      await t.commit();
+    } catch(error) {
+      console.log(error);
+      await t.rollback();
+      send_json = ctx.helper.getApiResult(-500, "服务器内部错误");
+      return send_json;
+    }
     result_obj = {
       activity_id: post_obj.activity_id
     };
@@ -348,6 +384,152 @@ class ActivityService extends Service {
     const post_result = await ctx.model.JhwActivityStep.upsert(post_obj);
 
     send_obj = ctx.helper.getApiResult(0, "填写成功");
+    return send_obj;
+  }
+
+  /**
+   * @api {post} /front/api/activity/joinActivity joinActivity——参加活动
+   * @apiName joinActivity
+   * @apiGroup Activity
+   * @apiVersion 0.1.0
+   * 
+   * @apiParam {string} activity_id 活动id
+   * @apiParam {string} user_id 用户id
+   * 
+   */
+  async joinActivity(params) {
+    let result_obj = {};
+    let send_obj = {};
+    const { ctx } = this;
+    const { activity_id, user_id } = params;
+    const searchObj = {
+      activity_id: activity_id,
+      user_id: user_id,
+      delete_status: 0
+    };
+    const searchRepeat = await ctx.model.JhwActivityParticipant.count({
+      where: searchObj
+    });
+    if(searchRepeat) {
+      //已经参加过活动了不可重复参加
+      send_obj = ctx.helper.getApiResult(-1, "您已经成功报名了该活动，请不要重复报名");
+      return send_obj;
+    }
+    const createObj = {
+      activity_id: activity_id,
+      user_id: user_id,
+      delete_status: 0
+    };
+    const createResult = await ctx.model.JhwActivityParticipant.create(createObj);
+    if(!createResult) {
+      send_obj = ctx.helper.getApiResult(-1, "参加活动失败，服务器内部错误");
+      return send_obj;
+    }
+    send_obj = ctx.helper.getApiResult(0, "操作成功");
+    return send_obj;
+  }
+
+  /**
+   * @api {post} /front/api/activity/followActivity followActivity——关注活动
+   * @apiName followActivity
+   * @apiGroup Activity
+   * @apiVersion 0.1.0
+   * 
+   * @apiParam {string} activity_id 活动id
+   * @apiParam {string} user_id 用户id
+   */
+  async followActivity(params) {
+    let result_obj = {};
+    let send_obj = {};
+    const { ctx } = this;
+    const { activity_id, user_id } = params;
+    const searchObj = {
+      activity_id: activity_id,
+      user_id: user_id,
+      delete_status: 0
+    };
+    const repeatNum = await ctx.model.JhwActivityAttention.count({
+      where: searchObj
+    });
+    if(repeatNum) {
+      send_obj = ctx.helper.getApiResult(0, "您已经关注过该活动，请勿重复关注");
+      return send_obj;
+    }
+    const createObj = {
+      activity_id: activity_id,
+      user_id: user_id,
+      delete_status: 0
+    };
+    const searchResult = await ctx.model.JhwActivityAttention.create(createObj);
+    if(!searchResult) {
+      send_obj = ctx.helper.getApiResult(-1, "关注活动失败，服务器内部错误");
+      return send_obj;
+    }
+    send_obj = ctx.helper.getApiResult(0, "操作成功");
+    return send_obj;
+  }
+
+  /**
+   * @api {post} /front/api/activity/cancelFollowActivity cancelFollowActivity——取消关注活动
+   * @apiName cancelFollowActivity
+   * @apiGroup Activity
+   * @apiVersion 0.1.0
+   * 
+   * @apiParam {string} activity_id 活动id
+   * @apiParam {string} user_id 用户id
+   */
+  async cancelFollowActivity(params) {
+    let result_obj = {};
+    let send_obj = {};
+    const { ctx } = this;
+    const { activity_id, user_id } = params;
+    const search_obj = {
+      activity_id: activity_id,
+      user_id: user_id
+    };
+    const update_obj = {
+      delete_status: 1
+    };
+    const update_result = await ctx.model.JhwActivityAttention.update(update_obj, {
+      where: search_obj
+    });
+    if(!update_result) {
+      send_obj = ctx.helper.getApiResult(-1, "取消关注活动失败，服务器内部错误");
+      return (send_obj);
+    }
+    send_obj = ctx.helper.getApiResult(0, "操作成功");
+    return send_obj;
+  }
+
+  /**
+   * @api {post} /front/api/activity/cancelJoinActivity cancelJoinActivity——取消参加活动
+   * @apiName cancelJoinActivity
+   * @apiGroup Activity
+   * @apiVersion 0.1.0
+   * 
+   * @apiParam {string} activity_id 活动id
+   * @apiParam {string} user_id 用户id
+   */
+  async cancelJoinActivity(params) {
+    let result_obj = {};
+    let send_obj = {};
+    const { ctx } = this;
+    const { activity_id, user_id } = params;
+    const search_obj = {
+      activity_id: activity_id,
+      user_id: user_id
+    };
+    const update_obj = {
+      delete_status: 1
+    };
+    const update_result = await ctx.model.JhwActivityParticipant.update(update_obj, {
+      where: search_obj
+    });
+    if(!update_result) {
+      send_obj = ctx.helper.getApiResult(-1, "取消参加活动失败，服务器内部错误");
+      return (send_obj);
+    }
+    send_obj = ctx.helper.getApiResult(0, "操作成功");
     return send_obj;
   }
 }
