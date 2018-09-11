@@ -34,7 +34,7 @@ class UserService extends Service {
     };
     const sql_user_option = {
       where: search_user_obj,
-      attributes: ['user_name', 'sex', 'address', 'telephone', 'email_address']
+      attributes: ['user_name', 'sex', 'address', 'telephone', 'email_address','user_intro','experience']
     };
     const search_label_obj = {
       bind_id: user_id,
@@ -47,19 +47,25 @@ class UserService extends Service {
 
     const user_detail_sequelize = await ctx.model.JhwUser.findOne(sql_user_option);
     const label_list_sequelize = await ctx.model.ViLabelInfo.findAll(sql_label_option);
+    const star_num = await ctx.model.JhwUserAttention.count({where:{follower_id : user_id}});
+    const follower_num = await ctx.model.JhwUserAttention.count({where:{star_id : user_id}});
     const promise_result = await Promise.all([user_detail_sequelize, label_list_sequelize]);
     if(user_detail_sequelize.length===0) {
       const send_json = ctx.helper.getApiResult(-1, "用户不存在！");
       return send_json;
     }
-  
+  const level_rank = await ctx.model.JhwLevel.findOne({attributes:['level_name'],where:{min_experience:{$lte:promise_result[0].experience}}});
     result_obj = {
       user_name: promise_result[0].user_name,
       sex: promise_result[0].sex,
       address: promise_result[0].address,
       telephone: promise_result[0].telephone,
       email_address: promise_result[0].email_address,
-      label_list: promise_result[1]
+      user_intro: promise_result[0].user_intro,
+      level_name: level_rank.level_name,
+      label_list: promise_result[1],
+      star_num:star_num,
+      follower_num:follower_num
     };
     const send_json = ctx.helper.getApiResult(0, "查询成功", result_obj);
     return send_json;
@@ -423,6 +429,48 @@ class UserService extends Service {
     return send_json;
   }
 
+  async getAttentionActivityList(params){
+    let result_obj = {};
+    const { ctx } = this;
+    const { user_id , page_index = 1, page_size = 0  }  = params;
+    const search_activity_id_obj = {
+      user_id: user_id,
+      delete_status: 0
+    };
+    const sql_activity_id_option = {
+      where: search_activity_id_obj,
+      attributes: ['activity_id']
+    };
+    const activity_id_sequelize = await ctx.model.JhwActivityAttention.findAll(sql_activity_id_option);
+    if(activity_id_sequelize.length===0){
+      const send_json = ctx.helper.getApiResult(-1, "暂无参与活动");
+      return send_json;
+    }
+    const activity_id_result = underscore.pluck(activity_id_sequelize,"dataValues");
+    const activity_id_list = underscore.pluck(activity_id_result,"activity_id");
+    const search_activity_obj = {
+      activity_id: activity_id_list,
+      delete_status: 0
+    };
+    const sql_activity_option = {
+      where: search_activity_obj,
+      attributes: ['activity_id','activity_title',[sequelize.fn("DATE_FORMAT", sequelize.col('start_time'), '%Y-%m-%d %T') ,'start_time'],[sequelize.fn("DATE_FORMAT", sequelize.col('end_time'), '%Y-%m-%d %T') ,'end_time'],'meeting_place']
+    };
+    if(page_size !== 0) {
+      sql_activity_option.limit = page_size;
+      sql_activity_option.offset = (page_index - 1) * page_size;
+    }
+    const user_activity_sequelize = await ctx.model.JhwActivity.findAll(sql_activity_option);
+    if(user_activity_sequelize.length===0){
+      const send_json = ctx.helper.getApiResult(-1, "暂无参与活动");
+      return send_json;
+    }
+    result_obj = {
+      user_activity_list: user_activity_sequelize,
+    };
+    const send_json = ctx.helper.getApiResult(0, "查询成功", result_obj);
+    return send_json;
+  }
 }
 
 module.exports = UserService;
