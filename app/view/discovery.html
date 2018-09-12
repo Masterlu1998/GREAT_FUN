@@ -1,5 +1,5 @@
 <!--主体部分-->
-<div id="vue-list" class="gf-grandfather-container">
+<div id="vue-list" class="gf-grandfather-container" v-cloak>
     <div class="gf-standard-container">
         <div style="margin-bottom: -22px">
             <el-form :model="region">
@@ -105,7 +105,7 @@
                              @click="showActivityPreview(index)"
                              :key="index">
                             <el-row :gutter="30" type="flex" justify="space-around">
-                                <img src="/public/assets/img/default.png" class="gf-img-cover">
+                                <img :src="activityItem.images_path" class="gf-img-cover">
                                 <el-col :span="12">
                                     <div class="gf-list-subtitle gf-content-limited gf-font-subtitle">
                                         ${activityItem.activity_title}
@@ -118,22 +118,22 @@
                                     </div>
                                 </el-col>
                                 <div class="gf-number-container ">
-                                    <div class="gf-font-l">20</div>
+                                    <div class="gf-font-l">${activityItem.join_user_num}</div>
                                     <div class="gf-font-s">加入</div>
                                     <div class="gf-font-xs" style="padding-top: 10px">
                                         <span>收藏：</span>
-                                        <span>120</span>
+                                        <span>${activityItem.join_user_num}</span>
                                     </div>
                                 </div>
                             </el-row>
                         </div>
                     </div>
-                    <div class="gtf-page-container">
-                        <el-pagination
-                                layout="prev, pager, next"
-                                :total="50">
-                        </el-pagination>
-                    </div>
+                    <!--<div class="gtf-page-container">-->
+                        <!--<el-pagination-->
+                                <!--layout="prev, pager, next"-->
+                                <!--:total="50">-->
+                        <!--</el-pagination>-->
+                    <!--</div>-->
                 </div>
             </el-col>
             <el-col :span="8">
@@ -196,6 +196,7 @@
             activityType: [],//活动类型
             activityPrice: [],//活动价格
             activityList: [],//活动列表
+            choseActivityId:'',
             activityDetail: {},//活动详情
             chooseActivityId: '',//选中的活动的ID
             activeNames: [],//活动名称
@@ -216,8 +217,8 @@
                 };
 //                console.log(obj);
 
-                that.getActivityList(that, function (res, callbcakObj) {
-                    callbcakObj.activityList = res.obj.activity_list;
+                that.getActivityList(that, function (res, callbackObj) {
+                    callbackObj.activityList = res.obj.activity_list;
                 });
 
             },
@@ -262,7 +263,7 @@
                 var url = API_SERVER_URL.GREAT_FUN + '/activity/getActivityDetail';
                 var args = {
                     "args": {
-                        "activity_id": "b0584c3518064ff7b4c9410d7008faee"
+                        "activity_id": obj.choseActivityId,
                     }
 
                 };
@@ -326,7 +327,7 @@
 
             showActivityPreview(index){
                 var that = this;
-                that.chooseActivityId = that.activityList[index].activity_id;
+                that.choseActivityId = that.activityList[index].activity_id;
                 that.getActivityDetail(that, function (res, obj) {
                     obj.activityDetail = res.obj;
                 })
@@ -346,8 +347,8 @@
                 item.province = item.province_name;
 
                 that.getCityList(that, function (res, callbackObj) {
-                    callbackObj.cityList = res.obj.province_list;
-                });
+                    callbackObj.cityList = res.obj.city_list;
+            });
 
             },
 
@@ -397,8 +398,12 @@
             that.getProvinceList(that, function (res, callbackObj) {
                 callbackObj.provinceList = res.obj.province_list;
             });
-            that.getActivityList(that, function (res, callbcakObj) {
-                callbcakObj.activityList = res.obj.activity_list;
+            that.getActivityList(that, function (res, callbackObj) {
+                callbackObj.activityList = res.obj.activity_list;
+                for(var i=0;i<callbackObj.activityList.length;i++){
+                    callbackObj.activityList[i].images_path='/public/assets/img/default'+i+'.png';
+                }
+                that.showActivityPreview(0);
             });
         },
     });

@@ -9,7 +9,7 @@ class HomeController extends Controller {
     }
 
     async main() {
-        await this.ctx.render('main', {}, {layout: null});
+        await this.ctx.render('main', {}, {layout: 'layout.html'});
     }
 
     // async aaa() {

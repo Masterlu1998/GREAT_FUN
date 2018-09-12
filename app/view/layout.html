@@ -66,12 +66,12 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">主页<span class="sr-only">(current)</span></a></li>
-                    <li><a href="/front/web/activity/discovery">发现</a></li>
+                    <li class="active gf-cursor-pointer"><a href="/front/web/main">主页<span class="sr-only">(current)</span></a></li>
+                    <li class="gf-cursor-pointer"><a href="/front/web/activity/discovery">发现</a></li>
                 </ul>
 
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#">发起活动</a></li>
+                    <li class="gf-cursor-pointer"><a @click="goToFoundActivity()">发起活动</a></li>
                     <li class="dropdown" v-if="isLogin">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                            aria-expanded="false">${userInfo.user_name}<span class="caret"></span></a>
@@ -115,6 +115,32 @@
             <el-button type="primary" @click="login()">登 录</el-button>
         </div>
     </el-dialog>
+
+    <!--<el-dialog title="注册" :visible.sync="userRegisterVisible" width="350px">-->
+        <!--<el-form :model="userRegisterFrom">-->
+            <!--<el-form-item label="邮箱" label-width="40px">-->
+                <!--<el-input v-model="userRegisterFrom.emailAddress"-->
+                          <!--auto-complete="off"-->
+                          <!--placeholder="请输入您的邮箱"></el-input>-->
+            <!--</el-form-item>-->
+            <!--<el-form-item label="密码" label-width="40px">-->
+                <!--<el-input v-model="userRegisterFrom.userPassword"-->
+                          <!--type="password"-->
+                          <!--placeholder="请输入您的密码"-->
+                          <!--auto-complete="off"></el-input>-->
+            <!--</el-form-item>-->
+            <!--<el-form-item label="确认密码" label-width="40px">-->
+                <!--<el-input v-model="userRegisterFrom.userPassword"-->
+                          <!--type="password"-->
+                          <!--placeholder="请再次输入您的密码"-->
+                          <!--auto-complete="off"></el-input>-->
+            <!--</el-form-item>-->
+        <!--</el-form>-->
+        <!--<div slot="footer" class="dialog-footer">-->
+            <!--<el-button @click="loginDialogVisible = false">取 消</el-button>-->
+            <!--<el-button type="primary" @click="login()">登 录</el-button>-->
+        <!--</div>-->
+    <!--</el-dialog>-->
 </div>
 <!--背景带-->
 <div class="gf-banner-bac"></div>
@@ -139,14 +165,28 @@
 
         },
         methods: {
-            changeUser: function () {
+            goToFoundActivity:function () {
+                var that = this;
+                if(sessionStorage.getItem('GF_IS_LOGIN')){
+                    location.href="/front/web/found";
+                }else{
+                    that.$message({
+                        message: '登录后才能发布活动哦！',
+                        type: 'warning'
+                    });
+                }
 
+            },
+            changeUser: function () {
+                var that=this;
+                that.loginDialogVisible=true;
             },
             logOut: function () {
                 var that = this;
                 that.isLogin = false;
                 sessionStorage.removeItem('GF_IS_LOGIN');
                 sessionStorage.removeItem('GF_USER_INFO');
+                location.href="/front/web/main";
             },
             login: function () {
                 var that = this;
@@ -163,6 +203,14 @@
                     sessionStorage.setItem('GF_IS_LOGIN', true);
                     sessionStorage.setItem('GF_USER_INFO', JSON.stringify(res.obj));
                     obj.loginDialogVisible=false;
+                    obj.$message({
+                        message: '登录成功',
+                        type: 'success'
+                    });
+                    var linkInterval=setInterval(function () {
+                        location.reload();
+                        clearInterval(linkInterval);
+                    },3000);
                 };
 
                 axios.post(url, args)

@@ -1259,3 +1259,29 @@ Vue.prototype.getActivityDetail=function(obj,callback){
             console.error(error);
         });
 };
+
+Vue.prototype.getUserDetail=function (obj) {
+    var that=this;
+    var url=API_SERVER_URL.GREAT_FUN + '/user/getUserDeatail';
+    var args={
+        "args": {
+            "user_id": userData.userInfo.user_id
+        }
+    };
+    var callback=function (res,callbackObj) {
+        callbackObj.userDetail=res.obj;
+    };
+
+    axios.post(url,args)
+        .then(function (response) {
+            var res = response.data;
+            if(res.retcode===0){
+                callback(res,obj);
+            }else{
+                console.log(res.message.prompt);
+            }
+        })
+        .catch(function (error) {
+            console.error(error);
+        });
+};

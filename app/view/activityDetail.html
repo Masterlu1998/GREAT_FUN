@@ -18,7 +18,7 @@
                         <div class="gft-activity-list-item">
                             <el-row :gutter="30" type="flex" justify="space-around">
                                 <img src="/public/assets/img/default.png" class="gf-img-cover">
-                                <el-col :span="24">
+                                <el-col style="width: calc(100% - 220px)">
                                     <div class="gf-list-subtitle gf-content-limited-single gf-font-subtitle">
                                         ${activityDetail.activity_title}
                                     </div>
@@ -26,8 +26,11 @@
                                         ${activityDetail.start_time} - ${activityDetail.end_time}
                                     </div>
                                     <div class="gf-font-minor">
-                                        {activityDetail.meeting_place}
+                                        凯迪拉克·上海音乐厅大厅 - 上海
                                     </div>
+                                    <!--<div class="gf-font-minor">-->
+                                        <!--{activityDetail.meeting_place}-->
+                                    <!--</div>-->
                                 </el-col>
                             </el-row>
                         </div>
@@ -84,6 +87,27 @@
             <el-col :span="6">
                 <div class="gf-standard-container">
                     <div class="gf-font-title">同好推荐</div>
+                    <div style="margin-bottom: 30px">
+                        <div class="gf-user-container" style="margin-top: 10px">
+                            <div style="padding: 10px 0;" v-for="(userItem,index) in indexUserList">
+                                <el-row type="flex" align="middle" justify="space-between">
+                                    <el-row type="flex" align="middle">
+                                        <div style="width: 60px;">
+                                            <img :src="userItem.avatar_url" class="gf-img-user-head-photo" style="width: 60px;height: 60px">
+                                        </div>
+                                        <div class="gf-user-right-container gf-font-m" style="margin-left:15px;">
+                                            <div>${userItem.user_name}</div>
+                                            <div class="gf-font-light gf-content-limited gf-font-xs">lv.07</div>
+                                        </div>
+                                    </el-row>
+                                    <el-row type="flex" align="middle">
+                                        <el-button type="primary" @click="getAttention(index)" v-if="!userItem.isAttention" size="small">立即关注</el-button>
+                                        <el-button  @click="getAttention(index)" v-if="userItem.isAttention" size="small">取消关注</el-button>
+                                    </el-row>
+                                </el-row>
+                            </div>
+                        </div>
+                    </div>
                     <!--<div style="margin-bottom: 30px">-->
                         <!--<div class="gf-user-container" style="margin-top: 10px">-->
                             <!--<div style="padding: 10px 0;" v-for="userItem in AttentionUserList">-->
@@ -97,6 +121,14 @@
                             <!--</div>-->
                         <!--</div>-->
                     <!--</div>-->
+                    <div class="gf-font-title">活动推荐</div>
+                    <div style="margin-bottom: 30px;padding-top: 10px;">
+                        <div v-for="(activityItem,index) in activityList" class="gf-cursor-pointer" style="padding: 10px 0;">
+                            <a @click="goToActivityDetail(index)">
+                                <div class="gf-font-subtitle gf-content-limited-single gf-cursor-pointer" style="width: 100%;">${activityItem.activity_title}</div>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </el-col>
         </el-row>
@@ -111,8 +143,45 @@
             commentList: [],
             commentNum: 0,
             activeNames: [],
+            indexUserList:[],
+            activityList:[]
         },
         methods: {
+            handleChange:function () {
+
+            },
+
+            getActivityList:function(obj, callback) {
+                var that = this;
+                var url = API_SERVER_URL.GREAT_FUN + '/activity/getActivityList';
+                var args = {
+                    "args": {
+                        "page_size": 0,
+                        "page_index": 1,
+                        "start_time": "",
+                        "end_time": "",
+                        "cost_num_type": 0,
+                        "keywords": "",
+                        "province_code": "",
+                        "city_code": ""
+                    }
+                };
+
+                axios.post(url, args)
+                    .then(function (response) {
+//                        console.log(response);
+                        var res = response.data;
+                        if (res.retcode === 0) {
+                            callback(res, obj);
+                        } else {
+                            console.log(res.message.prompt);
+                        }
+                    })
+                    .catch(function (error) {
+                        console.error(error);
+                    });
+            },
+
             getActivityComment: function (obj, callback) {
                 var that = this;
                 var url = API_SERVER_URL.GREAT_FUN + '/activity/getActivityComment';
@@ -161,7 +230,28 @@
                     .catch(function (error) {
                         console.error(error);
                     });
-            }
+            },
+
+            getAttention:function (index) {
+                var that=this;
+                if(that.indexUserList[index].isAttention){
+                    that.indexUserList[index].isAttention=false;
+                }else{
+                    that.indexUserList[index].isAttention=true;
+                }
+
+            },
+
+            goToActivityDetail(index){
+                var that = this;
+                that.choseActivityId = that.activityList[index].activity_id;
+                that.getActivityDetail(that, function (res, obj) {
+                    obj.activityDetail = res.obj;
+                    sessionStorage.setItem('GF_ACTIVITY_DETAIL', JSON.stringify(that.activityDetail));
+                    location.href = "/front/web/activity/activityDetail";
+                });
+
+            },
 
         },
         created: function () {
@@ -170,6 +260,45 @@
             that.getActivityComment(that, function (res, callbackObj) {
                 callbackObj.commentList = res.obj.comment_list;
                 callbackObj.commentNum = res.obj.total;
+            });
+            that.getIndexUserInfo(that,function (res,callbackObj) {
+                callbackObj.indexUserList=res.obj.user_list;
+                callbackObj.indexUserList=[
+                    {
+                        'user_id':'',
+                        'user_name':'二傻子',
+                        'user_intro':'孩子， 当你出生的时候，洛丹伦的森林轻声唤出了你的名字 阿尔萨斯。 孩子， 我骄傲地看着你一天天长大， 成为正义的化身。 你要记住，我们一直都是以智慧与力量统治这个国家。 我也相信你会谨慎地使用自己强大的力量。 但，真正的胜利， 是鼓舞你的子民心中的斗志。 总有一天， 我的生命将抵达终点， 而你，将加冕为王 ！',
+                        'avatar_url':'/public/assets/img/fakerHeader/header_1.png',
+                        'isAttention':false,
+                    },
+                    {
+                        'user_id':'',
+                        'user_name':'劳拉',
+                        'user_intro':'万物皆虚，是指社会文明的基础是脆弱的，我们必须成为自身文明的守护者。万事皆允，是指我们是自身行为的设计者，我们承担自身行为的后果，无论是荣耀，还是悲剧。',
+                        'avatar_url':'/public/assets/img/fakerHeader/header_2.png',
+                        'isAttention':false,
+                    },
+                    {
+                        'user_id':'',
+                        'user_name':'爱娃',
+                        'user_intro':'How can you be in hell when you are in my heart。你活在我心中，又怎会落入地狱？',
+                        'avatar_url':'/public/assets/img/fakerHeader/header_3.png',
+                        'isAttention':false,
+                    },
+                    {
+                        'user_id':'',
+                        'user_name':'格林',
+                        'user_intro':'我这种地位的女人有两种面孔，一种是给天下看的，一种私人拥有的。',
+                        'avatar_url':'/public/assets/img/fakerHeader/header_4.png',
+                        'isAttention':false,
+                    }];
+
+            });
+            that.getActivityList(that, function (res, callbackObj) {
+                callbackObj.activityList = res.obj.activity_list;
+                for(var i=0;i<callbackObj.activityList.length;i++){
+                    callbackObj.activityList[i].images_path='/public/assets/img/default'+i+'.png';
+                }
             });
 //            that.getIndexUserInfo(that,function (res, callbackObj) {
 //

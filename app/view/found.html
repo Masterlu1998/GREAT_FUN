@@ -62,49 +62,6 @@
 
 </style>
 <div id="vue-list" v-cloak>
-    <!--导航条-->
-    <nav class="navbar navbar-fixed-top gf-nav-navbar-custom gf-back-white gf-shadow-theme-color">
-        <div class="container-fluid">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand gf-nav-logo-container" href="#">
-                    <img alt="logo" src="/public/assets/img/logo/logo_small.png" class="gf-nav-logo">
-                </a>
-            </div>
-
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">主页<span class="sr-only">(current)</span></a></li>
-                    <li><a href="#">发现</a></li>
-                </ul>
-
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#">发起活动</a></li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                           aria-expanded="false">用户<span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#">个人中心</a></li>
-                            <li role="separator" class="divider" style="margin: 8px 4px;"></li>
-                            <li><a href="#">切换账户</a></li>
-                            <li><a @click="logOut()">注销</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div><!-- /.navbar-collapse -->
-        </div><!-- /.container-fluid -->
-    </nav>
-    <div style="padding-top: 50px"></div>
-    <!--背景带-->
-    <div class="gft-banner-bac"></div>
     <div class="gf-grandfather-container">
         <el-row>
             <el-col>
@@ -125,79 +82,94 @@
                     活动基本信息
                 </el-col>
             </el-row>
-            <el-row>
-                <el-col style="background-color: #FFFFFF;padding: 35px 20px;border-radius: 8px;box-shadow: 0 2px 12px 0 rgba(129, 107, 226, .20);">
-                    <el-form ref="oneForm" :model="oneForm" label-width="80px">
-                        <el-form-item label="活动标题" placeholder="请输入活动标题">
-                            <el-input v-model="oneForm.title"></el-input>
-                        </el-form-item>
-                        <el-form-item label="活动地区">
-                            <el-select v-model="oneForm.province" placeholder="省">
-                                <el-option :label="item.province_name"
-                                           v-for="item,index in provinceList"
-                                           @change="city"
-                                           :value="item.province_code"></el-option>
-                            </el-select>
-                            <el-select v-model="oneForm.city" placeholder="城市" style="margin-left: 10px;">
-                                <el-option :label="item.city_name"
-                                           v-for="item,index in cityList"
-                                           @change="area"
-                                           :value="item.city_code"></el-option>
-                            </el-select>
-                            <el-select v-model="oneForm.area" placeholder="区" style="margin-left: 10px;">
-                                <el-option :label="item.area_name"
-                                           v-for="item,index in areaList"
-                                           :value="item.area_code"></el-option>
-                            </el-select>
-                        </el-form-item>
-                        <el-form-item label="个人邮箱" style="display: inline-block">
-                            <el-input placeholder="Email" v-model="oneForm.email"></el-input>
-                        </el-form-item>
-                        <el-form-item label="手机" style="display: inline-block">
-                            <el-input placeholder="Phone" v-model="oneForm.phone"></el-input>
-                        </el-form-item>
-                        <el-form-item>
+            <div class="gf-standard-container">
+                <el-row>
+                    <el-col>
+                        <el-form ref="oneForm" :model="oneForm" label-width="80px">
+                            <el-form-item label="活动标题" placeholder="请输入活动标题">
+                                <el-input v-model="oneForm.title"></el-input>
+                            </el-form-item>
+                            <!--<el-form-item label="活动地区">-->
+                            <!--<el-select v-model="oneForm.province" placeholder="省">-->
+                            <!--<el-option :label="item.province_name"-->
+                            <!--v-for="item,index in provinceList"-->
+                            <!--@change="city"-->
+                            <!--:value="item.province_code"></el-option>-->
+                            <!--</el-select>-->
+                            <!--<el-select v-model="oneForm.city" placeholder="城市" style="margin-left: 10px;">-->
+                            <!--<el-option :label="item.city_name"-->
+                            <!--v-for="item,index in cityList"-->
+                            <!--@change="area"-->
+                            <!--:value="item.city_code"></el-option>-->
+                            <!--</el-select>-->
+                            <!--<el-select v-model="oneForm.area" placeholder="区" style="margin-left: 10px;">-->
+                            <!--<el-option :label="item.area_name"-->
+                            <!--v-for="item,index in areaList"-->
+                            <!--:value="item.area_code"></el-option>-->
+                            <!--</el-select>-->
+                            <!--</el-form-item>-->
+                            <el-form-item label="个人邮箱" style="display: inline-block">
+                                <el-input placeholder="Email" v-model="oneForm.email"></el-input>
+                            </el-form-item>
+                            <el-form-item label="手机" style="display: inline-block">
+                                <el-input placeholder="Phone" v-model="oneForm.phone"></el-input>
+                            </el-form-item>
+                            <el-form-item>
+                                <el-button type="primary"
+                                           @click="addOneFormTop"
+                                           style="background: #82B1F3;">快速添加
+                                </el-button>
+                            </el-form-item>
+                            <el-form-item label="活动人数" style="display: inline-block">
+                                <el-input placeholder="请输入人数上限" v-model="oneForm.number"></el-input>
+                            </el-form-item>
+                            <el-form-item label="费用" style="display: inline-block">
+                                <el-select placeholder="选择平摊方式" v-model="oneForm.money" @change="changePay()">
+                                    <el-option label="发布者自费" value="1"></el-option>
+                                    <el-option label="AA" value="2"></el-option>
+                                </el-select>
+                            </el-form-item>
+                            <el-form-item label="每人费用" style="display: inline-block" v-if="oneForm.money==2">
+                                <el-input placeholder="每人费用" v-model="oneForm.price" @change="countMoney()">
+                                    <template slot="prepend">￥</template>
+                                    <template slot="append">总计：${oneForm.costNum}</template>
+                                </el-input>
+
+                            </el-form-item>
+                            <el-form-item label="总计" style="display: inline-block" v-if="oneForm.money==1">
+                                <el-input placeholder="输入金额" v-model="oneForm.costNum" @change="countMoney()">
+                                    <template slot="prepend">￥</template>
+                                    <template slot="append">总计：${oneForm.costNum}</template>
+                                </el-input>
+
+                            </el-form-item>
+                            <!--<el-form-item>-->
+                            <!--<el-button type="primary"-->
+                            <!--@click="addOneFormDown"-->
+                            <!--style="background: #82B1F3;">快速添加-->
+                            <!--</el-button>-->
+                            <!--</el-form-item>-->
+                            <el-form-item label="活动形式">
+                                <el-input type="textarea"
+                                          :rows="5"
+                                          placeholder="请输入活动简介..."
+                                          v-model="oneForm.detail">
+                                </el-input>
+                                <el-button plain
+                                           @click="addOneFormImg"
+                                           style="margin-top: 20px;">添加图片
+                                </el-button>
+                            </el-form-item>
+                        </el-form>
+                        <div style="text-align: center">
                             <el-button type="primary"
-                                       @click="addOneFormTop"
-                                       style="background: #82B1F3;">快速添加
+                                       @click="oneGoNext"
+                                       style="width: 200px;height: 40px;background: #82B1F3;border-radius: 20px;">下一步
                             </el-button>
-                        </el-form-item>
-                        <el-form-item label="活动人数" style="display: inline-block">
-                            <el-input placeholder="请输入人数上限"></el-input>
-                        </el-form-item>
-                        <el-form-item label="费用" style="display: inline-block">
-                            <el-select placeholder="选择平摊方式" v-model="oneForm.money">
-                                <el-option label="自费" value="1"></el-option>
-                                <el-option label="AA" value="2"></el-option>
-                                <el-option label="AAB" value="3"></el-option>
-                            </el-select>
-                        </el-form-item>
-                        <el-form-item>
-                            <el-button type="primary"
-                                       @click="addOneFormDown"
-                                       style="background: #82B1F3;">快速添加
-                            </el-button>
-                        </el-form-item>
-                        <el-form-item label="活动形式">
-                            <el-input type="textarea"
-                                      :rows="5"
-                                      placeholder="请输入活动简介..."
-                                      v-model="oneForm.detail">
-                            </el-input>
-                            <el-button plain
-                                       @click="addOneFormImg"
-                                       style="margin-top: 20px;">添加图片
-                            </el-button>
-                        </el-form-item>
-                    </el-form>
-                    <div style="text-align: center">
-                        <el-button type="primary"
-                                   @click="oneGoNext"
-                                   style="width: 200px;height: 40px;background: #82B1F3;border-radius: 20px;">下一步
-                        </el-button>
-                    </div>
-                </el-col>
-            </el-row>
+                        </div>
+                    </el-col>
+                </el-row>
+            </div>
         </div>
         <div v-show="activeStep===1">
             <el-row>
@@ -229,21 +201,65 @@
                             <el-input v-model="twoForm.title"></el-input>
                         </el-form-item>
                         <el-form-item label="活动地区">
-                            <el-select v-model="twoForm.province" placeholder="省">
-                                <el-option :label="item.province_name"
-                                           v-for="item,index in provinceList"
-                                           :value="item.province_code"></el-option>
-                            </el-select>
-                            <el-select v-model="twoForm.city" placeholder="城市" style="margin-left: 10px;">
-                                <el-option :label="item.city_name"
-                                           v-for="item,index in cityList"
-                                           :value="item.city_code"></el-option>
-                            </el-select>
-                            <el-select v-model="twoForm.area" placeholder="区" style="margin-left: 10px;">
-                                <el-option :label="item.area_name"
-                                           v-for="item,index in areaList"
-                                           :value="item.area_code"></el-option>
-                            </el-select>
+                            <el-row :gutter="20">
+                                <el-col :span="5">
+                                    <el-select v-model="region.provinceObj"
+                                               value-key="province_code"
+                                               :disabled="false"
+                                               placeholder="省"
+                                               @change="afterSelectProvince()"
+                                               @focus="focusSelectProvince()">
+                                        <el-option :value="item"
+                                                   :label="item.province_name"
+                                                   v-for="(item,index) in region.provinceList"
+                                                   :key="index">
+                                        </el-option>
+                                    </el-select>
+                                </el-col>
+                                <el-col :span="5">
+                                    <el-select v-model="region.cityObj"
+                                               value-key="city_code"
+                                               :disabled="!region.isSelectProvince"
+                                               @change="afterSelectCity()"
+                                               @focus="focusSelectCity()"
+                                               placeholder="城市">
+                                        <el-option v-for="(item,index) in region.cityList"
+                                                   :value="item"
+                                                   :label="item.city_name"
+                                                   :key="index">
+                                        </el-option>
+                                    </el-select>
+                                </el-col>
+                                <el-col :span="5">
+                                    <el-select v-model="region.areaObj"
+                                               value-key="area_code"
+                                               :disabled="!region.isSelectCity"
+                                               @change="afterSelectArea()"
+                                               @focus="focusSelectArea()"
+                                               placeholder="区/县">
+                                        <el-option v-for="(item,index) in region.areaList"
+                                                   :value="item"
+                                                   :label="item.area_name"
+                                                   :key="index">
+                                        </el-option>
+                                    </el-select>
+                                </el-col>
+                            </el-row>
+                            <!--<el-select v-model="twoForm.province" placeholder="省">-->
+                                <!--<el-option :label="item.province_name"-->
+                                           <!--v-for="item,index in provinceList"-->
+                                           <!--:value="item.province_code"></el-option>-->
+                            <!--</el-select>-->
+                            <!--<el-select v-model="twoForm.city" placeholder="城市" style="margin-left: 10px;">-->
+                                <!--<el-option :label="item.city_name"-->
+                                           <!--v-for="item,index in cityList"-->
+                                           <!--:value="item.city_code"></el-option>-->
+                            <!--</el-select>-->
+                            <!--<el-select v-model="twoForm.area" placeholder="区" style="margin-left: 10px;">-->
+                                <!--<el-option :label="item.area_name"-->
+                                           <!--v-for="item,index in areaList"-->
+                                           <!--:value="item.area_code"></el-option>-->
+                            <!--</el-select>-->
                         </el-form-item>
 
                         <el-form-item label="开始时间">
@@ -295,7 +311,7 @@
                     <el-collapse v-model="activeCollapse">
                         <el-collapse-item :title="item.title"
                                           v-for="item,index in stepArr"
-                                          name="index">
+                                          :name="index">
                             <div class="gtf-show-step-line">${item.startTime} ${item.startClock} - ${item.endTime}
                                 ${item.endClock}
                             </div>
@@ -451,7 +467,7 @@
                         <el-collapse v-model="activeCollapseFour">
                             <el-collapse-item :title="item.title"
                                               v-for="item,index in stepArr"
-                                              name="index">
+                                              :name="index">
                                 <!--<div class="gtf-show-step-line">${item.startTime} ${item.startClock} - ${item.endTime} ${item.endClock}-->
                                 <!--</div>-->
                                 <div class="gtf-show-step-line">${item.title}</div>
@@ -487,7 +503,7 @@
             }
         }).then(function (response) {
             if (response.data.retcode === 0) {
-                obj.cityList = response.data.obj.province_list;
+                obj.cityList = response.data.obj.city_list;
             } else {
                 console.log("接口调用失败");
             }
@@ -564,7 +580,7 @@
                 "province_code": obj.oneForm.province,
                 "city_code": obj.oneForm.city,
                 "area_code": obj.oneForm.area,
-                "cost_num": 121.22,
+                "cost_num": obj.oneForm.costNum,
                 "activity_type_id": 1,
                 "img_path_array": []
             }
@@ -604,6 +620,7 @@
             el: '#vue-list',
             delimiters: ['${', '}'],
             data: {
+                userDetail:{},
                 //活动ID
                 activityId: '',
                 //步骤
@@ -613,7 +630,7 @@
                 //是否展示概览
                 isShowDetail: 0,
                 //展开的步骤折叠面板
-                activeCollapse: [1],
+                activeCollapse: ['1'],
                 //展开的第四步折叠面板
                 activeCollapseFour: ['1'],
                 //展开的好友类别
@@ -637,12 +654,29 @@
                     area: '',
                     email: '',
                     phone: '',
-                    number: '',
+                    number: 0,
                     money: '',
                     detail: '',
+                    costNum:0,
+                    price:0,
                 },
                 //活动步骤表单
                 stepArr: [],
+                //地区
+                region: {
+                    province: '',
+                    provinceList:[],
+                    city: '',
+                    cityList:[],
+                    area: '',
+                    areaList:[],
+                    provinceObj: {},
+                    cityObj: {},
+                    areaObj: {},
+                    isSelectProvince: false,
+                    isSelectCity: false,
+                    isSelectCounty: false,
+                },
                 twoForm: {
                     title: '',
                     province: '',
@@ -664,21 +698,103 @@
                 friendInvited: [],
             },
             created: function () {
-                getProvinceList(this);
-                getFriendTypeList(this);
+                var that=this;
+                if(sessionStorage.getItem('GF_IS_LOGIN')){
+                }else{
+                    that.$message({
+                        message: '登录后才能发布活动哦！',
+                        type: 'warning'
+                    });
+                    var linkInterval=setInterval(function () {
+                        location.href="/front/web/main";
+                        clearInterval(linkInterval);
+                    },3000);
+                }
+//                getProvinceList(this);
+                getFriendTypeList(that);
+                that.getUserDetail(that);
+                that.getProvinceList(that, function (res, callbackObj) {
+                    callbackObj.region.provinceList = res.obj.province_list;
+                });
             },
             methods: {
-                //调用市
-                city: function () {
-                    getCityList(vm);
+                //地点选择器
+                afterSelectProvince(){
+                    var that = this;
+                    var item = that.region;
+                    item.isSelectProvince = true;
+                    item.province = item.province_name;
+
+                    that.getCityList(that, function (res, callbackObj) {
+                        callbackObj.region.cityList = res.obj.city_list;
+                    });
+
                 },
-                //调用市
-                area: function () {
-                    getAreaList(vm);
+
+                focusSelectProvince(){
+                    var that = this;
+                    var item = that.region;
+                    item.isSelectProvince = false;
+                    item.isSelectCity = false;
+                    item.cityObj = {};
+                    item.city = '';
                 },
+
+                afterSelectCity(){
+                    var that = this;
+                    var item = that.region;
+                    item.isSelectCity = true;
+                    item.city = item.cityObj.name;
+
+                    that.getAreaList(that, function (res, callbackObj) {
+                        callbackObj.region.areaList = res.obj.area_list;
+                    });
+                },
+
+                focusSelectCity(){
+                    var that = this;
+                    var item = that.region;
+                    item.isSelectCity = false;
+                    item.areaObj = {};
+                    item.area = '';
+                },
+
+                afterSelectArea(){
+                    var that = this;
+                    var item = that.region;
+                    item.isSelectArea = true;
+                    item.area = item.areaObj.name;
+                    console.log(item);
+                },
+
+                focusSelectArea(){
+
+                },
+
+                countMoney:function () {
+                    var that=this;
+                    if(that.oneForm.money==2){
+                        that.oneForm.costNum=that.oneForm.price*that.oneForm.number;
+                    }
+                },
+                changePay:function () {
+                    var that =this;
+                    that.oneForm.costNum=0;
+                },
+
+                //调用市
+//                city: function () {
+//                    getCityList(vm);
+//                },
+                //调用市
+//                area: function () {
+//                    getAreaList(vm);
+//                },
                 //1快速添加1
                 addOneFormTop: function () {
-                    //TODO
+                    var that=this;
+                    that.oneForm.email=that.userDetail.email_address;
+                    that.oneForm.phone=that.userDetail.telephone;
                 },
                 //1快速添加2
                 addOneFormDown: function () {
