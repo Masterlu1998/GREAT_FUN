@@ -105,7 +105,7 @@ class UserService extends Service {
     };
     const activity_id_sequelize = await ctx.model.JhwActivityOverview.findAll(sql_id_option);
     if(activity_id_sequelize.length===0){
-      const send_json = ctx.helper.getApiResult(-1, "暂无浏览记录");
+      const send_json = ctx.helper.getApiResult(0, "暂无浏览记录");
       return send_json;
     }
     const activity_id_result = underscore.pluck(activity_id_sequelize,"dataValues");
@@ -124,7 +124,7 @@ class UserService extends Service {
     }
     const activity_sequelize = await ctx.model.JhwActivity.findAll(sql_activity_option);
     if(activity_sequelize.length===0){
-      const send_json = ctx.helper.getApiResult(-1, "暂无浏览记录");
+      const send_json = ctx.helper.getApiResult(0, "暂无浏览记录");
       return send_json;
     }
     result_obj = {
@@ -167,7 +167,7 @@ class UserService extends Service {
     };
     const star_id_sequelize = await ctx.model.JhwUserAttention.findAll(sql_follow_option);
     if(star_id_sequelize.length===0){
-      const send_json = ctx.helper.getApiResult(-1, "暂无浏览记录");
+      const send_json = ctx.helper.getApiResult(0, "暂无浏览记录");
       return send_json;
     }
     const star_id_result = underscore.pluck(star_id_sequelize,"dataValues");
@@ -186,7 +186,7 @@ class UserService extends Service {
     }
     const user_detail_sequelize = await ctx.model.JhwUser.findAll(sql_star_option);
     if(user_detail_sequelize.length===0){
-      const send_json = ctx.helper.getApiResult(-1, "暂无用户");
+      const send_json = ctx.helper.getApiResult(0, "暂无用户");
       return send_json;
     }
     result_obj = {
@@ -228,7 +228,7 @@ class UserService extends Service {
     };
     const activity_id_sequelize = await ctx.model.JhwActivityParticipant.findAll(sql_activity_id_option);
     if(activity_id_sequelize.length===0){
-      const send_json = ctx.helper.getApiResult(-1, "暂无参与活动");
+      const send_json = ctx.helper.getApiResult(0, "暂无参与活动");
       return send_json;
     }
     const activity_id_result = underscore.pluck(activity_id_sequelize,"dataValues");
@@ -247,7 +247,7 @@ class UserService extends Service {
     }
     const user_activity_sequelize = await ctx.model.JhwActivity.findAll(sql_activity_option);
     if(user_activity_sequelize.length===0){
-      const send_json = ctx.helper.getApiResult(-1, "暂无参与活动");
+      const send_json = ctx.helper.getApiResult(0, "暂无参与活动");
       return send_json;
     }
     result_obj = {
@@ -285,7 +285,7 @@ class UserService extends Service {
     };
     const friend_sequelize = await ctx.model.JhwFriendType.findAll(sql_friend_option);
     if(friend_sequelize.length===0){
-      const send_json = ctx.helper.getApiResult(-1, "暂无好友分类");
+      const send_json = ctx.helper.getApiResult(0, "暂无好友分类");
       return send_json;
     }
     result_obj = {
@@ -324,7 +324,7 @@ class UserService extends Service {
     };
     const friend_sequelize = await ctx.model.JhwFriend.findAll(sql_friend_option);
     if(friend_sequelize.length===0){
-      const send_json = ctx.helper.getApiResult(-1, "暂无好友");
+      const send_json = ctx.helper.getApiResult(0, "暂无好友");
       return send_json;
     }
     const user_id_result = underscore.pluck(friend_sequelize,"dataValues");
@@ -339,7 +339,7 @@ class UserService extends Service {
     };
     const user_sequelize = await ctx.model.JhwUser.findAll(sql_user_option);
     if(user_sequelize.length===0){
-      const send_json = ctx.helper.getApiResult(-1, "暂无好友");
+      const send_json = ctx.helper.getApiResult(0, "暂无好友");
       return send_json;
     }
     result_obj = {
@@ -443,7 +443,7 @@ class UserService extends Service {
     };
     const activity_id_sequelize = await ctx.model.JhwActivityAttention.findAll(sql_activity_id_option);
     if(activity_id_sequelize.length===0){
-      const send_json = ctx.helper.getApiResult(-1, "暂无参与活动");
+      const send_json = ctx.helper.getApiResult(0, "暂无参与活动");
       return send_json;
     }
     const activity_id_result = underscore.pluck(activity_id_sequelize,"dataValues");
@@ -462,7 +462,7 @@ class UserService extends Service {
     }
     const user_activity_sequelize = await ctx.model.JhwActivity.findAll(sql_activity_option);
     if(user_activity_sequelize.length===0){
-      const send_json = ctx.helper.getApiResult(-1, "暂无参与活动");
+      const send_json = ctx.helper.getApiResult(0, "暂无参与活动");
       return send_json;
     }
     result_obj = {
