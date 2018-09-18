@@ -34,7 +34,7 @@ class UserService extends Service {
     };
     const sql_user_option = {
       where: search_user_obj,
-      attributes: ['user_name', 'sex', 'address', 'telephone', 'email_address','user_intro','experience']
+      attributes: ['user_name', 'sex', 'address', 'telephone', 'email_address','user_intro','experience','avatar_url']
     };
     const search_label_obj = {
       bind_id: user_id,
@@ -62,6 +62,7 @@ class UserService extends Service {
       telephone: promise_result[0].telephone,
       email_address: promise_result[0].email_address,
       user_intro: promise_result[0].user_intro,
+      avatar_url: promise_result[0].avatar_url,
       level_name: level_rank.level_name,
       label_list: promise_result[1],
       star_num:star_num,
