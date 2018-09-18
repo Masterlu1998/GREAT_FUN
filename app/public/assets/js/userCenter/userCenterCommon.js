@@ -178,6 +178,43 @@ Vue.prototype.handlefFriendListChange=function (activeNames) {
     console.log(activeNames);
 };
 
+Vue.prototype.getAttentionActivityList=function(obj,pageSize,pageIndex) {
+    console.log('getAttentionActivityList');
+    if(!pageSize){
+        var pageSize=0;
+    }
+    if(!pageIndex){
+        var pageIndex=1;
+    }
+
+
+    var that=this;
+    var url=API_SERVER_URL.GREAT_FUN + '/user/getAttentionActivityList';
+    var args={
+        "args": {
+            "user_id": userData.userInfo.user_id,
+            "page_index":pageIndex,
+            "page_size":pageSize
+        }
+    };
+    var callback=function (res,callbackObj) {
+        callbackObj.attentionActivityList=res.obj.user_activity_list;
+    };
+
+    axios.post(url,args)
+        .then(function (response) {
+            var res = response.data;
+            if(res.retcode===0){
+                callback(res,obj);
+            }else{
+                console.log(res.message.prompt);
+            }
+        })
+        .catch(function (error) {
+            console.error(error);
+        });
+};
+
 
 //公共过滤器
 Vue.filter('sexFilter',function (val) {

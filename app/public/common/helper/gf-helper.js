@@ -1285,3 +1285,91 @@ Vue.prototype.getUserDetail=function (obj) {
             console.error(error);
         });
 };
+
+Vue.prototype.getOtherDetail=function (obj) {
+    var that=this;
+    var url=API_SERVER_URL.GREAT_FUN + '/user/getUserDeatail';
+    var args={
+        "args": {
+            "user_id": sessionStorage.getItem('GF_OTHER_USER_ID')
+        }
+    };
+    var callback=function (res,callbackObj) {
+        callbackObj.userDetail=res.obj;
+    };
+
+    axios.post(url,args)
+        .then(function (response) {
+            var res = response.data;
+            if(res.retcode===0){
+                callback(res,obj);
+            }else{
+                console.log(res.message.prompt);
+            }
+        })
+        .catch(function (error) {
+            console.error(error);
+        });
+};
+
+Vue.prototype.goToUserCenter=function (obj,userId) {
+    var that=this;
+    sessionStorage.setItem('GF_OTHER_USER_ID',userId);
+    location.href='/front/web/user/other';
+};
+
+//规则函数
+
+//验证手机号
+var validatePhone = function (rule, value, callback) {
+    var re = /^[0-9]*$/;
+    if (value === "")
+        callback(new Error('请输入手机号'));
+    else if (!re.test(value))
+        callback(new Error("请输入正确的手机号"));
+    else if (value.length !== 11)
+        callback(new Error("请输入正确的手机号"));
+    else callback();
+};
+
+//验证密码
+var validatePass=function(rule,value,callback){
+    if (value === "")
+        callback(new Error('请输入新密码'));
+    else if (value.length <6)
+        callback(new Error('请输入6-12位密码'));
+    else if(value.length>12)
+        callback(new Error('请输入6-12位密码'));
+    else callback();
+};
+//验证密码
+// var validatePass=function(rule,value,callback){
+//     var re=/^(?![0-9]+$)(?![a-zA-Z]+$)(?!([^(0-9a-zA-Z)]|[\(\)])+$)([^(0-9a-zA-Z)]|[\(\)]|[a-zA-Z]|[0-9]){6,}$/;
+//     if (value === "")
+//         callback(new Error('请输入新密码'));
+//     else if (value.length <6)
+//         callback(new Error('请输入6-12位密码'));
+//     else if(!re.test(value))
+//         callback(new Error('密码至少要包含字母，数字，特殊字符中的两种'));
+//     else if(value.length>12)
+//         callback(new Error('请输入6-12位密码'));
+//     else callback();
+// };
+//确认密码
+var confirmPass=function(rule,value,callback){
+    var that = this;
+    if (value === "")
+        callback(new Error('请确认密码'));
+    else if (value !== vmOuter.userRegisterFrom.userPassword)
+        callback(new Error('密码不一致'));
+    else callback();
+};
+//验证邮箱
+var validateEmail = function (rule, value, callback) {
+    var re = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+    if (value === "")
+        callback(new Error('请填写邮箱'));
+    else if (!re.test(value))
+        callback(new Error('请输入正确的邮箱'));
+    else callback();
+};
