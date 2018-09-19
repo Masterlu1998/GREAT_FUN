@@ -150,7 +150,7 @@ class CommonService extends Service {
     }
     const sql_option = {
       where: search_obj,
-      attributes: ['user_pwd', 'user_id', 'user_name']
+      attributes: ['user_pwd', 'user_id', 'user_name', 'user_name', 'avatar_url']
     };
     const search_user = await ctx.model.JhwUser.findOne(sql_option);
     if(!search_user) {
@@ -164,7 +164,8 @@ class CommonService extends Service {
         result_obj = {
           // token: token,
           user_id: search_user.user_id,
-          user_name: search_user.user_name
+          user_name: search_user.user_name,
+          avatar_url: search_user.avatar_url,
         };
         send_json = ctx.helper.getApiResult(0, "登陆成功", result_obj);
       }

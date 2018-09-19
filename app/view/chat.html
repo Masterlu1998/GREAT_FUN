@@ -88,16 +88,6 @@
 
 <div id="vue-list">
     <ul id="messages">
-        <li>23333333333333333333333</li>
-        <li>陈花花陈花花陈花花陈花花陈花花陈花花陈花花陈花花陈花花陈花花陈花花</li>
-        <li>号</li>
-        <li>23333333333333333333333</li>
-        <li>陈花花陈花花陈花花陈花花陈花花陈花花陈花花陈花花陈花花陈花花陈花花陈花花陈花花陈花花陈花花陈花花陈花花陈花花陈花花陈花花陈花花陈花花</li>
-        <li>号</li>
-        <li>号</li>
-        <li>23333333333333333333333</li>
-        <li>陈花花陈花花陈花花陈花花陈花花陈花花陈花花陈花花陈花花陈花花陈花花</li>
-        <li>号</li>
     </ul>
     <form action="">
         <!--<el-input v-model="chatInput" placeholder="请输入内容" style="width: calc(100% - 120px);"></el-input>-->
@@ -122,7 +112,6 @@
         var socket = io();
         $('form').submit(function () {
             var message = {
-                targetId: '456456',
                 room: '123456',
                 msg: $('#m').val()
             };
@@ -130,7 +119,7 @@
             $('#m').val('');
             return false;
         });
-        socket.on('123123', function (msg) {
+        socket.on('123456', function (msg) {
             $('#messages').append($('<li>').text(msg));
         });
     });
