@@ -86,10 +86,10 @@ class IndexInfoService extends Service {
     };
     const activity_sql_option = {
       where: activity_search_obj,
-      attributes: ['activity_id', 'activity_title', 'activity_intro', [sequelize.fn("DATE_FORMAT", sequelize.col('start_time'), '%Y-%m-%d %T') ,'start_time'], [sequelize.fn("DATE_FORMAT", sequelize.col('end_time'), '%Y-%m-%d %T') ,'end_time']],
+      attributes: ['activity_id', 'activity_title', 'activity_intro', [sequelize.fn("DATE_FORMAT", sequelize.col('start_time'), '%Y-%m-%d %T') ,'start_time'], [sequelize.fn("DATE_FORMAT", sequelize.col('end_time'), '%Y-%m-%d %T') ,'end_time'], 'images_path'],
       limit: 5
     };
-    const activity_list = await ctx.model.JhwActivity.findAll(activity_sql_option);
+    const activity_list = await ctx.model.ViActivityInfo.findAll(activity_sql_option);
     result_obj = {
       activity_list: activity_list
     };

@@ -83,7 +83,7 @@ class ActivityService extends Service {
     }
     const sql_option = {
       where: search_activity_obj,
-      attributes: ['activity_id', 'activity_title', 'activity_intro', [sequelize.fn("DATE_FORMAT", sequelize.col('start_time'), '%Y-%m-%d %H:%i') ,'start_time'], [sequelize.fn("DATE_FORMAT", sequelize.col('end_time'), '%Y-%m-%d %H:%i') ,'end_time'], 'join_user_num', 'user_attention_num', 'images_path'],
+      attributes: ['activity_id', 'activity_title', 'activity_intro', [sequelize.fn("DATE_FORMAT", sequelize.col('start_time'), '%Y-%m-%d %H:%i') ,'start_time'], [sequelize.fn("DATE_FORMAT", sequelize.col('end_time'), '%Y-%m-%d %H:%i') ,'end_time'], 'join_user_num', 'user_attention_num', 'images_path', 'meeting_place', 'activity_type_id'],
       order: [['add_time', 'DESC']]
     };
     if(page_size !== 0) {
@@ -321,7 +321,9 @@ class ActivityService extends Service {
         };
         img_create_array.push(create_obj);
       }
-      img_create_array[0].is_first = 1;
+      if(img_create_array.length) {
+        img_create_array[0].is_first = 1;
+      }
       const update_img_result = await ctx.model.JhwImages.update({
         delete_status: 1
       }, {
