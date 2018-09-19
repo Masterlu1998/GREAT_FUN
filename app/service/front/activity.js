@@ -321,7 +321,9 @@ class ActivityService extends Service {
         };
         img_create_array.push(create_obj);
       }
-      img_create_array[0].is_first = 1;
+      if(img_create_array.length) {
+        img_create_array[0].is_first = 1;
+      }
       const update_img_result = await ctx.model.JhwImages.update({
         delete_status: 1
       }, {
