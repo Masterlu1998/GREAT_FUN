@@ -60,6 +60,10 @@
         line-height: 26px;
     }
 
+    .el-upload__input {
+        display: none !important;
+    }
+
 </style>
 <div id="vue-list" v-cloak>
     <div class="gf-grandfather-container">
@@ -87,7 +91,7 @@
                     <el-col>
                         <el-form ref="form" :model="oneForm" label-width="80px">
                             <el-form-item label="活动标题" placeholder="请输入活动标题">
-                                <el-input v-model="oneForm.title"></el-input>
+                                <el-input type="text" v-model="oneForm.title"></el-input>
                             </el-form-item>
                             <!--<el-form-item label="活动地区">-->
                             <!--<el-select v-model="oneForm.province" placeholder="省">-->
@@ -112,10 +116,10 @@
                             <!--</el-select>-->
                             <!--</el-form-item>-->
                             <el-form-item label="个人邮箱" style="display: inline-block">
-                                <el-input placeholder="Email" v-model="oneForm.email"></el-input>
+                                <el-input type="email" placeholder="Email" v-model="oneForm.email"></el-input>
                             </el-form-item>
                             <el-form-item label="手机" style="display: inline-block">
-                                <el-input placeholder="Phone" v-model="oneForm.phone"></el-input>
+                                <el-input type="tel" placeholder="Phone" v-model="oneForm.phone"></el-input>
                             </el-form-item>
                             <el-form-item>
                                 <el-button type="primary"
@@ -158,10 +162,23 @@
                                           placeholder="请输入活动简介..."
                                           v-model="oneForm.detail">
                                 </el-input>
-                                <el-button plain
-                                           @click="addOneFormImg"
-                                           style="margin-top: 20px;">添加图片
-                                </el-button>
+                                <!--<el-button plain-->
+                                <!--@click="addOneFormImg"-->
+                                <!--style="margin-top: 20px;">添加图片-->
+                                <!--</el-button>-->
+                            </el-form-item>
+                            <el-form-item label="添加图片">
+                                <el-upload
+                                        action="/back/page/file/upload"
+                                        list-type="picture-card"
+                                        :on-success="handlePictureCardPreview"
+                                        :data="upLoadData"
+                                        :on-remove="handleRemove">
+                                    <i class="el-icon-plus"></i>
+                                </el-upload>
+                                <!--<el-dialog :visible.sync="dialogVisible" v-for="item,index in imgPathArray">-->
+                                <!--<img width="50%" :src="item" alt="">-->
+                                <!--</el-dialog>-->
                             </el-form-item>
                         </el-form>
                         <div style="text-align: center">
@@ -321,7 +338,7 @@
                                           :key="index"
                                           :name="index">
                             <div class="gtf-show-step-line">${item.startTime | timeFilter} ${item.startClock |
-                                timeFilter} - ${item.endTime | timeFilter}
+                                timeFilter} 至 ${item.endTime | timeFilter}
                                 ${item.endClock | timeFilter}
                             </div>
                             <div class="gtf-show-step-line">活动标题：${item.title}</div>
@@ -380,7 +397,7 @@
                         <div>
                             <el-row>
                                 <el-col :span="7">
-                                    <img src="/public/assets/img/default.png" style="width: 200px; height: 125px;">
+                                    <img :src="imgPathArray[0]" style="width: 200px; height: 125px;">
                                 </el-col>
                                 <el-col :span="17">
                                     <div style="font-size: 16px;color: #333333;line-height: 32px;">
@@ -389,12 +406,13 @@
                                     <br><br>
                                     <div style="font-size: 14px;color: #666666;line-height: 28px;">
                                         <div v-if="activeStep===2">
-                                            ${stepArr[0].startTime | timeFilter} ${stepArr[0].startClock | timeFilter} -
+                                            ${stepArr[0].startTime | timeFilter} ${stepArr[0].startClock | timeFilter} 至
                                             ${twoForm.endTime | timeFilter}
                                             ${twoForm.endClock | timeFilter}
                                         </div>
                                         <div>
-                                            ${oneForm.province} ${oneForm.city} ${oneForm.area}
+                                            ${region.provinceObj.province_name} ${region.cityObj.city_name}
+                                            ${region.areaObj.area_name}
                                         </div>
                                     </div>
                                 </el-col>
@@ -461,20 +479,21 @@
                                 <br><br>
                                 <div style="font-size: 14px;color: #666666;line-height: 28px;">
                                     <div v-if="activeStep===3">
-                                        ${stepArr[0].startTime | timeFilter} ${stepArr[0].startClock | timeFilter} -
+                                        ${stepArr[0].startTime | timeFilter} ${stepArr[0].startClock | timeFilter} 至
                                         ${twoForm.endTime | timeFilter}
                                         ${twoForm.endClock | timeFilter}
                                     </div>
                                     <div>
-                                        ${oneForm.province} ${oneForm.city} ${oneForm.area}
+                                        ${region.provinceObj.province_name} ${region.cityObj.city_name}
+                                        ${region.areaObj.area_name}
                                     </div>
                                 </div>
                             </el-col>
                         </el-row>
                         <div style="font-size: 20px;color: #333333;margin: 25px 0;">活动标签</div>
                         <el-tag style="background-color: transparent;margin-right: 15px">超级浪漫</el-tag>
-                        <el-tag style="background-color: transparent;margin-right: 20px">超级浪漫</el-tag>
-                        <el-tag style="background-color: transparent;margin-right: 20px">超级浪漫</el-tag>
+                        <el-tag style="background-color: transparent;margin-right: 20px">活动性强</el-tag>
+                        <el-tag style="background-color: transparent;margin-right: 20px">交友活动</el-tag>
                         <div style="font-size: 20px;color: #333333;margin: 25px 0;">活动详情</div>
                         <el-collapse v-model="activeCollapseFour">
                             <el-collapse-item :title="item.title"
@@ -482,7 +501,7 @@
                                               :key="index"
                                               :name="index">
                                 <div class="gtf-show-step-line">${item.startTime | timeFilter} ${item.startClock |
-                                    timeFilter} - ${item.endTime | timeFilter}
+                                    timeFilter} 至 ${item.endTime | timeFilter}
                                     ${item.endClock | timeFilter}
                                 </div>
                                 <div class="gtf-show-step-line">活动标题：${item.title}</div>
@@ -583,7 +602,6 @@
     var postActivityBaseInfo = function (obj) {
         axios.post(API_SERVER_URL.GREAT_FUN + '/activity/postActivityBaseInfo', {
             "args": {
-                "activity_id": "",
                 "activity_title": obj.oneForm.title,
                 "activity_intro": obj.oneForm.detail,
                 "limit_num": obj.oneForm.number,
@@ -592,16 +610,20 @@
                 "start_time": "2018-08-12 12:00:00",
                 "end_time": "2018-08-15 12:00:00",
                 "meeting_place": "余姚北站",
-                "province_code": obj.oneForm.province,
-                "city_code": obj.oneForm.city,
-                "area_code": obj.oneForm.area,
+                "province_code": 330000,
+                "city_code": 330100,
+                "area_code": 330106,
                 "cost_num": obj.oneForm.costNum,
                 "activity_type_id": 1,
-                "img_path_array": []
+                "img_path_array": obj.imgPathArray
             }
+            // "province_code": obj.oneForm.province,
+            // "city_code": obj.oneForm.city,
+            // "area_code": obj.oneForm.area,
         }).then(function (response) {
             if (response.data.retcode === 0) {
                 obj.activityId = response.data.obj.activity_id;
+                console.log(obj.activityId)
             } else {
                 console.log("接口调用失败");
             }
@@ -611,16 +633,16 @@
     };
     //提交步骤
     var postActivityStep = function (obj) {
-        axios.post(API_SERVER_URL.GREAT_FUN + '/user/postActivityStep', {
+        axios.post(API_SERVER_URL.GREAT_FUN + '/activity/postActivityStep', {
             "args": {
                 "step_id": obj.stepArr.length,
                 "activity_id": obj.activityId,
                 "step_order": obj.stepArr.length,
                 "step_name": obj.twoForm.title,
-                "start_time": obj.twoForm.startTime + " " + obj.twoForm.startClock,
-                "end_time": obj.twoForm.endTime + " " + obj.twoForm.endClock,
+                "start_time": moment(obj.twoForm.startTime).format('YYYY-MM-DD') + " " + moment(obj.twoForm.startClock).format('HH:mm:ss'),
+                "end_time": moment(obj.twoForm.endTime).format('YYYY-MM-DD') + " " + moment(obj.twoForm.endClock).format('HH:mm:ss'),
                 "step_detail": obj.twoForm.detail,
-                "step_address": obj.twoForm.province + obj.twoForm.city + obj.twoForm.area
+                "step_address": obj.region.provinceObj.province_name + obj.region.cityObj.city_name + obj.region.areaObj.area_name
             }
         }).then(function (response) {
             if (response.data.retcode === 0) {
@@ -711,6 +733,12 @@
                 friendAllList: [],
                 //邀请的好友列表
                 friendInvited: [],
+                //img upload
+                dialogVisible: false,
+                upLoadData: {
+                    relativePath: "/public/upload/activity/acitivityimg"
+                },
+                imgPathArray: [],
             },
             created: function () {
                 var that = this;
@@ -745,7 +773,6 @@
                     });
 
                 },
-
                 focusSelectProvince() {
                     var that = this;
                     var item = that.region;
@@ -754,7 +781,6 @@
                     item.cityObj = {};
                     item.city = '';
                 },
-
                 afterSelectCity() {
                     var that = this;
                     var item = that.region;
@@ -765,7 +791,6 @@
                         callbackObj.region.areaList = res.obj.area_list;
                     });
                 },
-
                 focusSelectCity() {
                     var that = this;
                     var item = that.region;
@@ -773,7 +798,6 @@
                     item.areaObj = {};
                     item.area = '';
                 },
-
                 afterSelectArea() {
                     var that = this;
                     var item = that.region;
@@ -781,11 +805,9 @@
                     item.area = item.areaObj.name;
                     console.log(item);
                 },
-
                 focusSelectArea() {
 
                 },
-
                 countMoney: function () {
                     var that = this;
                     if (that.oneForm.money == 2) {
@@ -796,15 +818,6 @@
                     var that = this;
                     that.oneForm.costNum = 0;
                 },
-
-                //调用市
-//                city: function () {
-//                    getCityList(vm);
-//                },
-                //调用市
-//                area: function () {
-//                    getAreaList(vm);
-//                },
                 //1快速添加1
                 addOneFormTop: function () {
                     var that = this;
@@ -813,15 +826,13 @@
                 },
                 //1快速添加2
                 addOneFormDown: function () {
-                    //TODO
-                },
-                //1添加图片
-                addOneFormImg: function () {
-                    //TODO
                 },
                 //1下一步
                 oneGoNext: function () {
                     vm.activeStep = 1;
+                    if (vm.imgPathArray === []) {
+                        vm.imgPathArray = [""];
+                    }
                     postActivityBaseInfo(vm);
                 },
                 //查看概览
@@ -847,6 +858,13 @@
                     };
                     vm.stepTitleList.push(arr);
                     vm.TwoActiveStep = newId;
+                    vm.twoForm.startTime = moment(vm.twoForm.startTime).format('YYYY-MM-DD');
+                    vm.twoForm.startClock = moment(vm.twoForm.startClock).format('YYYY-MM-DD');
+                    vm.twoForm.endTime = moment(vm.twoForm.endTime).format('HH:mm:ss');
+                    vm.twoForm.endClock = moment(vm.twoForm.endTime).format('HH:mm:ss');
+                    vm.twoForm.province = vm.region.provinceObj.province_code;
+                    vm.twoForm.city = vm.region.provinceObj.city_code;
+                    vm.twoForm.area = vm.region.provinceObj.area_code;
                     vm.stepArr.push(vm.twoForm);
                     postActivityStep(vm);
                     vm.twoForm.title = '';
@@ -881,13 +899,21 @@
                 //回到主页
                 goIndex: function () {
                     location.href = "/front/web/main";
+                },
+                //添加图片
+                handlePictureCardPreview: function (res, file) {
+                    vm.dialogVisible = true;
+                    vm.imgPathArray.push(res.serverPath);
                 }
             },
-            filters:{
-                timeFilter:function (value) {
-                    return moment(value).format('YYYY-MM-DD HH:mm:ss');
-                }  
-            },        
+            filters: {
+                timeFilter: function (value) {
+                    if (moment(value).format('HH:mm:ss') === "00:00:00")
+                        return moment(value).format('YYYY-MM-DD');
+                    else
+                        return moment(value).format('HH:mm:ss');
+                }
+            },
         },
     );
 </script>
