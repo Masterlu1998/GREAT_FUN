@@ -164,12 +164,15 @@
             activityDetail: {},//活动详情
         },
         methods: {
-            getActivityList:function(obj, callback) {
+            getActivityList:function(obj, callback,page_size) {
                 var that = this;
                 var url = API_SERVER_URL.GREAT_FUN + '/activity/getActivityList';
+                if(!page_size){
+                    var page_size=0;
+                }
                 var args = {
                     "args": {
-                        "page_size": 0,
+                        "page_size": 5,
                         "page_index": 1,
                         "start_time": "",
                         "end_time": "",
@@ -179,6 +182,7 @@
                         "city_code": ""
                     }
                 };
+
 
                 axios.post(url, args)
                     .then(function (response) {

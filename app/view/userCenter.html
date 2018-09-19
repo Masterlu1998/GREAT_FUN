@@ -17,6 +17,12 @@
     .gft-user-center-main-container {
         margin-top: 30px;
     }
+    .el-checkbox+.el-checkbox{
+        margin-left: 0;
+    }
+    .el-checkbox{
+        margin-right: 20px;
+    }
 </style>
 <div id="vue-list" class="gf-grandfather-container" v-cloak>
     <div class="gf-user-container">
@@ -120,7 +126,13 @@
                             <el-col :span="6"></el-col>
                         </el-row>
                     </div>
-                    <div class="gf-font-title">个人标签</div>
+                    <div class="gf-font-title">
+                        <span>个人标签</span>
+                        <a class="gf-font-xs gf-cursor-pointer" style="margin-left: 10px" @click="editLabel()">编辑
+                            <i class="el-icon-edit-outline"></i>
+                        </a>
+                    </div>
+                    <!--<el-button type="primary" icon="el-icon-plus" size="mini" circle style="width: 10px; height: 10px;"></el-button>-->
                     <div style="margin:30px 0;">
                         <div style="display: inline-block">
                             <div class="gf-label" v-for="labelItem in userDetail.label_list">${labelItem.label_name}</div>
@@ -210,6 +222,26 @@
             </el-col>
         </el-row>
     </div>
+    <el-dialog
+            title="请选择标签"
+            :visible.sync="editLabelVisible"
+            width="30%"
+            center>
+        <el-checkbox-group v-model="editLabelConfirmList">
+            <el-checkbox :label="1">复选框 A</el-checkbox>
+            <el-checkbox :label="2">复选框 B</el-checkbox>
+            <el-checkbox :label="3">复选框 C</el-checkbox>
+            <el-checkbox :label="4">复选框 D</el-checkbox>
+            <el-checkbox :label="5">复选框 E</el-checkbox>
+            <el-checkbox :label="6">复选框 F</el-checkbox>
+            <el-checkbox :label="7">复选框 G</el-checkbox>
+            <el-checkbox :label="8">复选框 F</el-checkbox>
+        </el-checkbox-group>
+        <span slot="footer" class="dialog-footer">
+    <el-button @click="editLabelVisible = false">取 消</el-button>
+    <el-button type="primary" @click="submitEditLabelForm()">确 定</el-button>
+  </span>
+    </el-dialog>
 </div>
 <script type="text/javascript" src="/public/assets/js/userCenter/userCenterCommon.js"></script>
 <script>
@@ -226,9 +258,21 @@
             viewHistoryList: [],//用户浏览记录列表
             AttentionUserList: [],//关注列表
             UserActivityList: [],//用户活动列表
-            attentionActivityList:[]//用户收藏活动列表
+            attentionActivityList:[],//用户收藏活动列表
+            editLabelVisible:false,
+            editLabelConfirmList:[],
+            editLabelList:[]
         },
-        methods: {},
+        methods: {
+            editLabel:function () {
+                var that=this;
+                that.editLabelList=[];
+                that.editLabelVisible=true;
+            },
+            submitEditLabelForm:function () {
+                var that=this;
+            }
+        },
         created: function () {
             var that = this;
             that.getFriendTypeList(that);
