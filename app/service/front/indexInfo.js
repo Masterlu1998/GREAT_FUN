@@ -62,7 +62,6 @@ class IndexInfoService extends Service {
     const { user_id } = params;
     const user_label_search_obj = {
       bind_id: user_id,
-      bind_type: 2
     };
     const user_label_sql_option = {
       where: user_label_search_obj,
@@ -72,7 +71,6 @@ class IndexInfoService extends Service {
     const user_label_list = underscore.pluck(user_label_list_result, 'label_id');
     const activity_label_search_obj = {
       label_id: user_label_list,
-      bind_type: 1
     };
     const activity_label_sql_option = {
       where: activity_label_search_obj,
