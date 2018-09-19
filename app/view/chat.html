@@ -1,85 +1,92 @@
-<!DOCTYPE html>
-<html lang="en">
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>chat</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    body {
+        font: 13px Helvetica, Arial;
+    }
 
-        body {
-            font: 13px Helvetica, Arial;
-        }
+    /*.gft-form-container {*/
+        /*padding: 3px;*/
+        /*position: fixed;*/
+        /*bottom: 0;*/
+        /*width: 100%;*/
+    /*}*/
 
-        .gft-form-container {
-            padding: 3px;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
+    form {
+        padding: 3px;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background-color: #fff;
+        box-shadow: 0 2px 12px 0 rgba(129, 107, 226, .20);
+    }
 
-        form input {
-            border: 0;
-            padding: 10px;
-            width: 90%;
-            margin-right: .5%;
-        }
+    form input {
+        padding: 10px;
+        width: 90%;
+        margin-right: .5%;
+        border: 1px solid #dcdfe6;
+        border-radius: 2px;
+    }
 
-        form button {
-            width: 9%;
-            background: rgb(130, 224, 255);
-            border: none;
-            padding: 10px;
-        }
+    form button {
+        padding: 10px;
+        width: 9%;
+        color: #fff;
+        background-color: #409eff;
+        border: none;
+        border-radius: 2px;
 
-        #messages {
-            padding: 30px 20px;
-            list-style-type: none;
-            margin: 0;
-        }
+    }
 
-        #messages li {
-            display: table;
-            margin-bottom: 20px;
-            word-wrap: break-word;
-            word-break: normal;
-            max-width: 30%;
-            padding: 15px 20px;
-            font-size: 18px;
-            background: #FFF;
-            -moz-border-radius: 8px;
-            -webkit-border-radius: 8px;
-            border-radius: 8px;
-            box-shadow: 0 2px 12px 0 rgba(129, 107, 226, .20);
-        }
+    form button:hover{
+        background: #66b1ff;
+    }
 
-        #messages li:before{
-            position: absolute;
-            content: "";
-            display: inline-block;
-            width: 0;
-            height: 0;
-            margin-left: -32px;
-            /*margin-right: 32px;*/
-            border-top: 8px solid transparent;
-            border-right: 12px solid #fff;
-            border-bottom: 8px solid transparent;
-        }
+    #messages {
+        padding: 30px 20px;
+        list-style-type: none;
+        margin: 0;
+    }
 
-        #messages li:nth-child(odd) {
-            background: #FFF;
-        }
-    </style>
-</head>
+    #messages li {
+        display: table;
+        margin-bottom: 20px;
+        word-wrap: break-word;
+        word-break: normal;
+        max-width: 30%;
+        padding: 15px 20px;
+        font-size: 18px;
+        background: #FFF;
+        -moz-border-radius: 8px;
+        -webkit-border-radius: 8px;
+        border-radius: 8px;
+        box-shadow: 0 2px 12px 0 rgba(129, 107, 226, .20);
+    }
 
-<body>
-<div id="vue-list" v-cloak>
+    #messages li:before {
+        position: absolute;
+        content: "";
+        display: inline-block;
+        width: 0;
+        height: 0;
+        margin-left: -32px;
+        /*margin-right: 32px;*/
+        border-top: 8px solid transparent;
+        border-right: 12px solid #fff;
+        border-bottom: 8px solid transparent;
+    }
+
+    #messages li:nth-child(odd) {
+        background: #FFF;
+    }
+</style>
+
+<div id="vue-list">
     <ul id="messages">
         <li>23333333333333333333333</li>
         <li>陈花花陈花花陈花花陈花花陈花花陈花花陈花花陈花花陈花花陈花花陈花花</li>
@@ -92,13 +99,13 @@
         <li>陈花花陈花花陈花花陈花花陈花花陈花花陈花花陈花花陈花花陈花花陈花花</li>
         <li>号</li>
     </ul>
+    <form action="">
+        <!--<el-input v-model="chatInput" placeholder="请输入内容" style="width: calc(100% - 120px);"></el-input>-->
+        <!--<el-button type="primary" round @click="sendMessage">发送</el-button>-->
+        <input id="m" autocomplete="off"/>
+        <button>发送</button>
+    </form>
     <div class="gf-back-white gf-shadow-theme-color gft-form-container">
-        <form action="">
-            <el-input v-model="chatInput" placeholder="请输入内容" style="width: calc(100% - 120px);"></el-input>
-            <el-button type="primary" round @click="sendMessage">发送</el-button>
-            <!--<input id="m" autocomplete="off"/>-->
-            <!--<button>Send</button>-->
-        </form>
     </div>
 </div>
 </body>
@@ -107,8 +114,10 @@
 <script>
     // browser
     const log = console.log;
+    var uesrId=userData.userInfo.user_id;
 
     $(function () {
+        console.log(uesrId);
         var socket = io();
         $('form').submit(function () {
             var message = {
@@ -125,27 +134,25 @@
         });
     });
 
-    var chatVm = new Vue({
-        el: '#vue-list',
-        delimiters: ['${', '}'],
-        data: {
-            chatInput: ''
-        },
-        methods: {
-            sendMessage: function () {
-                var that = this;
-                var message = {
-                    targetId: '456456',
-                    room: '123456',
-                    msg: that.chatInput
-                };
-                socket.emit('chat', message);
-                that.chatInput = '';
-                return false;
-            }
-        },
-        created: {},
-    });
+//    var chatVm = new Vue({
+//        el: '#vue-list',
+//        delimiters: ['${', '}'],
+//        data: {
+//            chatInput: ''
+//        },
+//        methods: {
+//            sendMessage: function () {
+//                var that = this;
+//                var message = {
+//                    targetId: '456456',
+//                    room: '123456',
+//                    msg: that.chatInput
+//                };
+//                socket.emit('chat', message);
+//                that.chatInput = '';
+//                return false;
+//            }
+//        },
+//        created: {},
+//    });
 </script>
-
-</html>

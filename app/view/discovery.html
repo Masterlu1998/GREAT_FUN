@@ -65,26 +65,40 @@
                 <el-form-item label="类别">
                     <el-row :gutter="20">
                         <el-col :span="20">
-                            <el-checkbox-group v-model="activityType">
-                                <el-checkbox label="漫展" name="type"></el-checkbox>
-                                <el-checkbox label="演唱会" name="type"></el-checkbox>
-                                <el-checkbox label="观赏" name="type"></el-checkbox>
-                                <el-checkbox label="交友" name="type"></el-checkbox>
-                            </el-checkbox-group>
+                            <el-radio-group v-model="activityType">
+                                <el-radio :label="1">漫展</el-radio>
+                                <el-radio :label="2">演唱会</el-radio>
+                                <el-radio :label="3">观赏</el-radio>
+                                <el-radio :label="4">交友</el-radio>
+                            </el-radio-group>
+                            <!--<el-checkbox-group v-model="activityType">-->
+                                <!--<el-checkbox label="漫展" name="type"></el-checkbox>-->
+                                <!--<el-checkbox label="演唱会" name="type"></el-checkbox>-->
+                                <!--<el-checkbox label="观赏" name="type"></el-checkbox>-->
+                                <!--<el-checkbox label="交友" name="type"></el-checkbox>-->
+                            <!--</el-checkbox-group>-->
                         </el-col>
                     </el-row>
                 </el-form-item>
                 <el-form-item label="价格">
                     <el-row :gutter="20">
                         <el-col :span="20">
-                            <el-checkbox-group v-model="activityPrice">
-                                <el-checkbox label="100以下" name="type"></el-checkbox>
-                                <el-checkbox label="100~1k" name="type"></el-checkbox>
-                                <el-checkbox label="1k~5k" name="type"></el-checkbox>
-                                <el-checkbox label="5k~3w" name="type"></el-checkbox>
-                                <el-checkbox label="3w~10w" name="type"></el-checkbox>
-                                <el-checkbox label="10w以上" name="type"></el-checkbox>
-                            </el-checkbox-group>
+                            <el-radio-group v-model="activityPrice">
+                                <el-radio :label="1">100以下</el-radio>
+                                <el-radio :label="2">100~1k</el-radio>
+                                <el-radio :label="3">1k~5k</el-radio>
+                                <el-radio :label="4">5k~3w</el-radio>
+                                <el-radio :label="5">3w~10w</el-radio>
+                                <el-radio :label="6">10w以上</el-radio>
+                            </el-radio-group>
+                            <!--<el-checkbox-group v-model="activityPrice">-->
+                                <!--<el-checkbox label="100以下" name="type"></el-checkbox>-->
+                                <!--<el-checkbox label="100~1k" name="type"></el-checkbox>-->
+                                <!--<el-checkbox label="1k~5k" name="type"></el-checkbox>-->
+                                <!--<el-checkbox label="5k~3w" name="type"></el-checkbox>-->
+                                <!--<el-checkbox label="3w~10w" name="type"></el-checkbox>-->
+                                <!--<el-checkbox label="10w以上" name="type"></el-checkbox>-->
+                            <!--</el-checkbox-group>-->
                         </el-col>
                     </el-row>
                 </el-form-item>
@@ -193,8 +207,8 @@
                 isSelectCounty: false,
             },
             activityDate: '',//活动日期
-            activityType: [],//活动类型
-            activityPrice: [],//活动价格
+            activityType: 0,//活动类型
+            activityPrice: 0,//活动价格
             activityList: [],//活动列表
             choseActivityId:'',
             activityDetail: {},//活动详情
@@ -237,7 +251,7 @@
                         "page_index": 1,
                         "start_time": "",
                         "end_time": "",
-                        "cost_num_type": 0,
+                        "cost_num_type": that.activityPrice,
                         "keywords": "",
                         "province_code": "",
                         "city_code": ""
