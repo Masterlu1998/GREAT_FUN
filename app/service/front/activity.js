@@ -83,7 +83,7 @@ class ActivityService extends Service {
     }
     const sql_option = {
       where: search_activity_obj,
-      attributes: ['activity_id', 'activity_title', 'activity_intro', [sequelize.fn("DATE_FORMAT", sequelize.col('start_time'), '%Y-%m-%d %H:%i') ,'start_time'], [sequelize.fn("DATE_FORMAT", sequelize.col('end_time'), '%Y-%m-%d %H:%i') ,'end_time'], 'join_user_num', 'user_attention_num', 'images_path', 'meeting_place'],
+      attributes: ['activity_id', 'activity_title', 'activity_intro', [sequelize.fn("DATE_FORMAT", sequelize.col('start_time'), '%Y-%m-%d %H:%i') ,'start_time'], [sequelize.fn("DATE_FORMAT", sequelize.col('end_time'), '%Y-%m-%d %H:%i') ,'end_time'], 'join_user_num', 'user_attention_num', 'images_path', 'meeting_place', 'activity_type_id'],
       order: [['add_time', 'DESC']]
     };
     if(page_size !== 0) {
