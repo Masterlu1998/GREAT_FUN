@@ -12,7 +12,8 @@
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css"
           integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link href="https://cdn.bootcss.com/Swiper/4.3.0/css/swiper.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!--<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">-->
+    <link href="https://cdn.bootcss.com/element-ui/2.3.7/theme-chalk/index.css" rel="stylesheet">
 
     <link rel="stylesheet" href="/public/assets/css/project.css">
     <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
@@ -21,7 +22,8 @@
     <script src="https://cdn.bootcss.com/moment.js/2.22.1/moment.js"></script>
     <script src="https://cdn.bootcss.com/Swiper/4.3.0/js/swiper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <!--<script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
+    <script src="https://cdn.bootcss.com/element-ui/2.4.0/index.js"></script>
     <script src="/public/common/helper/gf-helper.js"></script>
     <script src="/public/common/global/global.js"></script>
     <style>
@@ -69,6 +71,7 @@
                 <ul class="nav navbar-nav">
                     <li class="active gf-cursor-pointer"><a href="/front/web/main">主页<span class="sr-only">(current)</span></a></li>
                     <li class="gf-cursor-pointer"><a href="/front/web/activity/discovery">发现</a></li>
+                    <li class="gf-cursor-pointer"><a @click="goToChatRoom()">聊天室</a></li>
                 </ul>
 
                 <ul class="nav navbar-nav navbar-right">
@@ -87,9 +90,9 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                            aria-expanded="false">未登录<span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a @click="loginDialogVisible= true">登录</a></li>
+                            <li><a @click="loginDialogVisible = true">登录</a></li>
                             <li role="separator" class="divider" style="margin: 8px 4px;"></li>
-                            <li><a @click="signIn()">注册</a></li>
+                            <li><a @click="signInDialogVisible = true">注册</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -117,31 +120,40 @@
         </div>
     </el-dialog>
 
-    <!--<el-dialog title="注册" :visible.sync="userRegisterVisible" width="350px">-->
-        <!--<el-form :model="userRegisterFrom">-->
-            <!--<el-form-item label="邮箱" label-width="40px">-->
-                <!--<el-input v-model="userRegisterFrom.emailAddress"-->
-                          <!--auto-complete="off"-->
-                          <!--placeholder="请输入您的邮箱"></el-input>-->
-            <!--</el-form-item>-->
-            <!--<el-form-item label="密码" label-width="40px">-->
-                <!--<el-input v-model="userRegisterFrom.userPassword"-->
-                          <!--type="password"-->
-                          <!--placeholder="请输入您的密码"-->
-                          <!--auto-complete="off"></el-input>-->
-            <!--</el-form-item>-->
-            <!--<el-form-item label="确认密码" label-width="40px">-->
-                <!--<el-input v-model="userRegisterFrom.userPassword"-->
-                          <!--type="password"-->
-                          <!--placeholder="请再次输入您的密码"-->
-                          <!--auto-complete="off"></el-input>-->
-            <!--</el-form-item>-->
-        <!--</el-form>-->
-        <!--<div slot="footer" class="dialog-footer">-->
-            <!--<el-button @click="loginDialogVisible = false">取 消</el-button>-->
-            <!--<el-button type="primary" @click="login()">登 录</el-button>-->
-        <!--</div>-->
-    <!--</el-dialog>-->
+    <el-dialog title="注册" :visible.sync="signInDialogVisible" width="350px">
+        <el-form :model="userRegisterFrom" :rules="rules" ref="userRegisterFrom">
+            <el-form-item label="用户名" label-width="80px" prop="userName">
+                <el-input v-model="userRegisterFrom.userName"
+                          auto-complete="off"
+                          prop="userName"
+                          placeholder="请输入您的用户名"
+                ></el-input>
+            </el-form-item>
+            <el-form-item label="邮箱" label-width="80px" prop="emailAddress">
+                <el-input v-model="userRegisterFrom.emailAddress"
+                          auto-complete="off"
+                          prop="email"
+                          placeholder="请输入您的邮箱"
+                          ></el-input>
+            </el-form-item>
+            <el-form-item label="密码" label-width="80px" prop="userPassword">
+                <el-input v-model="userRegisterFrom.userPassword"
+                          type="password"
+                          placeholder="请输入您的密码"
+                          auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="确认密码" label-width="80px" prop="userPasswordConfirm">
+                <el-input v-model="userRegisterFrom.userPasswordConfirm"
+                          type="password"
+                          placeholder="请再次输入您的密码"
+                          auto-complete="off"></el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="loginDialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="signIn()">注 册</el-button>
+        </div>
+    </el-dialog>
 </div>
 <!--背景带-->
 <div class="gf-banner-bac"></div>
@@ -158,11 +170,37 @@
                 telephone: '',
                 userPassword: ''
             },
+            userRegisterFrom:{
+                userName:'',
+                emailAddress:'',
+                userPassword:'',
+                userPasswordConfirm:'',
+                userRegisterFrom:'',
+            },
             signInForm: {},
             changeUserDialogVisible: false,
             loginDialogVisible: false,
             signInDialogVisible: false,
             isLogin: false,
+
+            rules:{
+                userName:[
+                    {required: true, message: '请输入用户名', trigger: 'blur'},
+                ],
+                emailAddress:[
+                    {required: true, message: '请输入邮箱', trigger: 'blur'},
+                    {validator: validateEmail, trigger: 'blur'}
+                ],
+                userPassword:[
+                    {required: true, message: '请输入密码', trigger: 'blur'},
+                    {validator: validatePass, trigger: 'blur'}
+                ],
+                userPasswordConfirm:[
+                    {required: true, message: '请确认密码', trigger: 'blur'},
+                    {validator: confirmPass, trigger: 'blur'}
+                ],
+
+            },
 
         },
         methods: {
@@ -177,6 +215,19 @@
                     });
                 }
 
+            },
+
+            goToChatRoom:function () {
+                var that = this;
+                location.href="/front/web/chat/chat";
+//                if(sessionStorage.getItem('GF_IS_LOGIN')){
+//                    location.href="/front/web/chat/chat";
+//                }else{
+//                    that.$message({
+//                        message: '登录后才能进入聊天室哦！',
+//                        type: 'warning'
+//                    });
+//                }
             },
             changeUser: function () {
                 var that=this;
@@ -211,7 +262,7 @@
                     var linkInterval=setInterval(function () {
                         location.reload();
                         clearInterval(linkInterval);
-                    },3000);
+                    },1000);
                 };
 
                 axios.post(url, args)
@@ -228,7 +279,62 @@
                     });
             },
             signIn: function () {
+                var that=this;
+                var url=API_SERVER_URL.GREAT_FUN + '/common/userRegister';
+                var args={
+                    "args": {
+                        "email_address": that.userRegisterFrom.emailAddress,
+                        "user_name": that.userRegisterFrom.userName,
+                        "telephone": "",
+                        "user_pwd": that.userRegisterFrom.userPassword,
+                        "real_name": "鲁大师",
+                        "birthday": "1998-02-18",
+                        "sex": 1,
+                        "age": 18,
+                        "certificate": "330281199802180418",
+                        "certificate_type_id": 1,
+                        "avatar_url": "https://source.unsplash.com/random/100x100",
+                        "user_intro": "这是一条测试登陆数据",
+                        "address": "小和山星人"
+                    }
+                };
+                var callback=function (res,callbackObj) {
+                    callbackObj.isLogin = true;
+                    callbackObj.userInfo = res.obj;
+                    sessionStorage.setItem('GF_IS_LOGIN', true);
+                    sessionStorage.setItem('GF_USER_INFO', JSON.stringify(res.obj));
+                    callbackObj.$message({
+                        message: '注册成功',
+                        type: 'success'
+                    });
+                    var linkInterval=setInterval(function () {
+                        location.reload();
+                        clearInterval(linkInterval);
+                    },1000);
+                };
 
+                if(that.userRegisterFrom.emailAddress&&that.userRegisterFrom.userName&&that.userRegisterFrom.userPassword){
+                    axios.post(url,args)
+                        .then(function (response) {
+                            var res = response.data;
+                            if(res.retcode===0){
+                                callback(res,that);
+                            }else{
+                                that.$message({
+                                    message: res.msg.prompt,
+                                    type: 'warning'
+                                });
+                            }
+                        })
+                        .catch(function (error) {
+                            console.error(error);
+                        });
+                }else{
+                    that.$message({
+                        message: '请填写完整信息',
+                        type: 'warning'
+                    });
+                }
             },
         },
         created: function () {

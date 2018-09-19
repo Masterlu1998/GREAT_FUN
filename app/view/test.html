@@ -45,10 +45,10 @@
             },
         },
         methods: {
-            handleRemove(file, fileList) {
+            handleRemove: function(file, fileList) {
                 console.log(file, fileList);
             },
-            handlePictureCardPreview(file) {
+            handlePictureCardPreviewunction: function(file) {
                 this.dialogImageUrl = file.url;
                 this.dialogVisible = true;
             }

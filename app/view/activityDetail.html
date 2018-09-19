@@ -57,8 +57,8 @@
                     </div>
                     <div style="margin-bottom: 30px">
                         <el-row type="flex" justify="center" align="middle">
-                            <div class="gf-btn-standard gft-btn-activityDetail">立即参加</div>
-                            <div class="gf-btn-standard gft-btn-activityDetail">收藏</div>
+                            <div class="gf-btn-standard gft-btn-activityDetail" @click="joinActivity()">立即参加</div>
+                            <div class="gf-btn-standard gft-btn-activityDetail" @click="followActivity()">收藏</div>
                         </el-row>
                     </div>
                     <div class="gf-font-title">评论</div>
@@ -213,7 +213,7 @@
                 var url = API_SERVER_URL.GREAT_FUN + '/indexInfo/getIndexUserInfo';
                 var args = {
                     "args": {
-                        "user_id": "1d6f5edd381f4e4c9e43d61d63b0bc37"
+                        "user_id": userData.userInfo.user_id
                     }
 
                 };
@@ -242,7 +242,7 @@
 
             },
 
-            goToActivityDetail(index){
+            goToActivityDetail:function(index){
                 var that = this;
                 that.choseActivityId = that.activityList[index].activity_id;
                 that.getActivityDetail(that, function (res, obj) {
@@ -253,6 +253,79 @@
 
             },
 
+            joinActivity:function () {
+                var that=this;
+                var activityId=that.activityDetail.activity_id;
+
+                var url = API_SERVER_URL.GREAT_FUN + '/activity/followActivity';
+                var args = {
+                    "args": {
+                        "activity_id": activityId,
+                        "user_id":  userData.userInfo.user_id
+                    }
+
+                };
+
+                if(sessionStorage.getItem('GF_IS_LOGIN')){
+                    axios.post(url, args)
+                        .then(function (response) {
+                            var res = response.data;
+                            if (res.retcode === 0) {
+                                that.$message({
+                                    message: '参加成功',
+                                    type: 'success'
+                                });
+                            } else {
+                                console.log(res.message.prompt);
+                            }
+                        })
+                        .catch(function (error) {
+                            console.error(error);
+                        });
+                }else{
+                    that.$message({
+                        message: '登录后才能参加和收藏哦！',
+                        type: 'warning'
+                    });
+                }
+            },
+
+            followActivity:function () {
+                var that=this;
+                var activityId=that.activityDetail.activity_id;
+
+                var url = API_SERVER_URL.GREAT_FUN + '/activity/followActivity';
+                var args = {
+                    "args": {
+                        "activity_id": activityId,
+                        "user_id":  userData.userInfo.user_id
+                    }
+
+                };
+
+                if(sessionStorage.getItem('GF_IS_LOGIN')){
+                    axios.post(url, args)
+                        .then(function (response) {
+                            var res = response.data;
+                            if (res.retcode === 0) {
+                                that.$message({
+                                    message: '收藏成功',
+                                    type: 'success'
+                                });
+                            } else {
+                                console.log(res.message.prompt);
+                            }
+                        })
+                        .catch(function (error) {
+                            console.error(error);
+                        });
+                }else{
+                    that.$message({
+                        message: '登录后才能参加和收藏哦！',
+                        type: 'warning'
+                    });
+                }
+            },
         },
         created: function () {
             var that = this;

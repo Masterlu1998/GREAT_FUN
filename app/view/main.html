@@ -14,15 +14,26 @@
     .el-carousel__item:nth-child(2n+1) {
         background-color: #d3dce6;
     }
+    .gft-banner-container{
+        display: block;
+        height: 400px;
+        padding: 0;
+        text-align: center;
+    }
+    .gft-banner-img{
+        margin: 0 -100%;
+        height: 100%;
+        overflow: hidden;
+    }
 </style>
 
 
 <div id="vue-list" v-cloak>
     <template>
         <el-carousel :interval="4000" height="400px">
-            <el-carousel-item v-for="bannerItem in bannerList" :key="item">
-                <div>
-                    <img :src="bannerItem" style="width: 100%;height: auto;">
+            <el-carousel-item v-for="(bannerItem,index) in bannerList" :key="index">
+                <div class="gft-banner-container">
+                    <img :src="bannerItem" class="gft-banner-img">
                 </div>
             </el-carousel-item>
         </el-carousel>
@@ -71,7 +82,7 @@
                                     <img :src="userItem.avatar_url" class="gf-img-user-head-photo">
                                 </div>
                                 <div class="gf-user-right-container gf-font-m">
-                                    <div>${userItem.user_name}</div>
+                                    <div><a class="gf-font-m gf-cursor-pointer" @click="handleUserInfo(index)">${userItem.user_name}</a></div>
                                     <div class="gf-font-light gf-content-limited gf-font-xs" style="margin-top: 5px; width: 500px;">${userItem.user_intro}</div>
                                 </div>
                             </el-row>
@@ -144,8 +155,9 @@
         delimiters: ['${', '}'],
         data: {
             bannerList:[
-                '/public/assets/img/banner_1.jpg',
-                '/public/assets/img/banner_2.jpg'
+                '/public/assets/img/banner_3.jpg',
+                '/public/assets/img/banner_4.jpg',
+                '/public/assets/img/banner_5.jpg'
             ],//轮播图列表
             activityList: [],//活动列表
             indexUserList:[],//知名博主列表
@@ -238,7 +250,7 @@
                 })
             },
 
-            goToActivityDetail(index){
+            goToActivityDetail:function(index){
                 var that = this;
                 that.choseActivityId = that.activityList[index].activity_id;
                 that.getActivityDetail(that, function (res, obj) {
@@ -257,15 +269,18 @@
                     that.indexUserList[index].isAttention=true;
                 }
 
+            },
+
+            handleUserInfo:function (index) {
+                var that = this;
+                var userId = that.indexUserList[index].user_id;
+                that.goToUserCenter(that,userId);
             }
         },
         created: function () {
             var that=this;
             that.getActivityList(that, function (res, callbackObj) {
                 callbackObj.activityList = res.obj.activity_list;
-                for(var i=0;i<callbackObj.activityList.length;i++){
-                    callbackObj.activityList[i].images_path='/public/assets/img/default'+i+'.png';
-                }
             });
             that.getIndexUserInfo(that,function (res,callbackObj) {
                 callbackObj.indexUserList=res.obj.user_list;

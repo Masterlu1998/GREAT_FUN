@@ -147,7 +147,7 @@
                         <el-row type="flex" align="middle">
                             <img src="/public/assets/img/head_default.png" class="gf-img-user-head-photo">
                             <div class="gf-user-right-container gf-font-l">
-                                <div>${activityDetail.user_name}</div>
+                                <div class="gf-font-m gf-cursor-pointer" @click="handleUserInfo()">${activityDetail.user_name}</div>
                                 <div class="gf-font-light">lv.03</div>
                             </div>
                         </el-row>
@@ -202,7 +202,7 @@
             activeNames: [],//活动名称
         },
         methods: {
-            onSubmitActivityForm() {
+            onSubmitActivityForm:function() {
                 var that = this;
                 var obj = {
                     'region': {
@@ -223,11 +223,12 @@
 
             },
 
-            handleChange(val) {
+            handleChange:function(val) {
                 console.log(val);
             },
+
             //获取数据部分
-            getActivityList(obj, callback){
+            getActivityList:function(obj, callback){
                 var that = this;
                 var url = API_SERVER_URL.GREAT_FUN + '/activity/getActivityList';
                 var args = {
@@ -258,7 +259,7 @@
                     });
             },
 
-            getActivityDetail(obj, callback){
+            getActivityDetail:function(obj, callback){
                 var that = this;
                 var url = API_SERVER_URL.GREAT_FUN + '/activity/getActivityDetail';
                 var args = {
@@ -281,7 +282,7 @@
                     });
             },
 
-            getLogInfo(obj, callback){
+            getLogInfo:function(obj, callback){
                 var that = this;
                 var url = API_SERVER_URL.GREAT_FUN + '/common/userLogin';
                 var args = {
@@ -305,12 +306,12 @@
             },
 
             //业务部分
-            logOut(){
+            logOut:function(){
                 sessionStorage.setItem('isLogin', false);
                 sessionStorage.removeItem('userObj');
             },
 
-            logIn(){
+            logIn:function(){
                 var that = this;
                 var callback = function (res, obj) {
                     if (res.retcode = 0) {
@@ -325,7 +326,7 @@
                 that.getLogInfo(that, callback);
             },
 
-            showActivityPreview(index){
+            showActivityPreview:function(index){
                 var that = this;
                 that.choseActivityId = that.activityList[index].activity_id;
                 that.getActivityDetail(that, function (res, obj) {
@@ -333,14 +334,14 @@
                 })
             },
 
-            goToActivityDetail(index){
+            goToActivityDetail:function(index){
                 var that = this;
                 sessionStorage.setItem('GF_ACTIVITY_DETAIL', JSON.stringify(that.activityDetail));
                 location.href = "/front/web/activity/activityDetail";
             },
 
             //地点选择器
-            afterSelectProvince(){
+            afterSelectProvince:function(){
                 var that = this;
                 var item = that.region;
                 item.isSelectProvince = true;
@@ -352,7 +353,7 @@
 
             },
 
-            focusSelectProvince(){
+            focusSelectProvince:function(){
                 var that = this;
                 var item = that.region;
                 item.isSelectProvince = false;
@@ -361,7 +362,7 @@
                 item.city = '';
             },
 
-            afterSelectCity(){
+            afterSelectCity:function(){
                 var that = this;
                 var item = that.region;
                 item.isSelectCity = true;
@@ -373,7 +374,7 @@
 
             },
 
-            focusSelectCity(){
+            focusSelectCity:function(){
                 var that = this;
                 var item = that.region;
                 item.isSelectCity = false;
@@ -381,7 +382,7 @@
                 item.area = '';
             },
 
-            afterSelectCounty(){
+            afterSelectCounty:function(){
                 var that = this;
                 var item = that.region;
                 item.isSelectCounty = true;
@@ -389,9 +390,16 @@
                 console.log(item);
             },
 
-            focusSelectArea(){
+            focusSelectArea:function(){
 
             },
+
+
+            handleUserInfo:function (index) {
+                var that = this;
+                var userId = that.activityDetail.user_id;
+                that.goToUserCenter(that,userId);
+            }
         },
         created: function () {
             var that = this;
@@ -400,9 +408,6 @@
             });
             that.getActivityList(that, function (res, callbackObj) {
                 callbackObj.activityList = res.obj.activity_list;
-                for(var i=0;i<callbackObj.activityList.length;i++){
-                    callbackObj.activityList[i].images_path='/public/assets/img/default'+i+'.png';
-                }
                 that.showActivityPreview(0);
             });
         },

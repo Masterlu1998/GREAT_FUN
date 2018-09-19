@@ -1,10 +1,185 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<style>
+    .gft-img-user-head-photo {
+        height: 120px;
+        width: 120px;
+    }
 
-</body>
-</html>
+    .gft-font-user-center-name {
+        font-size: 36px;
+        color: #FFF;
+    }
+
+    .gft-font-user-center-header-small {
+        font-size: 18px;
+        color: #FFF;
+    }
+
+    .gft-user-center-main-container {
+        margin-top: 30px;
+    }
+</style>
+<div id="vue-list" class="gf-grandfather-container" v-cloak>
+    <div class="gf-user-container">
+        <el-row type="flex" align="middle">
+            <div>
+                <img src="/public/assets/img/head_default.png" class="gf-img-user-head-photo gft-img-user-head-photo">
+                <div class="gf-font-s gt-font-white" style="margin-top: 10px;">
+                    <span>关注 30</span>
+                    <span style="margin-left: 20px">粉丝 30</span>
+                </div>
+            </div>
+            <div class="gf-user-right-container gf-font-l">
+                <div>
+                    <span class="gft-font-user-center-name">${userDetail.user_name}</span>
+                    <span class="gft-font-user-center-header-small" style="margin-left: 10px;">${userDetail.level_name}</span>
+                </div>
+                <div class="gf-font-light gft-font-user-center-header-small">${userDetail.user_intro}</div>
+            </div>
+        </el-row>
+    </div>
+    <div class="gft-user-center-main-container">
+        <el-row :gutter="20">
+            <el-col :span="6">
+                <div class="gf-standard-container">
+                    <div class="gf-font-title">他的好友</div>
+                    <div class="gf-step-list-container">
+                        <el-collapse v-model="friendListActiveNames" @change="handlefFriendListChange">
+                            <el-collapse-item :title="FriendTypeItem.friend_type_name"
+                                              v-for="(FriendTypeItem,index) in friendTypeList" :name="index"
+                                              :key="index">
+                                <div v-for="(friendItem,index) in FriendTypeItem.friendList"
+                                     class="gf-font-default gf-align-item">
+                                    <div><img :src="friendItem.avatar_url" class="gf-header-small"></div>
+                                    <div>${friendItem.user_name}</div>
+                                </div>
+                            </el-collapse-item>
+                        </el-collapse>
+                    </div>
+                </div>
+            </el-col>
+            <el-col :span="18">
+                <div class="gf-standard-container">
+                    <div class="gf-font-title">个人标签</div>
+                    <div style="margin:30px 0;">
+                        <div style="display: inline-block">
+                            <div class="gf-label" v-for="labelItem in userDetail.label_list">${labelItem.label_name}</div>
+                        </div>
+                    </div>
+                    <div class="gf-font-title">近期预览</div>
+                    <div class="gft-activity-list">
+                        <div v-for="(activityItem,index) in viewHistoryList"
+                             class="gft-activity-list-item"
+                             @click="showActivityPreview(index)"
+                             :key="index">
+                            <el-row :gutter="30" type="flex" justify="space-around">
+                                <img src="/public/assets/img/default.png" class="gf-img-cover">
+                                <el-col style="width: calc(100% - 220px)">
+                                    <div class="gf-list-subtitle gf-content-limited-single gf-font-subtitle">
+                                        ${activityItem.activity_title}
+                                    </div>
+                                    <div class="gf-font-minor">
+                                        ${activityItem.start_time} - ${activityItem.end_time}
+                                    </div>
+                                    <div class="gf-font-minor">
+                                        ${activityItem.meeting_place}
+                                    </div>
+                                </el-col>
+                            </el-row>
+                        </div>
+                    </div>
+                    <div class="gf-font-title">关注的人</div>
+                    <div style="margin-bottom: 30px">
+                        <div class="gf-user-container" style="margin-top: 10px">
+                            <div style="padding: 10px 0;" v-for="userItem in AttentionUserList">
+                                <el-row type="flex" align="middle">
+                                    <img :src="userItem.avatar_url" class="gf-img-user-head-photo">
+                                    <div class="gf-user-right-container gf-font-l">
+                                        <div>${userItem.user_name}</div>
+                                        <div class="gf-font-light">${userItem.user_intro}</div>
+                                    </div>
+                                </el-row>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="gf-font-title">他的活动</div>
+                    <div class="gft-activity-list">
+                        <div v-for="(activityItem,index) in UserActivityList"
+                             class="gft-activity-list-item"
+                             @click="showActivityPreview(index)"
+                             :key="index">
+                            <el-row :gutter="30" type="flex" justify="space-around">
+                                <img src="/public/assets/img/default.png" class="gf-img-cover">
+                                <el-col :span="24">
+                                    <div class="gf-list-subtitle gf-content-limited-single gf-font-subtitle">
+                                        ${activityItem.activity_title}
+                                    </div>
+                                    <div class="gf-font-minor">
+                                        ${activityItem.start_time} - ${activityItem.end_time}
+                                    </div>
+                                    <div class="gf-font-minor">
+                                        ${activityItem.meeting_place}
+                                    </div>
+                                </el-col>
+                            </el-row>
+                        </div>
+                    </div>
+                    <div class="gf-font-title">他的收藏</div>
+                    <div class="gft-activity-list">
+                        <div v-for="(activityItem,index) in attentionActivityList"
+                             class="gft-activity-list-item"
+                             @click="showActivityPreview(index)"
+                             :key="index">
+                            <el-row :gutter="30" type="flex" justify="space-around">
+                                <img src="/public/assets/img/default.png" class="gf-img-cover">
+                                <el-col :span="24">
+                                    <div class="gf-list-subtitle gf-content-limited-single gf-font-subtitle">
+                                        ${activityItem.activity_title}
+                                    </div>
+                                    <div class="gf-font-minor">
+                                        ${activityItem.start_time} - ${activityItem.end_time}
+                                    </div>
+                                    <div class="gf-font-minor">
+                                        ${activityItem.meeting_place}
+                                    </div>
+                                </el-col>
+                            </el-row>
+                        </div>
+                    </div>
+                </div>
+            </el-col>
+        </el-row>
+    </div>
+</div>
+<script type="text/javascript" src="/public/assets/js/userCenter/userCenterCommon.js"></script>
+<script>
+    var vm = new Vue({
+        el: '#vue-list',
+        delimiters: ['${', '}'],
+        data: {
+            userData:{
+                'userInfo':{
+
+                }
+            },
+            friendTypeList: [],
+            friendList: [],
+            friendListTemp: [],
+            friendListActiveNames: [],//好友展开列表flag数组
+            placeListActiveNames: [],//地点展开列表flag数组
+            userDetail: {},//用户详细信息
+            viewHistoryList: [],//用户浏览记录列表
+            AttentionUserList: [],//关注列表
+            UserActivityList: [],//用户活动列表
+        },
+        methods: {},
+        created: function () {
+            var that = this;
+            that.getFriendTypeList(that);
+            that.getOtherDetail(that);
+            that.getUserViewHistory(that);
+            that.getAttentionUserList(that);
+            that.getUserActivityList(that);
+            console.log(that);
+        }
+    });
+</script>
