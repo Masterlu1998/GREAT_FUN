@@ -85,7 +85,7 @@
             <div class="gf-standard-container">
                 <el-row>
                     <el-col>
-                        <el-form ref="oneForm" :model="oneForm" label-width="80px">
+                        <el-form ref="form" :model="oneForm" label-width="80px">
                             <el-form-item label="活动标题" placeholder="请输入活动标题">
                                 <el-input v-model="oneForm.title"></el-input>
                             </el-form-item>
@@ -93,18 +93,21 @@
                             <!--<el-select v-model="oneForm.province" placeholder="省">-->
                             <!--<el-option :label="item.province_name"-->
                             <!--v-for="item,index in provinceList"-->
+                            <!--:key="index"-->
                             <!--@change="city"-->
                             <!--:value="item.province_code"></el-option>-->
                             <!--</el-select>-->
                             <!--<el-select v-model="oneForm.city" placeholder="城市" style="margin-left: 10px;">-->
                             <!--<el-option :label="item.city_name"-->
                             <!--v-for="item,index in cityList"-->
+                            <!--:key="index"-->
                             <!--@change="area"-->
                             <!--:value="item.city_code"></el-option>-->
                             <!--</el-select>-->
                             <!--<el-select v-model="oneForm.area" placeholder="区" style="margin-left: 10px;">-->
                             <!--<el-option :label="item.area_name"-->
                             <!--v-for="item,index in areaList"-->
+                            <!--:key="index"-->
                             <!--:value="item.area_code"></el-option>-->
                             <!--</el-select>-->
                             <!--</el-form-item>-->
@@ -183,7 +186,8 @@
                              style="margin-left:12px;margin-bottom: 15px;"
                              disabled="disabled">
                         <el-tab-pane :label="item.title"
-                                     v-for="item in stepTitleList"
+                                     v-for="item,index in stepTitleList"
+                                     :key="index"
                                      :name="item.id"></el-tab-pane>
                     </el-tabs>
                     <div style="margin: 20px 0 20px 12px;">
@@ -196,7 +200,7 @@
                                    style="border:1px solid #82B1F3;color:#82B1F3">添加一步
                         </el-button>
                     </div>
-                    <el-form ref="twoForm" :model="twoForm" label-width="80px">
+                    <el-form ref="form" :model="twoForm" label-width="80px">
                         <el-form-item label="活动标题" placeholder="请输入活动标题">
                             <el-input v-model="twoForm.title"></el-input>
                         </el-form-item>
@@ -246,19 +250,22 @@
                                 </el-col>
                             </el-row>
                             <!--<el-select v-model="twoForm.province" placeholder="省">-->
-                                <!--<el-option :label="item.province_name"-->
-                                           <!--v-for="item,index in provinceList"-->
-                                           <!--:value="item.province_code"></el-option>-->
+                            <!--<el-option :label="item.province_name"-->
+                            <!--v-for="item,index in provinceList"-->
+                            <!--:key="index"-->
+                            <!--:value="item.province_code"></el-option>-->
                             <!--</el-select>-->
                             <!--<el-select v-model="twoForm.city" placeholder="城市" style="margin-left: 10px;">-->
-                                <!--<el-option :label="item.city_name"-->
-                                           <!--v-for="item,index in cityList"-->
-                                           <!--:value="item.city_code"></el-option>-->
+                            <!--<el-option :label="item.city_name"-->
+                            <!--v-for="item,index in cityList"-->
+                            <!--:key="index"-->
+                            <!--:value="item.city_code"></el-option>-->
                             <!--</el-select>-->
                             <!--<el-select v-model="twoForm.area" placeholder="区" style="margin-left: 10px;">-->
-                                <!--<el-option :label="item.area_name"-->
-                                           <!--v-for="item,index in areaList"-->
-                                           <!--:value="item.area_code"></el-option>-->
+                            <!--<el-option :label="item.area_name"-->
+                            <!--v-for="item,index in areaList"-->
+                            <!--:key="index"-->
+                            <!--:value="item.area_code"></el-option>-->
                             <!--</el-select>-->
                         </el-form-item>
 
@@ -311,12 +318,14 @@
                     <el-collapse v-model="activeCollapse">
                         <el-collapse-item :title="item.title"
                                           v-for="item,index in stepArr"
+                                          :key="index"
                                           :name="index">
-                            <div class="gtf-show-step-line">${item.startTime} ${item.startClock} - ${item.endTime}
-                                ${item.endClock}
+                            <div class="gtf-show-step-line">${item.startTime | timeFilter} ${item.startClock |
+                                timeFilter} - ${item.endTime | timeFilter}
+                                ${item.endClock | timeFilter}
                             </div>
-                            <div class="gtf-show-step-line">${item.title}</div>
-                            <div class="gtf-show-step-line">${item.detail}</div>
+                            <div class="gtf-show-step-line">活动标题：${item.title}</div>
+                            <div class="gtf-show-step-line">活动详情：${item.detail}</div>
                         </el-collapse-item>
                     </el-collapse>
                     <div style="text-align: center;margin-top: 30px;">
@@ -344,14 +353,14 @@
                                     <div style="font-size: 14px;color: #333333;line-height: 40px;">搜索好友</div>
                                 </el-col>
                                 <el-col :span="18">
-                                    <el-input v-model="input"
-                                              placeholder="好友昵称/id/账号"></el-input>
+                                    <el-input placeholder="好友昵称/id/账号"></el-input>
                                 </el-col>
                             </el-row>
                         </div>
                         <el-collapse v-model="activeFriendClass">
                             <el-collapse-item :title="item1.friend_type_name"
                                               v-for="item1,index1 in friendTypeList"
+                                              :key="index1"
                                               :name="item1.friend_type_id">
                                 <div class="gtf-friend-class-model"
                                      :key="item2.user_id"
@@ -379,8 +388,10 @@
                                     </div>
                                     <br><br>
                                     <div style="font-size: 14px;color: #666666;line-height: 28px;">
-                                        <div>
-                                            <!--${stepArr[0].startTime} ${stepArr[0].startClock} - ${twoForm.endTime} ${twoForm.endClock}-->
+                                        <div v-if="activeStep===2">
+                                            ${stepArr[0].startTime | timeFilter} ${stepArr[0].startClock | timeFilter} -
+                                            ${twoForm.endTime | timeFilter}
+                                            ${twoForm.endClock | timeFilter}
                                         </div>
                                         <div>
                                             ${oneForm.province} ${oneForm.city} ${oneForm.area}
@@ -449,9 +460,10 @@
                                 </div>
                                 <br><br>
                                 <div style="font-size: 14px;color: #666666;line-height: 28px;">
-                                    <div>
-                                        <!--${stepArr[0].startTime} ${stepArr[0].startClock} - ${twoForm.endTime}-->
-                                        ${twoForm.endClock}
+                                    <div v-if="activeStep===3">
+                                        ${stepArr[0].startTime | timeFilter} ${stepArr[0].startClock | timeFilter} -
+                                        ${twoForm.endTime | timeFilter}
+                                        ${twoForm.endClock | timeFilter}
                                     </div>
                                     <div>
                                         ${oneForm.province} ${oneForm.city} ${oneForm.area}
@@ -467,11 +479,14 @@
                         <el-collapse v-model="activeCollapseFour">
                             <el-collapse-item :title="item.title"
                                               v-for="item,index in stepArr"
+                                              :key="index"
                                               :name="index">
-                                <!--<div class="gtf-show-step-line">${item.startTime} ${item.startClock} - ${item.endTime} ${item.endClock}-->
-                                <!--</div>-->
-                                <div class="gtf-show-step-line">${item.title}</div>
-                                <div class="gtf-show-step-line">${item.detail}</div>
+                                <div class="gtf-show-step-line">${item.startTime | timeFilter} ${item.startClock |
+                                    timeFilter} - ${item.endTime | timeFilter}
+                                    ${item.endClock | timeFilter}
+                                </div>
+                                <div class="gtf-show-step-line">活动标题：${item.title}</div>
+                                <div class="gtf-show-step-line">活动详情：${item.detail}</div>
                             </el-collapse-item>
                         </el-collapse>
                     </div>
@@ -620,7 +635,7 @@
             el: '#vue-list',
             delimiters: ['${', '}'],
             data: {
-                userDetail:{},
+                userDetail: {},
                 //活动ID
                 activityId: '',
                 //步骤
@@ -657,19 +672,19 @@
                     number: 0,
                     money: '',
                     detail: '',
-                    costNum:0,
-                    price:0,
+                    costNum: 0,
+                    price: 0,
                 },
                 //活动步骤表单
                 stepArr: [],
                 //地区
                 region: {
                     province: '',
-                    provinceList:[],
+                    provinceList: [],
                     city: '',
-                    cityList:[],
+                    cityList: [],
                     area: '',
-                    areaList:[],
+                    areaList: [],
                     provinceObj: {},
                     cityObj: {},
                     areaObj: {},
@@ -698,17 +713,17 @@
                 friendInvited: [],
             },
             created: function () {
-                var that=this;
-                if(sessionStorage.getItem('GF_IS_LOGIN')){
-                }else{
+                var that = this;
+                if (sessionStorage.getItem('GF_IS_LOGIN')) {
+                } else {
                     that.$message({
                         message: '登录后才能发布活动哦！',
                         type: 'warning'
                     });
-                    var linkInterval=setInterval(function () {
-                        location.href="/front/web/main";
+                    var linkInterval = setInterval(function () {
+                        location.href = "/front/web/main";
                         clearInterval(linkInterval);
-                    },3000);
+                    }, 3000);
                 }
 //                getProvinceList(this);
                 getFriendTypeList(that);
@@ -719,7 +734,7 @@
             },
             methods: {
                 //地点选择器
-                afterSelectProvince(){
+                afterSelectProvince() {
                     var that = this;
                     var item = that.region;
                     item.isSelectProvince = true;
@@ -731,7 +746,7 @@
 
                 },
 
-                focusSelectProvince(){
+                focusSelectProvince() {
                     var that = this;
                     var item = that.region;
                     item.isSelectProvince = false;
@@ -740,7 +755,7 @@
                     item.city = '';
                 },
 
-                afterSelectCity(){
+                afterSelectCity() {
                     var that = this;
                     var item = that.region;
                     item.isSelectCity = true;
@@ -751,7 +766,7 @@
                     });
                 },
 
-                focusSelectCity(){
+                focusSelectCity() {
                     var that = this;
                     var item = that.region;
                     item.isSelectCity = false;
@@ -759,7 +774,7 @@
                     item.area = '';
                 },
 
-                afterSelectArea(){
+                afterSelectArea() {
                     var that = this;
                     var item = that.region;
                     item.isSelectArea = true;
@@ -767,19 +782,19 @@
                     console.log(item);
                 },
 
-                focusSelectArea(){
+                focusSelectArea() {
 
                 },
 
-                countMoney:function () {
-                    var that=this;
-                    if(that.oneForm.money==2){
-                        that.oneForm.costNum=that.oneForm.price*that.oneForm.number;
+                countMoney: function () {
+                    var that = this;
+                    if (that.oneForm.money == 2) {
+                        that.oneForm.costNum = that.oneForm.price * that.oneForm.number;
                     }
                 },
-                changePay:function () {
-                    var that =this;
-                    that.oneForm.costNum=0;
+                changePay: function () {
+                    var that = this;
+                    that.oneForm.costNum = 0;
                 },
 
                 //调用市
@@ -792,9 +807,9 @@
 //                },
                 //1快速添加1
                 addOneFormTop: function () {
-                    var that=this;
-                    that.oneForm.email=that.userDetail.email_address;
-                    that.oneForm.phone=that.userDetail.telephone;
+                    var that = this;
+                    that.oneForm.email = that.userDetail.email_address;
+                    that.oneForm.phone = that.userDetail.telephone;
                 },
                 //1快速添加2
                 addOneFormDown: function () {
@@ -865,9 +880,14 @@
                 },
                 //回到主页
                 goIndex: function () {
-                    //TODO 回到主页
+                    location.href = "/front/web/main";
                 }
-            }
-        },)
-    ;
+            },
+            filters:{
+                timeFilter:function (value) {
+                    return moment(value).format('YYYY-MM-DD HH:mm:ss');
+                }  
+            },        
+        },
+    );
 </script>
