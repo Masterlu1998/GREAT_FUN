@@ -128,7 +128,7 @@
                                 </el-button>
                             </el-form-item>
                             <el-form-item label="活动人数" style="display: inline-block">
-                                <el-input placeholder="请输入人数上限" v-model="oneForm.number"></el-input>
+                                <el-input type="number" placeholder="请输入人数上限" v-model="oneForm.number"></el-input>
                             </el-form-item>
                             <el-form-item label="费用" style="display: inline-block">
                                 <el-select placeholder="选择平摊方式" v-model="oneForm.money" @change="changePay()">
@@ -137,14 +137,16 @@
                                 </el-select>
                             </el-form-item>
                             <el-form-item label="每人费用" style="display: inline-block" v-if="oneForm.money==2">
-                                <el-input placeholder="每人费用" v-model="oneForm.price" @change="countMoney()">
+                                <el-input type="number" placeholder="每人费用" v-model="oneForm.price"
+                                          @change="countMoney()">
                                     <template slot="prepend">￥</template>
                                     <template slot="append">总计：${oneForm.costNum}</template>
                                 </el-input>
 
                             </el-form-item>
                             <el-form-item label="总计" style="display: inline-block" v-if="oneForm.money==1">
-                                <el-input placeholder="输入金额" v-model="oneForm.costNum" @change="countMoney()">
+                                <el-input type="number" placeholder="输入金额" v-model="oneForm.costNum"
+                                          @change="countMoney()">
                                     <template slot="prepend">￥</template>
                                     <template slot="append">总计：${oneForm.costNum}</template>
                                 </el-input>
@@ -219,12 +221,13 @@
                     </div>
                     <el-form ref="form" :model="twoForm" label-width="80px">
                         <el-form-item label="活动标题" placeholder="请输入活动标题">
-                            <el-input v-model="twoForm.title"></el-input>
+                            <el-input type="text" v-model="twoForm.title"></el-input>
                         </el-form-item>
                         <el-form-item label="活动地区">
-                            <el-row :gutter="20">
-                                <el-col :span="5">
+                            <el-row>
+                                <el-col :span="4">
                                     <el-select v-model="region.provinceObj"
+                                               style="width: 222px;"
                                                value-key="province_code"
                                                :disabled="false"
                                                placeholder="省"
@@ -237,9 +240,10 @@
                                         </el-option>
                                     </el-select>
                                 </el-col>
-                                <el-col :span="5">
+                                <el-col :span="4">
                                     <el-select v-model="region.cityObj"
                                                value-key="city_code"
+                                               style="margin-left: 12px;width: 222px;"
                                                :disabled="!region.isSelectProvince"
                                                @change="afterSelectCity()"
                                                @focus="focusSelectCity()"
@@ -251,8 +255,9 @@
                                         </el-option>
                                     </el-select>
                                 </el-col>
-                                <el-col :span="5">
+                                <el-col :span="4">
                                     <el-select v-model="region.areaObj"
+                                               style="margin-left: 24px;width: 222px;"
                                                value-key="area_code"
                                                :disabled="!region.isSelectCity"
                                                @change="afterSelectArea()"
@@ -331,7 +336,6 @@
             </el-row>
             <el-row>
                 <el-col style="background-color: #FFFFFF;padding: 35px 20px;border-radius: 8px;box-shadow: 0 2px 12px 0 rgba(129, 107, 226, .20);">
-
                     <el-collapse v-model="activeCollapse">
                         <el-collapse-item :title="item.title"
                                           v-for="item,index in stepArr"
@@ -370,7 +374,7 @@
                                     <div style="font-size: 14px;color: #333333;line-height: 40px;">搜索好友</div>
                                 </el-col>
                                 <el-col :span="18">
-                                    <el-input placeholder="好友昵称/id/账号"></el-input>
+                                    <el-input type="text" placeholder="好友昵称/id/账号"></el-input>
                                 </el-col>
                             </el-row>
                         </div>
@@ -470,7 +474,7 @@
                         <div style="font-size: 20px;color: #333333;margin-bottom: 25px;">活动信息</div>
                         <el-row>
                             <el-col :span="5">
-                                <img src="/public/assets/img/default.png" style="width: 220px; height: 125px;">
+                                <img :src="imgPathArray[0]" style="width: 220px; height: 125px;">
                             </el-col>
                             <el-col :span="19">
                                 <div style="font-size: 16px;color: #333333;line-height: 32px;">
@@ -663,7 +667,7 @@
                 //步骤
                 activeStep: 0,
                 //第二部步骤展示
-                TwoActiveStep: 1,
+                TwoActiveStep: '1',
                 //是否展示概览
                 isShowDetail: 0,
                 //展开的步骤折叠面板
@@ -837,7 +841,11 @@
                 },
                 //查看概览
                 backToDetail: function () {
-                    vm.stepArr.push(vm.twoForm);
+                    if(vm.twoForm.title===''){
+
+                    }else{
+                        vm.stepArr.push(vm.twoForm);
+                    }
                     vm.isShowDetail = 1;
                     vm.activeStep = '';
                 },
@@ -865,17 +873,29 @@
                     vm.twoForm.province = vm.region.provinceObj.province_code;
                     vm.twoForm.city = vm.region.provinceObj.city_code;
                     vm.twoForm.area = vm.region.provinceObj.area_code;
-                    vm.stepArr.push(vm.twoForm);
+                    var newData = {};
+                    newData.title = vm.twoForm.title;
+                    newData.province = vm.twoForm.province;
+                    newData.city = vm.twoForm.city;
+                    newData.area = vm.twoForm.area;
+                    newData.startTime = vm.twoForm.startTime;
+                    newData.startClock = vm.twoForm.startClock;
+                    newData.endTime = vm.twoForm.endTime;
+                    newData.endClock = vm.twoForm.endClock;
+                    newData.detail = vm.twoForm.detail;
+                    vm.stepArr.push(newData);
                     postActivityStep(vm);
-                    vm.twoForm.title = '';
-                    vm.twoForm.province = '';
-                    vm.twoForm.city = '';
-                    vm.twoForm.area = '';
-                    vm.twoForm.startTime = '';
-                    vm.twoForm.startClock = '';
-                    vm.twoForm.endTime = '';
-                    vm.twoForm.endClock = '';
-                    vm.twoForm.detail = '';
+                    setTimeout(function () {
+                        vm.twoForm.title = '';
+                        vm.twoForm.province = '';
+                        vm.twoForm.city = '';
+                        vm.twoForm.area = '';
+                        vm.twoForm.startTime = '';
+                        vm.twoForm.startClock = '';
+                        vm.twoForm.endTime = '';
+                        vm.twoForm.endClock = '';
+                        vm.twoForm.detail = '';
+                    },50);
                 },
                 //2编辑完成
                 editDown: function () {
@@ -908,6 +928,8 @@
             },
             filters: {
                 timeFilter: function (value) {
+                    if(!value)
+                        return '';
                     if (moment(value).format('HH:mm:ss') === "00:00:00")
                         return moment(value).format('YYYY-MM-DD');
                     else
