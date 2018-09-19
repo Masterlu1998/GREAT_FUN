@@ -14,10 +14,6 @@ module.exports = app => {
       type: DataTypes.STRING(200),
       allowNull: false
     },
-    label_type: {
-      type: DataTypes.INTEGER(100),
-      allowNull: false
-    },
     delete_status: {
       type: DataTypes.INTEGER(100),
       allowNull: false

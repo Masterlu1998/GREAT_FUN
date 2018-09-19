@@ -455,13 +455,13 @@ class UserService extends Service {
     };
     const sql_activity_option = {
       where: search_activity_obj,
-      attributes: ['activity_id','activity_title',[sequelize.fn("DATE_FORMAT", sequelize.col('start_time'), '%Y-%m-%d %T') ,'start_time'],[sequelize.fn("DATE_FORMAT", sequelize.col('end_time'), '%Y-%m-%d %T') ,'end_time'],'meeting_place']
+      attributes: ['activity_id','activity_title',[sequelize.fn("DATE_FORMAT", sequelize.col('start_time'), '%Y-%m-%d %T') ,'start_time'],[sequelize.fn("DATE_FORMAT", sequelize.col('end_time'), '%Y-%m-%d %T') ,'end_time'],'meeting_place', 'images_path']
     };
     if(page_size !== 0) {
       sql_activity_option.limit = page_size;
       sql_activity_option.offset = (page_index - 1) * page_size;
     }
-    const user_activity_sequelize = await ctx.model.JhwActivity.findAll(sql_activity_option);
+    const user_activity_sequelize = await ctx.model.ViActivityInfo.findAll(sql_activity_option);
     if(user_activity_sequelize.length===0){
       const send_json = ctx.helper.getApiResult(0, "暂无参与活动");
       return send_json;
