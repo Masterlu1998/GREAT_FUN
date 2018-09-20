@@ -28,7 +28,7 @@
     <div class="gf-user-container">
         <el-row type="flex" align="middle">
             <div>
-                <img src="/public/assets/img/head_default.png" class="gf-img-user-head-photo gft-img-user-head-photo">
+                <img :src="userDetail.avatar_url" class="gf-img-user-head-photo gft-img-user-head-photo">
                 <div class="gf-font-s gt-font-white" style="margin-top: 10px;">
                     <span>关注 30</span>
                     <span style="margin-left: 20px">粉丝 30</span>
@@ -135,7 +135,7 @@
                     <!--<el-button type="primary" icon="el-icon-plus" size="mini" circle style="width: 10px; height: 10px;"></el-button>-->
                     <div style="margin:30px 0;">
                         <div style="display: inline-block">
-                            <div class="gf-label" v-for="labelItem in userDetail.label_list">${labelItem.label_name}</div>
+                            <div class="gf-label" v-for="labelItem in userDetail.label_list" style="display: inline-block">${labelItem.label_name}</div>
                         </div>
                     </div>
                     <div class="gf-font-title">近期预览</div>
@@ -145,7 +145,7 @@
                              @click="showActivityPreview(index)"
                              :key="index">
                             <el-row :gutter="30" type="flex" justify="space-around">
-                                <img src="/public/assets/img/default.png" class="gf-img-cover">
+                                <img :src="activityItem.images_path" class="gf-img-cover" style="width: auto">
                                 <el-col style="width: calc(100% - 220px)">
                                     <div class="gf-list-subtitle gf-content-limited-single gf-font-subtitle">
                                         ${activityItem.activity_title}
@@ -181,7 +181,7 @@
                              @click="showActivityPreview(index)"
                              :key="index">
                             <el-row :gutter="30" type="flex" justify="space-around">
-                                <img src="/public/assets/img/default.png" class="gf-img-cover">
+                                <img :src="activityItem.images_path" class="gf-img-cover" style="width: auto">
                                 <el-col :span="24">
                                     <div class="gf-list-subtitle gf-content-limited-single gf-font-subtitle">
                                         ${activityItem.activity_title}
@@ -203,7 +203,7 @@
                              @click="showActivityPreview(index)"
                              :key="index">
                             <el-row :gutter="30" type="flex" justify="space-around">
-                                <img src="/public/assets/img/default.png" class="gf-img-cover">
+                                <img :src="activityItem.images_path" class="gf-img-cover" style="width: auto">
                                 <el-col :span="24">
                                     <div class="gf-list-subtitle gf-content-limited-single gf-font-subtitle">
                                         ${activityItem.activity_title}
@@ -228,14 +228,7 @@
             width="30%"
             center>
         <el-checkbox-group v-model="editLabelConfirmList">
-            <el-checkbox :label="1">复选框 A</el-checkbox>
-            <el-checkbox :label="2">复选框 B</el-checkbox>
-            <el-checkbox :label="3">复选框 C</el-checkbox>
-            <el-checkbox :label="4">复选框 D</el-checkbox>
-            <el-checkbox :label="5">复选框 E</el-checkbox>
-            <el-checkbox :label="6">复选框 F</el-checkbox>
-            <el-checkbox :label="7">复选框 G</el-checkbox>
-            <el-checkbox :label="8">复选框 F</el-checkbox>
+            <el-checkbox :label="labelItem.label_id" v-for="labelItem in editLabelList">${labelItem.label_name}</el-checkbox>
         </el-checkbox-group>
         <span slot="footer" class="dialog-footer">
     <el-button @click="editLabelVisible = false">取 消</el-button>
@@ -268,9 +261,60 @@
                 var that=this;
                 that.editLabelList=[];
                 that.editLabelVisible=true;
+                var callback=function (res, callbackObj) {
+                    callbackObj.editLabelList=res.obj.label_list.rows;
+                };
+
+                var url = API_SERVER_URL.GREAT_FUN + '/label/getLabelList';
+                var args = {
+                    "args": {
+                    }
+
+                };
+
+                axios.post(url, args)
+                    .then(function (response) {
+                        var res = response.data;
+                        if (res.retcode === 0) {
+                            callback(res, that);
+                        } else {
+                            console.log(res.message.prompt);
+                        }
+                    })
+                    .catch(function (error) {
+                        console.error(error);
+                    });
             },
             submitEditLabelForm:function () {
                 var that=this;
+                that.editLabelList=[];
+                that.editLabelVisible=true;
+                var callback=function (res, callbackObj) {
+                    callbackObj.editLabelVisible = false;
+                };
+
+                var url = API_SERVER_URL.GREAT_FUN + '/label/bindLabel';
+                var args = {
+                    "args": {
+                        "bind_id": userData.userInfo.user_id,
+                        "label_array": that.editLabelConfirmList,
+                        "bind_type": 2
+                    }
+
+                };
+
+                axios.post(url, args)
+                    .then(function (response) {
+                        var res = response.data;
+                        if (res.retcode === 0) {
+                            callback(res, that);
+                        } else {
+                            console.log(res.message.prompt);
+                        }
+                    })
+                    .catch(function (error) {
+                        console.error(error);
+                    });
             }
         },
         created: function () {

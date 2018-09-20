@@ -66,10 +66,11 @@
                     <el-row :gutter="20">
                         <el-col :span="20">
                             <el-radio-group v-model="activityType">
-                                <el-radio :label="1">漫展</el-radio>
-                                <el-radio :label="2">演唱会</el-radio>
-                                <el-radio :label="3">观赏</el-radio>
-                                <el-radio :label="4">交友</el-radio>
+                                <el-radio :label="labelItem.label_id" v-for="labelItem in editLabelList">${labelItem.label_name}</el-radio>
+                                <!--<el-radio :label="1">漫展</el-radio>-->
+                                <!--<el-radio :label="2">演唱会</el-radio>-->
+                                <!--<el-radio :label="3">观赏</el-radio>-->
+                                <!--<el-radio :label="4">交友</el-radio>-->
                             </el-radio-group>
 
                             <!--<el-checkbox-group v-model="activityType">-->
@@ -129,7 +130,7 @@
                                         2018.08.31 19:30 - 2018.08.31 22:30
                                     </div>
                                     <div class="gf-font-minor">
-                                        凯迪拉克·上海音乐厅大厅 - 上海
+                                        ${activityItem.meeting_place}
                                     </div>
                                 </el-col>
                                 <div class="gf-number-container ">
@@ -160,7 +161,7 @@
                     </a>
                     <div class="gf-user-container">
                         <el-row type="flex" align="middle">
-                            <img src="/public/assets/img/head_default.png" class="gf-img-user-head-photo">
+                            <img  :src="activityDetail.avatar_url" class="gf-img-user-head-photo">
                             <div class="gf-user-right-container gf-font-l">
                                 <div class="gf-font-m gf-cursor-pointer" @click="handleUserInfo()">${activityDetail.user_name}</div>
                                 <div class="gf-font-light">lv.03</div>
@@ -215,6 +216,7 @@
             activityDetail: {},//活动详情
             chooseActivityId: '',//选中的活动的ID
             activeNames: [],//活动名称
+            editLabelList:[],
         },
         methods: {
             onSubmitActivityForm:function() {
@@ -230,10 +232,13 @@
                     'activityPrice': that.activityPrice,
 
                 };
-//                console.log(obj);
+//                var start=moment(that.activityDate[0]).format('YYYY-MM-DD') + " " + moment(that.activityDate[0]).format('HH:mm:ss');
+//                var end=moment(that.activityDate[1]).format('YYYY-MM-DD') + " " + moment(that.activityDate[1]).format('HH:mm:ss');
+//                console.log(time);
 
                 that.getActivityList(that, function (res, callbackObj) {
                     callbackObj.activityList = res.obj.activity_list;
+                    callbackObj.showActivityPreview(0);
                 });
 
             },
@@ -246,12 +251,18 @@
             getActivityList:function(obj, callback){
                 var that = this;
                 var url = API_SERVER_URL.GREAT_FUN + '/activity/getActivityList';
+                var start="";
+                var end="";
+                if(that.activityDate){
+                    start=moment(that.activityDate[0]).format('YYYY-MM-DD') + " " + moment(that.activityDate[0]).format('HH:mm:ss');
+                    end=moment(that.activityDate[1]).format('YYYY-MM-DD') + " " + moment(that.activityDate[1]).format('HH:mm:ss');
+                }
                 var args = {
                     "args": {
                         "page_size": 0,
                         "page_index": 1,
-                        "start_time": "",
-                        "end_time": "",
+                        "start_time": start,
+                        "end_time": end,
                         "cost_num_type": that.activityPrice,
                         "keywords": "",
                         "province_code": "",
@@ -414,7 +425,36 @@
                 var that = this;
                 var userId = that.activityDetail.user_id;
                 that.goToUserCenter(that,userId);
-            }
+            },
+
+            editLabel:function () {
+                var that=this;
+                that.editLabelList=[];
+                that.editLabelVisible=true;
+                var callback=function (res, callbackObj) {
+                    callbackObj.editLabelList=res.obj.label_list.rows;
+                };
+
+                var url = API_SERVER_URL.GREAT_FUN + '/label/getLabelList';
+                var args = {
+                    "args": {
+                    }
+
+                };
+
+                axios.post(url, args)
+                    .then(function (response) {
+                        var res = response.data;
+                        if (res.retcode === 0) {
+                            callback(res, that);
+                        } else {
+                            console.log(res.message.prompt);
+                        }
+                    })
+                    .catch(function (error) {
+                        console.error(error);
+                    });
+            },
         },
         created: function () {
             var that = this;
@@ -425,6 +465,8 @@
                 callbackObj.activityList = res.obj.activity_list;
                 that.showActivityPreview(0);
             });
+
+            that.editLabel();
         },
     });
 </script>

@@ -53,10 +53,10 @@
                                 ${activityItem.activity_title}
                             </div>
                             <div class="gf-font-minor">
-                                2018.08.31 19:30 - 2018.08.31 22:30
+                                ${activityItem.start_time} - ${activityItem.end_time}
                             </div>
                             <div class="gf-font-minor">
-                                凯迪拉克·上海音乐厅大厅 - 上海
+                                ${activityItem.meeting_place}
                             </div>
                         </el-col>
                         <div class="gf-number-container ">
@@ -87,8 +87,8 @@
                                 </div>
                             </el-row>
                             <el-row type="flex" align="middle">
-                                <el-button type="primary" @click="getAttention(index)" v-if="!userItem.isAttention">立即关注</el-button>
-                                <el-button  @click="getAttention(index)" v-if="userItem.isAttention">取消关注</el-button>
+                                <!--<el-button type="primary" @click="getAttention(index)" v-if="!userItem.isAttention">立即关注</el-button>-->
+                                <!--<el-button  @click="getAttention(index)" v-if="userItem.isAttention">取消关注</el-button>-->
                             </el-row>
                         </el-row>
                     </div>
@@ -288,35 +288,35 @@
             });
             that.getIndexUserInfo(that,function (res,callbackObj) {
                 callbackObj.indexUserList=res.obj.user_list;
-                callbackObj.indexUserList=[
-                    {
-                        'user_id':'',
-                        'user_name':'二傻子',
-                        'user_intro':'孩子， 当你出生的时候，洛丹伦的森林轻声唤出了你的名字 阿尔萨斯。 孩子， 我骄傲地看着你一天天长大， 成为正义的化身。 你要记住，我们一直都是以智慧与力量统治这个国家。 我也相信你会谨慎地使用自己强大的力量。 但，真正的胜利， 是鼓舞你的子民心中的斗志。 总有一天， 我的生命将抵达终点， 而你，将加冕为王 ！',
-                        'avatar_url':'/public/assets/img/fakerHeader/header_1.png',
-                        'isAttention':false,
-                    },
-                    {
-                        'user_id':'',
-                        'user_name':'劳拉',
-                        'user_intro':'万物皆虚，是指社会文明的基础是脆弱的，我们必须成为自身文明的守护者。万事皆允，是指我们是自身行为的设计者，我们承担自身行为的后果，无论是荣耀，还是悲剧。',
-                        'avatar_url':'/public/assets/img/fakerHeader/header_2.png',
-                        'isAttention':false,
-                    },
-                    {
-                        'user_id':'',
-                        'user_name':'爱娃',
-                        'user_intro':'How can you be in hell when you are in my heart。你活在我心中，又怎会落入地狱？',
-                        'avatar_url':'/public/assets/img/fakerHeader/header_3.png',
-                        'isAttention':false,
-                    },
-                    {
-                        'user_id':'',
-                        'user_name':'格林',
-                        'user_intro':'我这种地位的女人有两种面孔，一种是给天下看的，一种私人拥有的。',
-                        'avatar_url':'/public/assets/img/fakerHeader/header_4.png',
-                        'isAttention':false,
-                    }];
+//                callbackObj.indexUserList=[
+//                    {
+//                        'user_id':'',
+//                        'user_name':'二傻子',
+//                        'user_intro':'孩子， 当你出生的时候，洛丹伦的森林轻声唤出了你的名字 阿尔萨斯。 孩子， 我骄傲地看着你一天天长大， 成为正义的化身。 你要记住，我们一直都是以智慧与力量统治这个国家。 我也相信你会谨慎地使用自己强大的力量。 但，真正的胜利， 是鼓舞你的子民心中的斗志。 总有一天， 我的生命将抵达终点， 而你，将加冕为王 ！',
+//                        'avatar_url':'/public/assets/img/fakerHeader/header_1.png',
+//                        'isAttention':false,
+//                    },
+//                    {
+//                        'user_id':'',
+//                        'user_name':'劳拉',
+//                        'user_intro':'万物皆虚，是指社会文明的基础是脆弱的，我们必须成为自身文明的守护者。万事皆允，是指我们是自身行为的设计者，我们承担自身行为的后果，无论是荣耀，还是悲剧。',
+//                        'avatar_url':'/public/assets/img/fakerHeader/header_2.png',
+//                        'isAttention':false,
+//                    },
+//                    {
+//                        'user_id':'',
+//                        'user_name':'爱娃',
+//                        'user_intro':'How can you be in hell when you are in my heart。你活在我心中，又怎会落入地狱？',
+//                        'avatar_url':'/public/assets/img/fakerHeader/header_3.png',
+//                        'isAttention':false,
+//                    },
+//                    {
+//                        'user_id':'',
+//                        'user_name':'格林',
+//                        'user_intro':'我这种地位的女人有两种面孔，一种是给天下看的，一种私人拥有的。',
+//                        'avatar_url':'/public/assets/img/fakerHeader/header_4.png',
+//                        'isAttention':false,
+//                    }];
 
             });
         },

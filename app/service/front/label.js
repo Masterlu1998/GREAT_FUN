@@ -53,14 +53,18 @@ class LabelService extends Service {
         let result_obj = {};
         let send_json = {};
         const { ctx } = this;
-        const { bind_id, label_id, bind_type } = params;
-        const label_create_obj = {
-            bind_id: bind_id,
-            label_id: label_id,
-            bind_type: bind_type,
-            delete_status: 0
-        };
-        const create_result = await ctx.model.JhwLabelBind.create(label_create_obj);
+        const { bind_id, label_array, bind_type } = params;
+        const create_label_sql = [];
+        for(let i = 0; i < label_array.length; i++) {
+            const label_create_obj = {
+                bind_id: bind_id,
+                label_id: label_array[i],
+                bind_type: bind_type,
+                delete_status: 0
+            };
+            create_label_sql.push(label_create_obj);
+        }
+        const create_result = await ctx.model.JhwLabelBind.bulkCreate(create_label_sql);
         if(!create_result) {
             send_json = ctx.helper.getApiResult(-1, "添加失败");
             return send_json;

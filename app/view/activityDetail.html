@@ -17,7 +17,7 @@
                     <div class="gft-activity-list">
                         <div class="gft-activity-list-item">
                             <el-row :gutter="30" type="flex" justify="space-around">
-                                <img src="/public/assets/img/default.png" class="gf-img-cover">
+                                <img :src="activityDetail.img_path" class="gf-img-cover">
                                 <el-col style="width: calc(100% - 220px)">
                                     <div class="gf-list-subtitle gf-content-limited-single gf-font-subtitle">
                                         ${activityDetail.activity_title}
@@ -26,7 +26,7 @@
                                         ${activityDetail.start_time} - ${activityDetail.end_time}
                                     </div>
                                     <div class="gf-font-minor">
-                                        凯迪拉克·上海音乐厅大厅 - 上海
+                                        ${activityDetail.meeting_place}
                                     </div>
                                     <!--<div class="gf-font-minor">-->
                                         <!--{activityDetail.meeting_place}-->
