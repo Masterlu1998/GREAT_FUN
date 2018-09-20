@@ -341,9 +341,7 @@
                                           v-for="item,index in stepArr"
                                           :key="index"
                                           :name="index">
-                            <div class="gtf-show-step-line">${item.startTime | timeFilter} ${item.startClock |
-                                timeFilter} 至 ${item.endTime | timeFilter}
-                                ${item.endClock | timeFilter}
+                            <div class="gtf-show-step-line">${item.startClock | timeFilter} 至 ${item.endClock | timeFilter}
                             </div>
                             <div class="gtf-show-step-line">活动标题：${item.title}</div>
                             <div class="gtf-show-step-line">活动详情：${item.detail}</div>
@@ -410,9 +408,7 @@
                                     <br><br>
                                     <div style="font-size: 14px;color: #666666;line-height: 28px;">
                                         <div v-if="activeStep===2">
-                                            ${stepArr[0].startTime | timeFilter} ${stepArr[0].startClock | timeFilter} 至
-                                            ${twoForm.endTime | timeFilter}
-                                            ${twoForm.endClock | timeFilter}
+                                            ${stepArr[0].startClock | timeFilter} 至 ${twoForm.endClock | timeFilter}
                                         </div>
                                         <div>
                                             ${region.provinceObj.province_name} ${region.cityObj.city_name}
@@ -483,9 +479,7 @@
                                 <br><br>
                                 <div style="font-size: 14px;color: #666666;line-height: 28px;">
                                     <div v-if="activeStep===3">
-                                        ${stepArr[0].startTime | timeFilter} ${stepArr[0].startClock | timeFilter} 至
-                                        ${twoForm.endTime | timeFilter}
-                                        ${twoForm.endClock | timeFilter}
+                                        ${stepArr[0].startClock | timeFilter} 至 ${twoForm.endClock | timeFilter}
                                     </div>
                                     <div>
                                         ${region.provinceObj.province_name} ${region.cityObj.city_name}
@@ -504,8 +498,7 @@
                                               v-for="item,index in stepArr"
                                               :key="index"
                                               :name="index">
-                                <div class="gtf-show-step-line">${item.startTime | timeFilter} ${item.startClock |
-                                    timeFilter} 至 ${item.endTime | timeFilter}
+                                <div class="gtf-show-step-line">${item.startClock | timeFilter} 至
                                     ${item.endClock | timeFilter}
                                 </div>
                                 <div class="gtf-show-step-line">活动标题：${item.title}</div>
@@ -611,12 +604,12 @@
                 "limit_num": obj.oneForm.number,
                 "user_id": "1d6f5edd381f4e4c9e43d61d63b0bc37",
                 "cost_type": obj.oneForm.money,
-                "start_time": "2018-08-12 12:00:00",
-                "end_time": "2018-08-15 12:00:00",
-                "meeting_place": "余姚北站",
-                "province_code": 330000,
-                "city_code": 330100,
-                "area_code": 330106,
+                "start_time": "2018-09-12 12:00:00",
+                "end_time": "2018-09-15 12:00:00",
+                "meeting_place": "江苏省南京市市辖区",
+                "province_code": 320000,
+                "city_code": 320100,
+                "area_code": 320101,
                 "cost_num": obj.oneForm.costNum,
                 "activity_type_id": 1,
                 "img_path_array": obj.imgPathArray
@@ -841,9 +834,9 @@
                 },
                 //查看概览
                 backToDetail: function () {
-                    if(vm.twoForm.title===''){
+                    if (vm.twoForm.title === '') {
 
-                    }else{
+                    } else {
                         vm.stepArr.push(vm.twoForm);
                     }
                     vm.isShowDetail = 1;
@@ -867,9 +860,9 @@
                     vm.stepTitleList.push(arr);
                     vm.TwoActiveStep = newId;
                     vm.twoForm.startTime = moment(vm.twoForm.startTime).format('YYYY-MM-DD');
-                    vm.twoForm.startClock = moment(vm.twoForm.startClock).format('YYYY-MM-DD');
-                    vm.twoForm.endTime = moment(vm.twoForm.endTime).format('HH:mm:ss');
-                    vm.twoForm.endClock = moment(vm.twoForm.endTime).format('HH:mm:ss');
+                    vm.twoForm.startClock = moment(vm.twoForm.startClock).format('YYYY-MM-DD HH:mm:ss');
+                    vm.twoForm.endTime = moment(vm.twoForm.endTime).format('YYYY-MM-DD');
+                    vm.twoForm.endClock = moment(vm.twoForm.endClock).format('YYYY-MM-DD HH:mm:ss');
                     vm.twoForm.province = vm.region.provinceObj.province_code;
                     vm.twoForm.city = vm.region.provinceObj.city_code;
                     vm.twoForm.area = vm.region.provinceObj.area_code;
@@ -884,6 +877,7 @@
                     newData.endClock = vm.twoForm.endClock;
                     newData.detail = vm.twoForm.detail;
                     vm.stepArr.push(newData);
+                    alert(vm.stepArr[0].startClock)
                     postActivityStep(vm);
                     setTimeout(function () {
                         vm.twoForm.title = '';
@@ -895,7 +889,7 @@
                         vm.twoForm.endTime = '';
                         vm.twoForm.endClock = '';
                         vm.twoForm.detail = '';
-                    },50);
+                    }, 50);
                 },
                 //2编辑完成
                 editDown: function () {
@@ -928,12 +922,10 @@
             },
             filters: {
                 timeFilter: function (value) {
-                    if(!value)
+                    if (!value)
                         return '';
-                    if (moment(value).format('HH:mm:ss') === "00:00:00")
-                        return moment(value).format('YYYY-MM-DD');
                     else
-                        return moment(value).format('HH:mm:ss');
+                        return moment(value).format('YYYY-MM-DD HH:mm:ss');
                 }
             },
         },
