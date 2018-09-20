@@ -136,7 +136,7 @@ class ActivityService extends Service {
     };
     const sql_asctivity_option = {
       where: search_activity_obj,
-      attributes: ['activity_id', 'activity_title', 'activity_intro', [sequelize.fn("DATE_FORMAT", sequelize.col('start_time'), '%Y-%m-%d %H:%i') ,'start_time'], [sequelize.fn("DATE_FORMAT", sequelize.col('end_time'), '%Y-%m-%d %H:%i') ,'end_time'], 'user_id', 'real_name', 'user_name', 'user_intro', 'avatar_url', 'experience', 'images_path']
+      attributes: ['activity_id', 'activity_title', 'activity_intro', [sequelize.fn("DATE_FORMAT", sequelize.col('start_time'), '%Y-%m-%d %H:%i') ,'start_time'], [sequelize.fn("DATE_FORMAT", sequelize.col('end_time'), '%Y-%m-%d %H:%i') ,'end_time'], 'user_id', 'real_name', 'user_name', 'user_intro', 'avatar_url', 'experience', 'images_path', 'meeting_place']
     };
     const search_step_obj = {
       activity_id: activity_id,
@@ -168,6 +168,7 @@ class ActivityService extends Service {
       avatar_url: promise_result[0].avatar_url,
       experience: promise_result[0].experience,
       img_path: promise_result[0].images_path,
+      meeting_place: promise_result[0].meeting_place,
       activity_step_list: promise_result[1]
     };
     send_json = ctx.helper.getApiResult(0, "查询成功", result_obj);
