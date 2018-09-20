@@ -22,7 +22,7 @@
     <div class="gf-user-container">
         <el-row type="flex" align="middle">
             <div>
-                <img src="/public/assets/img/head_default.png" class="gf-img-user-head-photo gft-img-user-head-photo">
+                <img :src="userDetail.avatar_url" class="gf-img-user-head-photo gft-img-user-head-photo">
                 <div class="gf-font-s gt-font-white" style="margin-top: 10px;">
                     <span>关注 30</span>
                     <span style="margin-left: 20px">粉丝 30</span>
@@ -62,7 +62,7 @@
                     <div class="gf-font-title">个人标签</div>
                     <div style="margin:30px 0;">
                         <div style="display: inline-block">
-                            <div class="gf-label" v-for="labelItem in userDetail.label_list">${labelItem.label_name}</div>
+                            <div class="gf-label" v-for="labelItem in userDetail.label_list" style="display: inline-block">${labelItem.label_name}</div>
                         </div>
                     </div>
                     <div class="gf-font-title">近期预览</div>
@@ -72,7 +72,7 @@
                              @click="showActivityPreview(index)"
                              :key="index">
                             <el-row :gutter="30" type="flex" justify="space-around">
-                                <img src="/public/assets/img/default.png" class="gf-img-cover">
+                                <img :src="activityItem.images_path" class="gf-img-cover" style="width: auto">
                                 <el-col style="width: calc(100% - 220px)">
                                     <div class="gf-list-subtitle gf-content-limited-single gf-font-subtitle">
                                         ${activityItem.activity_title}
@@ -108,7 +108,7 @@
                              @click="showActivityPreview(index)"
                              :key="index">
                             <el-row :gutter="30" type="flex" justify="space-around">
-                                <img src="/public/assets/img/default.png" class="gf-img-cover">
+                                <img :src="activityItem.images_path" class="gf-img-cover" style="width: auto">
                                 <el-col :span="24">
                                     <div class="gf-list-subtitle gf-content-limited-single gf-font-subtitle">
                                         ${activityItem.activity_title}
@@ -130,7 +130,7 @@
                              @click="showActivityPreview(index)"
                              :key="index">
                             <el-row :gutter="30" type="flex" justify="space-around">
-                                <img src="/public/assets/img/default.png" class="gf-img-cover">
+                                <img :src="activityItem.images_path" class="gf-img-cover" style="width: auto">
                                 <el-col :span="24">
                                     <div class="gf-list-subtitle gf-content-limited-single gf-font-subtitle">
                                         ${activityItem.activity_title}
@@ -170,6 +170,7 @@
             viewHistoryList: [],//用户浏览记录列表
             AttentionUserList: [],//关注列表
             UserActivityList: [],//用户活动列表
+            attentionActivityList:[]
         },
         methods: {},
         created: function () {
@@ -179,6 +180,7 @@
             that.getUserViewHistory(that);
             that.getAttentionUserList(that);
             that.getUserActivityList(that);
+            that.getAttentionActivityList(that);
             console.log(that);
         }
     });
