@@ -238,6 +238,7 @@
 
                 that.getActivityList(that, function (res, callbackObj) {
                     callbackObj.activityList = res.obj.activity_list;
+                    callbackObj.showActivityPreview(0);
                 });
 
             },
