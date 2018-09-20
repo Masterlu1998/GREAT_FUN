@@ -167,6 +167,7 @@ class ActivityService extends Service {
       user_intro: promise_result[0].user_intro,
       avatar_url: promise_result[0].avatar_url,
       experience: promise_result[0].experience,
+      img_path: promise_result[0].images_path,
       activity_step_list: promise_result[1]
     };
     send_json = ctx.helper.getApiResult(0, "查询成功", result_obj);
