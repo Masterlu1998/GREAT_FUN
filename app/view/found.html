@@ -877,6 +877,8 @@
                     newData.endClock = vm.twoForm.endClock;
                     newData.detail = vm.twoForm.detail;
                     vm.stepArr.push(newData);
+                    vm.twoForm.startClock = moment(vm.twoForm.startClock).format('HH:mm:ss');
+                    vm.twoForm.endClock = moment(vm.twoForm.endClock).format('HH:mm:ss');
                     postActivityStep(vm);
                     setTimeout(function () {
                         vm.twoForm.title = '';
