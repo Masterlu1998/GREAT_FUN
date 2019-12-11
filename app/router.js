@@ -26,3 +26,6 @@ module.exports = app => {
     io.route('chat', io.controller.chat.ping);
 
 };
+
+//做个pr的测试hhhh
+//console.log(123)
